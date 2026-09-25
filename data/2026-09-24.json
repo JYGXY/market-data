@@ -1,0 +1,510 @@
+{
+  "generated_at_utc": "2026-09-25T06:16:39Z",
+  "generated_at_new_york": "2026-09-25 02:16 EDT",
+  "disclaimer": "仅含公开市场数据。取不到的值为 null，并在 error 字段注明原因。",
+  "us_indices": {
+    "sp500": {
+      "name": "标普 500",
+      "symbol": "^GSPC",
+      "value": 7704.1299,
+      "change": -1.8999,
+      "change_pct": -0.025,
+      "prev_close": 7706.0298,
+      "unit": "点",
+      "date": "2026-09-24",
+      "source": "https://finance.yahoo.com/quote/%5EGSPC"
+    },
+    "dow": {
+      "name": "道琼斯工业平均",
+      "symbol": "^DJI",
+      "value": 51349.9805,
+      "change": -161.6094,
+      "change_pct": -0.314,
+      "prev_close": 51511.5898,
+      "unit": "点",
+      "date": "2026-09-24",
+      "source": "https://finance.yahoo.com/quote/%5EDJI"
+    },
+    "nasdaq": {
+      "name": "纳斯达克综合",
+      "symbol": "^IXIC",
+      "value": 26939.3691,
+      "change": 3.3301,
+      "change_pct": 0.012,
+      "prev_close": 26936.0391,
+      "unit": "点",
+      "date": "2026-09-24",
+      "source": "https://finance.yahoo.com/quote/%5EIXIC"
+    }
+  },
+  "us_top30_by_market_cap": {
+    "source": "https://finance.yahoo.com/research-hub/screener/largest_market_cap/",
+    "items": [
+      {
+        "rank": 1,
+        "symbol": "NVDA",
+        "name": "NVIDIA Corporation",
+        "value": 224.58,
+        "change": -0.93,
+        "change_pct": -0.412,
+        "market_cap_usd": 5422933082112,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/NVDA"
+      },
+      {
+        "rank": 2,
+        "symbol": "AAPL",
+        "name": "Apple Inc.",
+        "value": 335.92,
+        "change": -1.1,
+        "change_pct": -0.326,
+        "market_cap_usd": 4902477103104,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/AAPL"
+      },
+      {
+        "rank": 3,
+        "symbol": "GOOGL",
+        "name": "Alphabet Inc.",
+        "value": 342.36,
+        "change": 4.53,
+        "change_pct": 1.341,
+        "market_cap_usd": 4187040514048,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/GOOGL"
+      },
+      {
+        "rank": 4,
+        "symbol": "MSFT",
+        "name": "Microsoft Corporation",
+        "value": 497.93,
+        "change": -2.66,
+        "change_pct": -0.531,
+        "market_cap_usd": 3697401921536,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/MSFT"
+      },
+      {
+        "rank": 5,
+        "symbol": "AMZN",
+        "name": "Amazon.com, Inc.",
+        "value": 249.38,
+        "change": 0.11,
+        "change_pct": 0.044,
+        "market_cap_usd": 2689890779136,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/AMZN"
+      },
+      {
+        "rank": 6,
+        "symbol": "TSM",
+        "name": "Taiwan Semiconductor Manufacturing Company Limited",
+        "value": 451.15,
+        "change": 4.58,
+        "change_pct": 1.026,
+        "market_cap_usd": 2339877683200,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/TSM"
+      },
+      {
+        "rank": 7,
+        "symbol": "META",
+        "name": "Meta Platforms, Inc.",
+        "value": 777.59,
+        "change": 33.4901,
+        "change_pct": 4.501,
+        "market_cap_usd": 1980915384320,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/META"
+      },
+      {
+        "rank": 8,
+        "symbol": "SPCX",
+        "name": "Space Exploration Technologies Corp.",
+        "value": 148.03,
+        "change": -0.33,
+        "change_pct": -0.222,
+        "market_cap_usd": 1951298879488,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/SPCX"
+      },
+      {
+        "rank": 9,
+        "symbol": "AVGO",
+        "name": "Broadcom Inc.",
+        "value": 350.36,
+        "change": -4.63,
+        "change_pct": -1.304,
+        "market_cap_usd": 1672488943616,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/AVGO"
+      },
+      {
+        "rank": 10,
+        "symbol": "TSLA",
+        "name": "Tesla, Inc.",
+        "value": 377.94,
+        "change": -2.18,
+        "change_pct": -0.574,
+        "market_cap_usd": 1492691976192,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/TSLA"
+      },
+      {
+        "rank": 11,
+        "symbol": "SKHY",
+        "name": "SK hynix Inc.",
+        "value": 186.37,
+        "change": -2.91,
+        "change_pct": -1.537,
+        "market_cap_usd": 1325231374336,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/SKHY"
+      },
+      {
+        "rank": 12,
+        "symbol": "MU",
+        "name": "Micron Technology, Inc.",
+        "value": 1080.53,
+        "change": 8.65,
+        "change_pct": 0.807,
+        "market_cap_usd": 1220343234560,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/MU"
+      },
+      {
+        "rank": 13,
+        "symbol": "BRK-A",
+        "name": "Berkshire Hathaway Inc.",
+        "value": 759200.0,
+        "change": -5820.0,
+        "change_pct": -0.761,
+        "market_cap_usd": 1083484667904,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/BRK-A"
+      },
+      {
+        "rank": 14,
+        "symbol": "LLY",
+        "name": "Eli Lilly and Company",
+        "value": 1181.89,
+        "change": 30.9,
+        "change_pct": 2.685,
+        "market_cap_usd": 1053940252672,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/LLY"
+      },
+      {
+        "rank": 15,
+        "symbol": "AMD",
+        "name": "Advanced Micro Devices, Inc.",
+        "value": 629.26,
+        "change": 14.65,
+        "change_pct": 2.384,
+        "market_cap_usd": 1027251240960,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/AMD"
+      },
+      {
+        "rank": 16,
+        "symbol": "JPM",
+        "name": "JPMorgan Chase & Co.",
+        "value": 338.56,
+        "change": 1.03,
+        "change_pct": 0.305,
+        "market_cap_usd": 899955556352,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/JPM"
+      },
+      {
+        "rank": 17,
+        "symbol": "WMT",
+        "name": "Walmart Inc.",
+        "value": 107.59,
+        "change": -2.94,
+        "change_pct": -2.66,
+        "market_cap_usd": 856209686528,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/WMT"
+      },
+      {
+        "rank": 18,
+        "symbol": "V",
+        "name": "Visa Inc.",
+        "value": 367.98,
+        "change": 6.46,
+        "change_pct": 1.787,
+        "market_cap_usd": 690829197312,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/V"
+      },
+      {
+        "rank": 19,
+        "symbol": "INTC",
+        "name": "Intel Corporation",
+        "value": 127.39,
+        "change": 4.79,
+        "change_pct": 3.907,
+        "market_cap_usd": 673396948992,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/INTC"
+      },
+      {
+        "rank": 20,
+        "symbol": "XOM",
+        "name": "ExxonMobil Holdings Corporation",
+        "value": 162.14,
+        "change": 0.91,
+        "change_pct": 0.564,
+        "market_cap_usd": 666705395712,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/XOM"
+      },
+      {
+        "rank": 21,
+        "symbol": "ASML",
+        "name": "ASML Holding N.V.",
+        "value": 1722.5,
+        "change": -22.11,
+        "change_pct": -1.267,
+        "market_cap_usd": 661612265472,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/ASML"
+      },
+      {
+        "rank": 22,
+        "symbol": "JNJ",
+        "name": "Johnson & Johnson",
+        "value": 270.68,
+        "change": 1.51,
+        "change_pct": 0.561,
+        "market_cap_usd": 652311330816,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/JNJ"
+      },
+      {
+        "rank": 23,
+        "symbol": "MA",
+        "name": "Mastercard Incorporated",
+        "value": 566.08,
+        "change": 6.16,
+        "change_pct": 1.1,
+        "market_cap_usd": 495891709952,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/MA"
+      },
+      {
+        "rank": 24,
+        "symbol": "ABBV",
+        "name": "AbbVie Inc.",
+        "value": 265.12,
+        "change": 0.04,
+        "change_pct": 0.015,
+        "market_cap_usd": 468498120704,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/ABBV"
+      },
+      {
+        "rank": 25,
+        "symbol": "PLTR",
+        "name": "Palantir Technologies Inc.",
+        "value": 192.59,
+        "change": 0.8,
+        "change_pct": 0.417,
+        "market_cap_usd": 462805008384,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/PLTR"
+      },
+      {
+        "rank": 26,
+        "symbol": "ORCL",
+        "name": "Oracle Corporation",
+        "value": 139.54,
+        "change": -5.02,
+        "change_pct": -3.473,
+        "market_cap_usd": 421932105728,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/ORCL"
+      },
+      {
+        "rank": 27,
+        "symbol": "CSCO",
+        "name": "Cisco Systems, Inc.",
+        "value": 106.97,
+        "change": 0.54,
+        "change_pct": 0.507,
+        "market_cap_usd": 421738512384,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/CSCO"
+      },
+      {
+        "rank": 28,
+        "symbol": "CVX",
+        "name": "Chevron Corporation",
+        "value": 205.65,
+        "change": 0.14,
+        "change_pct": 0.068,
+        "market_cap_usd": 403403702272,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/CVX"
+      },
+      {
+        "rank": 29,
+        "symbol": "COST",
+        "name": "Costco Wholesale Corporation",
+        "value": 896.48,
+        "change": -8.22,
+        "change_pct": -0.909,
+        "market_cap_usd": 397569884160,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/COST"
+      },
+      {
+        "rank": 30,
+        "symbol": "BAC",
+        "name": "Bank of America Corporation",
+        "value": 56.03,
+        "change": 0.03,
+        "change_pct": 0.054,
+        "market_cap_usd": 391803699200,
+        "date": "2026-09-24",
+        "source": "https://finance.yahoo.com/quote/BAC"
+      }
+    ],
+    "note": "按 Yahoo 实时市值排序，仅限美国主要交易所上市股票（含 ADR），同一公司多类股只计一次"
+  },
+  "rates": {
+    "us_10y_yield": {
+      "name": "美国 10 年期国债收益率",
+      "symbol": "^TNX",
+      "value": 5.162,
+      "change": 0.048,
+      "change_pct": 0.939,
+      "prev_close": 5.114,
+      "unit": "%",
+      "date": "2026-09-24",
+      "source": "https://finance.yahoo.com/quote/%5ETNX",
+      "change_bp": 4.8
+    },
+    "ig_credit_spread": {
+      "name": "ICE BofA 美国投资级公司债期权调整利差 (OAS)",
+      "series": "BAMLC0A0CM",
+      "value": 0.77,
+      "change": 0.0,
+      "change_pct": null,
+      "unit": "百分点",
+      "date": "2026-09-23",
+      "source": "https://fred.stlouisfed.org/series/BAMLC0A0CM",
+      "note": "FRED 发布通常滞后 1 个交易日；change 为相邻两期差值"
+    }
+  },
+  "commodities": {
+    "brent": {
+      "name": "布伦特原油（近月期货）",
+      "symbol": "BZ=F",
+      "value": 105.29,
+      "change": -1.31,
+      "change_pct": -1.229,
+      "prev_close": 106.6,
+      "unit": "美元/桶",
+      "date": "2026-09-25",
+      "source": "https://finance.yahoo.com/quote/BZ%3DF"
+    },
+    "wti": {
+      "name": "WTI 原油（近月期货）",
+      "symbol": "CL=F",
+      "value": 92.65,
+      "change": -1.96,
+      "change_pct": -2.072,
+      "prev_close": 94.61,
+      "unit": "美元/桶",
+      "date": "2026-09-25",
+      "source": "https://finance.yahoo.com/quote/CL%3DF"
+    },
+    "gold": {
+      "name": "黄金（COMEX 近月期货）",
+      "symbol": "GC=F",
+      "value": 4302.8999,
+      "change": 4.8999,
+      "change_pct": 0.114,
+      "prev_close": 4298.0,
+      "unit": "美元/盎司",
+      "date": "2026-09-25",
+      "source": "https://finance.yahoo.com/quote/GC%3DF"
+    }
+  },
+  "fx": {
+    "aud_usd": {
+      "name": "AUD/USD",
+      "symbol": "AUDUSD=X",
+      "value": 0.7024,
+      "change": -0.001,
+      "change_pct": -0.137,
+      "prev_close": 0.7034,
+      "unit": "美元/澳元",
+      "date": "2026-09-25",
+      "source": "https://finance.yahoo.com/quote/AUDUSD%3DX"
+    },
+    "usd_cny": {
+      "name": "USD/CNY",
+      "symbol": "CNY=X",
+      "value": 6.7037,
+      "change": -0.0074,
+      "change_pct": -0.11,
+      "prev_close": 6.7111,
+      "unit": "人民币/美元",
+      "date": "2026-09-25",
+      "source": "https://finance.yahoo.com/quote/CNY%3DX"
+    },
+    "usd_hkd": {
+      "name": "USD/HKD",
+      "symbol": "HKD=X",
+      "value": 7.8433,
+      "change": 0.0008,
+      "change_pct": 0.011,
+      "prev_close": 7.8425,
+      "unit": "港元/美元",
+      "date": "2026-09-25",
+      "source": "https://finance.yahoo.com/quote/HKD%3DX"
+    }
+  },
+  "asia_pacific_indices": {
+    "asx200": {
+      "name": "ASX 200",
+      "symbol": "^AXJO",
+      "value": 8702.0,
+      "change": -63.2998,
+      "change_pct": -0.722,
+      "prev_close": 8765.2998,
+      "unit": "点",
+      "date": "2026-09-24",
+      "source": "https://finance.yahoo.com/quote/%5EAXJO",
+      "note": "当日尚未收盘，取上一完整交易日收盘"
+    },
+    "hang_seng": {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "value": 24761.1309,
+      "change": -72.9883,
+      "change_pct": -0.294,
+      "prev_close": 24834.1191,
+      "unit": "点",
+      "date": "2026-09-24",
+      "source": "https://finance.yahoo.com/quote/%5EHSI",
+      "note": "当日尚未收盘，取上一完整交易日收盘"
+    },
+    "csi300": {
+      "name": "沪深 300",
+      "symbol": "000300.SS",
+      "value": 4439.1445,
+      "change": -78.1338,
+      "change_pct": -1.73,
+      "prev_close": 4517.2783,
+      "unit": "点",
+      "date": "2026-09-24",
+      "source": "https://finance.yahoo.com/quote/000300.SS",
+      "note": "日线历史不全，改用数据源报价中的最新收盘与涨跌"
+    }
+  },
+  "trade_date_us": "2026-09-24"
+}

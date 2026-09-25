@@ -1,0 +1,13 @@
+name: Forbidden-word check
+
+# 所有推送和 PR 都扫描全仓库，出现私人账户类敏感字样即失败。
+on:
+  push:
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/check_forbidden.py --all
