@@ -1,6 +1,9 @@
 {
-  "generated_at_utc": "2026-09-25T06:16:39Z",
-  "generated_at_new_york": "2026-09-25 02:16 EDT",
+  "trading_date": "2026-09-24",
+  "complete": true,
+  "missing": [],
+  "generated_at_utc": "2026-09-25T06:23:17Z",
+  "generated_at_new_york": "2026-09-25 02:23 EDT",
   "disclaimer": "仅含公开市场数据。取不到的值为 null，并在 error 字段注明原因。",
   "us_indices": {
     "sp500": {
@@ -402,9 +405,9 @@
     "brent": {
       "name": "布伦特原油（近月期货）",
       "symbol": "BZ=F",
-      "value": 105.29,
-      "change": -1.31,
-      "change_pct": -1.229,
+      "value": 105.03,
+      "change": -1.57,
+      "change_pct": -1.473,
       "prev_close": 106.6,
       "unit": "美元/桶",
       "date": "2026-09-25",
@@ -413,9 +416,9 @@
     "wti": {
       "name": "WTI 原油（近月期货）",
       "symbol": "CL=F",
-      "value": 92.65,
-      "change": -1.96,
-      "change_pct": -2.072,
+      "value": 92.42,
+      "change": -2.19,
+      "change_pct": -2.315,
       "prev_close": 94.61,
       "unit": "美元/桶",
       "date": "2026-09-25",
@@ -424,9 +427,9 @@
     "gold": {
       "name": "黄金（COMEX 近月期货）",
       "symbol": "GC=F",
-      "value": 4302.8999,
-      "change": 4.8999,
-      "change_pct": 0.114,
+      "value": 4308.6001,
+      "change": 10.6001,
+      "change_pct": 0.247,
       "prev_close": 4298.0,
       "unit": "美元/盎司",
       "date": "2026-09-25",
@@ -437,9 +440,9 @@
     "aud_usd": {
       "name": "AUD/USD",
       "symbol": "AUDUSD=X",
-      "value": 0.7024,
-      "change": -0.001,
-      "change_pct": -0.137,
+      "value": 0.7025,
+      "change": -0.0009,
+      "change_pct": -0.123,
       "prev_close": 0.7034,
       "unit": "美元/澳元",
       "date": "2026-09-25",
@@ -459,9 +462,9 @@
     "usd_hkd": {
       "name": "USD/HKD",
       "symbol": "HKD=X",
-      "value": 7.8433,
-      "change": 0.0008,
-      "change_pct": 0.011,
+      "value": 7.843,
+      "change": 0.0005,
+      "change_pct": 0.007,
       "prev_close": 7.8425,
       "unit": "港元/美元",
       "date": "2026-09-25",
@@ -505,6 +508,5 @@
       "source": "https://finance.yahoo.com/quote/000300.SS",
       "note": "日线历史不全，改用数据源报价中的最新收盘与涨跌"
     }
-  },
-  "trade_date_us": "2026-09-24"
+  }
 }

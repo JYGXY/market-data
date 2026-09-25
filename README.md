@@ -5,10 +5,11 @@
 
 ## 运行方式
 
-- GitHub Actions 工作流 `.github/workflows/daily-market-data.yml`，目标是**每天纽约时间 16:20**（美股收盘后 20 分钟）运行一次。
+- GitHub Actions 工作流 `.github/workflows/daily-market-data.yml`，**纽约时间周一至周五 16:20**（美股收盘后 20 分钟）各运行一次，周末不运行。
 - GitHub 定时只认 UTC，因此设了两个定时：`20:20 UTC`（对应夏令时 EDT）和 `21:20 UTC`（对应冬令时 EST）。
   每次触发先检查纽约当前的 UTC 偏移（`-0400` 或 `-0500`），只有与之匹配的那个定时会真正执行，另一个跳过。
-  判断看偏移而不看钟点，所以 GitHub 定时延迟也不会导致重复或漏跑。全年每天只跑一次。
+  判断看偏移而不看钟点，所以 GitHub 定时延迟也不会导致重复或漏跑。门控还会按纽约日期核对星期几。全年每个工作日只跑一次。
+- 美股休市的工作日（如感恩节）照常运行，但美股数据仍是上一交易日，`trading_date` 不变，会覆盖同名文件。
 - 也可以在 Actions 页面手动触发（`workflow_dispatch`），或本地运行：
 
   ```sh
@@ -20,8 +21,27 @@
 
 | 文件 | 说明 |
 |---|---|
-| `data/YYYY-MM-DD.json` | 当天快照。文件名取**美股交易日**（标普 500 最新收盘日期）；周末/假日运行时覆盖上一交易日文件，不会产生重复日期。 |
+| `data/YYYY-MM-DD.json` | 当天快照。文件名即 `trading_date`（美股交易日）；休市日或手动运行时覆盖上一交易日文件，不会产生重复日期。 |
 | `data/latest.json` | 最近一次快照，内容与当天文件相同。 |
+
+## 下游读取须知
+
+读取 `data/latest.json` 时，**先核对 `trading_date`**：
+
+- `trading_date` 不是你预期的当天美股交易日 → **视为未更新**（任务没跑、跑失败或数据源未刷新），不要当作当天行情使用。
+- `complete` 为 `false` → 有部分项缺失，缺哪些见 `missing`，对应项的 `error` 写明原因。
+
+```python
+import json, datetime, zoneinfo
+d = json.load(open("data/latest.json"))
+today_ny = datetime.datetime.now(zoneinfo.ZoneInfo("America/New_York")).date().isoformat()
+if d["trading_date"] != today_ny:
+    raise SystemExit(f"latest.json 未更新：trading_date={d['trading_date']}，今天={today_ny}")
+if not d["complete"]:
+    print("部分缺失：", d["missing"])
+```
+
+（上例按“纽约当天”判断，适用于收盘后读取；周末、美股假日读取时，预期的交易日应是上一交易日。）
 
 ## 字段说明
 
@@ -29,8 +49,10 @@
 
 | 字段 | 含义 |
 |---|---|
+| `trading_date` | 美股交易日（`YYYY-MM-DD`），取美股指数最新收盘的日期，与文件名相同 |
+| `complete` | `true` = 所有项都取到数值（含前 30 家公司）；有任何一项为 `null` 即为 `false` |
+| `missing` | 取不到的项列表（如 `rates.ig_credit_spread`），`complete` 为 `true` 时为空 |
 | `generated_at_utc` / `generated_at_new_york` | 抓取时间 |
-| `trade_date_us` | 美股交易日（同文件名） |
 | `disclaimer` | 说明 |
 
 每个数据项的通用字段：

@@ -204,18 +204,34 @@ def build():
     }
 
 
+def missing_items(data):
+    """列出所有取不到数值的项；空列表表示全部取到。"""
+    missing = []
+    for sec in ("us_indices", "rates", "commodities", "fx", "asia_pacific_indices"):
+        missing += [f"{sec}.{k}" for k, v in data[sec].items() if v.get("value") is None]
+    top = data["us_top30_by_market_cap"]["items"]
+    if top is None:
+        missing.append("us_top30_by_market_cap")
+    else:
+        if len(top) < 30:
+            missing.append(f"us_top30_by_market_cap (只取到 {len(top)} 家)")
+        missing += [f"us_top30_by_market_cap.{i['symbol']}" for i in top if i["value"] is None]
+    return missing
+
+
 def main():
     data = build()
     DATA_DIR.mkdir(exist_ok=True)
-    # 文件名用美股交易日（标普 500 最新收盘日）；取不到时用纽约当天日期。
-    # 这样周末/假日运行只会覆盖上一交易日的文件，不会产生重复日期。
-    day = data["us_indices"]["sp500"]["date"] or datetime.now(NY).date().isoformat()
-    data["trade_date_us"] = day
+    # 交易日取美股指数的最新收盘日期；三个都取不到时退回纽约当天日期（此时 complete 必为 false）。
+    # 文件名同交易日，所以周末/假日手动运行只会覆盖上一交易日的文件，不会产生重复日期。
+    day = next((v["date"] for v in data["us_indices"].values() if v["date"]),
+               datetime.now(NY).date().isoformat())
+    missing = missing_items(data)
+    data = {"trading_date": day, "complete": not missing, "missing": missing, **data}
     body = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
     (DATA_DIR / f"{day}.json").write_text(body, encoding="utf-8")
     (DATA_DIR / "latest.json").write_text(body, encoding="utf-8")
-    print(f"wrote data/{day}.json and data/latest.json", file=sys.stderr)
-
+    print(f"wrote data/{day}.json and data/latest.json (complete={not missing})", file=sys.stderr)
 
 if __name__ == "__main__":
     main()

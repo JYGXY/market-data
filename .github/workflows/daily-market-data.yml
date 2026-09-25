@@ -1,16 +1,18 @@
 name: Daily market data
 
-# 目标：每天纽约时间 16:20 运行一次（美股收盘后 20 分钟）。
+# 目标：纽约时间周一至周五 16:20 各运行一次（美股收盘后 20 分钟）。
 # GitHub 的 cron 只认 UTC，所以放两个定时：
 #   20:20 UTC = 纽约 16:20（夏令时 EDT, UTC-4）
 #   21:20 UTC = 纽约 16:20（冬令时 EST, UTC-5）
 # 每次触发先看纽约当前处于哪个时区偏移，只有与该定时对应的那一个真正执行，
 # 另一个直接跳过。判断依据是 UTC 偏移而不是“现在几点”，
 # 所以即使 GitHub 定时延迟了几十分钟，也不会跑两次或漏跑。
+# 纽约 16:20 在 UTC 仍是同一天，所以 cron 的周一至周五（1-5）与纽约一致；
+# 门控里再按纽约日期核对一次星期几。手动触发（workflow_dispatch）不受限制。
 on:
   schedule:
-    - cron: "20 20 * * *"
-    - cron: "20 21 * * *"
+    - cron: "20 20 * * 1-5"
+    - cron: "20 21 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
@@ -31,13 +33,16 @@ jobs:
           SCHEDULE: ${{ github.event.schedule }}
         run: |
           offset=$(TZ=America/New_York date +%z)
-          echo "New York now: $(TZ=America/New_York date '+%F %T %Z') offset=$offset event=$EVENT schedule=$SCHEDULE"
+          weekday=$(TZ=America/New_York date +%u)   # 1=周一 ... 7=周日
+          echo "New York now: $(TZ=America/New_York date '+%F %T %Z') offset=$offset weekday=$weekday event=$EVENT schedule=$SCHEDULE"
           run=false
           if [ "$EVENT" != "schedule" ]; then
             run=true
-          elif [ "$SCHEDULE" = "20 20 * * *" ] && [ "$offset" = "-0400" ]; then
+          elif [ "$weekday" -gt 5 ]; then
+            run=false
+          elif [ "$SCHEDULE" = "20 20 * * 1-5" ] && [ "$offset" = "-0400" ]; then
             run=true
-          elif [ "$SCHEDULE" = "20 21 * * *" ] && [ "$offset" = "-0500" ]; then
+          elif [ "$SCHEDULE" = "20 21 * * 1-5" ] && [ "$offset" = "-0500" ]; then
             run=true
           fi
           echo "run=$run" >> "$GITHUB_OUTPUT"
@@ -70,5 +75,5 @@ jobs:
             echo "No changes."
             exit 0
           fi
-          git commit -m "data: $(python -c 'import json;print(json.load(open("data/latest.json"))["trade_date_us"])')"
+          git commit -m "data: $(python -c 'import json;print(json.load(open("data/latest.json"))["trading_date"])')"
           git push
