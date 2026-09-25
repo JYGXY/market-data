@@ -1,19 +1,26 @@
 name: Daily market data
 
-# 目标：纽约时间周一至周五 16:20 各运行一次（美股收盘后 20 分钟）。
-# GitHub 的 cron 只认 UTC，所以放两个定时：
-#   20:20 UTC = 纽约 16:20（夏令时 EDT, UTC-4）
-#   21:20 UTC = 纽约 16:20（冬令时 EST, UTC-5）
-# 每次触发先看纽约当前处于哪个时区偏移，只有与该定时对应的那一个真正执行，
-# 另一个直接跳过。判断依据是 UTC 偏移而不是“现在几点”，
-# 所以即使 GitHub 定时延迟了几十分钟，也不会跑两次或漏跑。
-# 纽约 16:20 在 UTC 仍是同一天，所以 cron 的周一至周五（1-5）与纽约一致；
-# 门控里再按纽约日期核对一次星期几。手动触发（workflow_dispatch）不受限制。
+# 纽约时间周一至周五：16:17 主任务（美股收盘后 17 分钟），16:47 备用补跑（下游 17:10 读文件）。
+# 分钟数避开整点和半点：GitHub 文档说明整点前后负载最高，定时会延迟甚至被丢弃。
+# GitHub 的 cron 只认 UTC，所以每个任务各放两个定时（夏令时 EDT / 冬令时 EST）：
+#   主任务 20:17 UTC (EDT) / 21:17 UTC (EST)
+#   备用   20:47 UTC (EDT) / 21:47 UTC (EST)
+# scripts/schedule_gate.sh 按纽约当前 UTC 偏移只放行对应的那个，并核对纽约星期几；
+# 备用任务在当天数据已生成时直接退出，只在主任务漏跑时补跑。
+# 手动触发：mode=full 直接抓取；mode=backup 走备用逻辑（用于验证）。
 on:
   schedule:
-    - cron: "20 20 * * 1-5"
-    - cron: "20 21 * * 1-5"
-  workflow_dispatch: {}
+    - cron: "17 20 * * 1-5"
+    - cron: "17 21 * * 1-5"
+    - cron: "47 20 * * 1-5"
+    - cron: "47 21 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "full = 直接抓取；backup = 当天数据已存在则跳过"
+        type: choice
+        options: [full, backup]
+        default: full
 
 permissions:
   contents: write
@@ -26,30 +33,20 @@ jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - name: New York time gate
+      # 取分支最新提交（而非触发时的提交），备用任务才能看到主任务刚推送的数据
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Schedule gate
         id: gate
         env:
           EVENT: ${{ github.event_name }}
           SCHEDULE: ${{ github.event.schedule }}
+          MODE: ${{ inputs.mode }}
         run: |
-          offset=$(TZ=America/New_York date +%z)
-          weekday=$(TZ=America/New_York date +%u)   # 1=周一 ... 7=周日
-          echo "New York now: $(TZ=America/New_York date '+%F %T %Z') offset=$offset weekday=$weekday event=$EVENT schedule=$SCHEDULE"
-          run=false
-          if [ "$EVENT" != "schedule" ]; then
-            run=true
-          elif [ "$weekday" -gt 5 ]; then
-            run=false
-          elif [ "$SCHEDULE" = "20 20 * * 1-5" ] && [ "$offset" = "-0400" ]; then
-            run=true
-          elif [ "$SCHEDULE" = "20 21 * * 1-5" ] && [ "$offset" = "-0500" ]; then
-            run=true
-          fi
-          echo "run=$run" >> "$GITHUB_OUTPUT"
-          echo "run=$run"
-
-      - uses: actions/checkout@v4
-        if: steps.gate.outputs.run == 'true'
+          echo "New York now: $(TZ=America/New_York date '+%F %T %Z') event=$EVENT schedule=$SCHEDULE mode=$MODE"
+          sh scripts/schedule_gate.sh "$EVENT" "$SCHEDULE" "${MODE:-full}" | tee -a "$GITHUB_OUTPUT"
 
       - uses: actions/setup-python@v5
         if: steps.gate.outputs.run == 'true'
@@ -76,4 +73,5 @@ jobs:
             exit 0
           fi
           git commit -m "data: $(python -c 'import json;print(json.load(open("data/latest.json"))["trading_date"])')"
-          git push
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
