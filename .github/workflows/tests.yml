@@ -1,0 +1,26 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  schedule-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gate logic
+        run: sh scripts/test_schedule_gate.sh
+      - name: Every workflow cron is handled by the gate
+        run: |
+          python3 - <<'PY'
+          import re, sys
+          wf = open(".github/workflows/daily-market-data.yml").read()
+          gate = open("scripts/schedule_gate.sh").read()
+          crons = re.findall(r'cron:\s*"([^"]+)"', wf)
+          cases = re.findall(r'^\s*"([^"]+)"\)\s*role=', gate, re.M)
+          print("workflow crons:", crons)
+          print("gate cases:    ", cases)
+          if sorted(crons) != sorted(cases):
+              sys.exit("workflow crons and gate cases differ")
+          PY

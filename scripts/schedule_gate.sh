@@ -10,7 +10,7 @@
 #
 # 定时表（纽约时间 → UTC）：
 #   主任务 16:17  → 20:17 (EDT, -0400) / 21:17 (EST, -0500)
-#   备用   17:13  → 21:13 (EDT, -0400) / 22:13 (EST, -0500)
+#   备用   16:47  → 20:47 (EDT, -0400) / 21:47 (EST, -0500)
 # 每个 cron 只在对应的 UTC 偏移下生效，另一个跳过；所以按偏移而非钟点判断，
 # GitHub 延迟触发也不会重复或错位。
 set -eu
@@ -26,8 +26,8 @@ if [ "$event" = "schedule" ]; then
   case "$schedule" in
     "17 20 * * 1-5") role=primary; want=-0400 ;;
     "17 21 * * 1-5") role=primary; want=-0500 ;;
-    "13 21 * * 1-5") role=backup;  want=-0400 ;;
-    "13 22 * * 1-5") role=backup;  want=-0500 ;;
+    "47 20 * * 1-5") role=backup;  want=-0400 ;;
+    "47 21 * * 1-5") role=backup;  want=-0500 ;;
     *) out false "unknown schedule '$schedule'" ;;
   esac
   [ "$weekday" -le 5 ] || out false "weekend in New York (weekday=$weekday)"
@@ -37,17 +37,19 @@ else
 fi
 
 if [ "$role" = "backup" ]; then
-  # 当天已生成：data/<纽约今天>.json 存在，或 latest.json 是纽约今天生成的（美股假日时文件名是上一交易日）。
+  # 当天已生成：data/<纽约今天>.json 存在，或 latest.json 是纽约今天 16:00 收盘后生成的
+  # （美股假日时文件名是上一交易日）。收盘前的手动运行不算，否则会挡住补跑。
   if [ -f "data/$today.json" ]; then
     out false "backup: data/$today.json already exists"
   fi
   if [ -f data/latest.json ] && python3 - "$today" <<'PY'
 import json, sys
 d = json.load(open("data/latest.json"))
-sys.exit(0 if str(d.get("generated_at_new_york", "")).startswith(sys.argv[1]) else 1)
+ts = str(d.get("generated_at_new_york", ""))[:16]   # "YYYY-MM-DD HH:MM"
+sys.exit(0 if ts[:10] == sys.argv[1] and ts[11:] >= "16:00" else 1)
 PY
   then
-    out false "backup: latest.json already generated on $today (New York)"
+    out false "backup: latest.json already generated after close on $today (New York)"
   fi
   out true "backup: no data for $today yet, running catch-up"
 fi

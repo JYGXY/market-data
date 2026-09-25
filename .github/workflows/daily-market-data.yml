@@ -1,10 +1,10 @@
 name: Daily market data
 
-# 纽约时间周一至周五：16:17 主任务（美股收盘后 17 分钟），17:13 备用补跑。
+# 纽约时间周一至周五：16:17 主任务（美股收盘后 17 分钟），16:47 备用补跑（下游 17:10 读文件）。
 # 分钟数避开整点和半点：GitHub 文档说明整点前后负载最高，定时会延迟甚至被丢弃。
 # GitHub 的 cron 只认 UTC，所以每个任务各放两个定时（夏令时 EDT / 冬令时 EST）：
 #   主任务 20:17 UTC (EDT) / 21:17 UTC (EST)
-#   备用   21:13 UTC (EDT) / 22:13 UTC (EST)
+#   备用   20:47 UTC (EDT) / 21:47 UTC (EST)
 # scripts/schedule_gate.sh 按纽约当前 UTC 偏移只放行对应的那个，并核对纽约星期几；
 # 备用任务在当天数据已生成时直接退出，只在主任务漏跑时补跑。
 # 手动触发：mode=full 直接抓取；mode=backup 走备用逻辑（用于验证）。
@@ -12,8 +12,8 @@ on:
   schedule:
     - cron: "17 20 * * 1-5"
     - cron: "17 21 * * 1-5"
-    - cron: "13 21 * * 1-5"
-    - cron: "13 22 * * 1-5"
+    - cron: "47 20 * * 1-5"
+    - cron: "47 21 * * 1-5"
   workflow_dispatch:
     inputs:
       mode:
