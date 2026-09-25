@@ -91,13 +91,26 @@ def yahoo_daily(key, name, sym, unit, closes_only=False):
         bars = [(t, c) for t, c in zip(ts, closes) if c is not None]
         meta = res["meta"]
         note = None
-        if closes_only and bars:
-            reg = (meta.get("currentTradingPeriod") or {}).get("regular") or {}
-            now = time.time()
-            if reg and reg["start"] <= now < reg["end"] + 900 and bars[-1][0] >= reg["start"]:
-                bars = bars[:-1]
-                note = "当日尚未收盘，取上一完整交易日收盘"
-        if len(bars) >= 2:
+        reg = (meta.get("currentTradingPeriod") or {}).get("regular") or {}
+        now = time.time()
+        in_session = bool(reg) and reg["start"] <= now < reg["end"] + 900
+        # Yahoo 有时最新一根日线的 close 为空，但报价里已有收盘价；
+        # 不补的话会悄悄退回上一交易日。盘中（指数）不补。
+        rmp, rmt = meta.get("regularMarketPrice"), meta.get("regularMarketTime")
+        if (ts and closes and closes[-1] is None and rmp is not None and rmt
+                and rmt >= ts[-1] and not (closes_only and in_session)):
+            bars.append((rmt, rmp))
+            note = "最新日线收盘缺失，取数据源报价中的收盘价"
+        if closes_only and bars and in_session and bars[-1][0] >= reg["start"]:
+            bars = bars[:-1]
+            note = "当日尚未收盘，取上一完整交易日收盘"
+        if (meta.get("instrumentType") == "FUTURE" and rmp is not None and rmt
+                and meta.get("fulldayChange") is not None):
+            # 期货：用报价自带的当日涨跌。近月换月时，日线会把新旧两个合约接在一起，
+            # 直接相减会得出虚假的大涨大跌；报价的涨跌是同一合约的。
+            last, t_last = rmp, rmt
+            prev = rmp - meta["fulldayChange"]
+        elif len(bars) >= 2:
             (_, prev), (t_last, last) = bars[-2], bars[-1]
         elif note is None and meta.get("regularMarketPrice") is not None \
                 and meta.get("fulldayChange") is not None:
