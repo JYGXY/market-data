@@ -2,8 +2,8 @@
   "trading_date": "2026-09-25",
   "complete": true,
   "missing": [],
-  "generated_at_utc": "2026-09-25T22:36:11Z",
-  "generated_at_new_york": "2026-09-25 18:36 EDT",
+  "generated_at_utc": "2026-09-25T23:20:29Z",
+  "generated_at_new_york": "2026-09-25 19:20 EDT",
   "disclaimer": "仅含公开市场数据。取不到的值为 null，并在 error 字段注明原因。",
   "us_indices": {
     "sp500": {
@@ -116,7 +116,7 @@
         "value": 148.68,
         "change": 0.65,
         "change_pct": 0.439,
-        "market_cap_usd": 1958738001920,
+        "market_cap_usd": 1959866925056,
         "date": "2026-09-25",
         "source": "https://finance.yahoo.com/quote/SPCX"
       },
@@ -193,7 +193,7 @@
         "value": 1183.46,
         "change": 1.5699,
         "change_pct": 0.133,
-        "market_cap_usd": 1054885412864,
+        "market_cap_usd": 1055340232704,
         "date": "2026-09-25",
         "source": "https://finance.yahoo.com/quote/LLY"
       },
@@ -226,7 +226,7 @@
         "value": 107.98,
         "change": 0.39,
         "change_pct": 0.362,
-        "market_cap_usd": 856685936640,
+        "market_cap_usd": 859313405952,
         "date": "2026-09-25",
         "source": "https://finance.yahoo.com/quote/WMT"
       },
@@ -451,9 +451,9 @@
     "usd_cny": {
       "name": "USD/CNY",
       "symbol": "CNY=X",
-      "value": 6.7037,
-      "change": -0.0074,
-      "change_pct": -0.11,
+      "value": 6.7123,
+      "change": 0.0012,
+      "change_pct": 0.018,
       "prev_close": 6.7111,
       "unit": "人民币/美元",
       "date": "2026-09-25",
@@ -462,12 +462,12 @@
     "usd_hkd": {
       "name": "USD/HKD",
       "symbol": "HKD=X",
-      "value": 7.8431,
-      "change": 0.0004,
-      "change_pct": 0.005,
+      "value": 7.8434,
+      "change": 0.0007,
+      "change_pct": 0.009,
       "prev_close": 7.8427,
       "unit": "港元/美元",
-      "date": "2026-09-25",
+      "date": "2026-09-26",
       "source": "https://finance.yahoo.com/quote/HKD%3DX"
     }
   },
