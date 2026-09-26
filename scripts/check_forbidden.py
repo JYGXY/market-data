@@ -24,6 +24,7 @@ FORBIDDEN = [
     # 额外兜底（同属不公开信息）
     "\u4ed3\u4f4d",
     "\u89c2\u5bdf\u540d\u5355",
+    "\u4f30\u503c",
     "watch" + "list",
     "cost " + "basis",
 ]

@@ -1,0 +1,100 @@
+name: Hot lists (trial)
+
+# 每日热榜抓取试跑：东方财富人气榜、雪球热股榜（关注/讨论/交易；沪深 + 港股试探）。
+# 悉尼时间每天：07:37 主运行，08:22 备用（主运行核心榜单全部成功则跳过，否则只补抓未成功的榜单）。
+# 下游“甄选”09:05 读取；提前运行，给 GitHub 定时延迟留余量。分钟数避开整点和半点。
+# GitHub 的 cron 只认 UTC，悉尼 AEST(+1000) / AEDT(+1100，2026-10-04 起) 各放一个：
+#   主运行 21:37 UTC (+1000) / 20:37 UTC (+1100)
+#   备用   22:22 UTC (+1000) / 21:22 UTC (+1100)
+# scripts/hot_gate.sh 按悉尼当前 UTC 偏移只放行对应的那个。
+# 手动触发：mode=full 直接抓取；mode=backup 走备用逻辑；commit=false 只抓取并打印结果，不写入仓库。
+# PR 改动抓取代码时自动从 GitHub 服务器试抓一次（只抓不写），结果见运行摘要。
+on:
+  schedule:
+    - cron: "37 21 * * *"
+    - cron: "37 20 * * *"
+    - cron: "22 22 * * *"
+    - cron: "22 21 * * *"
+  pull_request:
+    paths:
+      - scripts/fetch_hot_lists.py
+      - .github/workflows/hot-lists.yml
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "full = 直接抓取；backup = 主运行已成功则跳过"
+        type: choice
+        options: [full, backup]
+        default: full
+      commit:
+        description: "是否把结果提交到仓库（false = 只抓取并打印）"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hot-lists
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # 取分支最新提交，备用运行才能看到主运行刚推送的 status.json
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Schedule gate
+        id: gate
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          echo "Sydney now: $(TZ=Australia/Sydney date '+%F %T %Z') event=$EVENT schedule=$SCHEDULE mode=$MODE"
+          sh scripts/hot_gate.sh "$EVENT" "$SCHEDULE" "${MODE:-full}" | tee -a "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        if: steps.gate.outputs.run == 'true'
+        run: pip install -r requirements.txt
+
+      - name: Fetch
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          python scripts/fetch_hot_lists.py --trigger "${{ steps.gate.outputs.trigger }}" ${{ steps.gate.outputs.args }}
+          echo "### Hot lists" >> "$GITHUB_STEP_SUMMARY"
+          python - >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import json
+          d = json.load(open("data/hot/status.json"))
+          print(f"date {d['date']} · core_ok **{d['core_ok']}** · trigger {d['last_trigger']}\n")
+          print("| board | status | rows | seconds | error |\n|---|---|---|---|---|")
+          for n, b in d["boards"].items():
+              print(f"| {n} | {b['status']} | {b['rows']} | {b.get('seconds')} | {(b.get('error') or '')[:200]} |")
+          PY
+
+      - name: Forbidden-word check and commit
+        if: steps.gate.outputs.run == 'true' && (github.event_name == 'schedule' || inputs.commit)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/hot/
+          python scripts/check_forbidden.py
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "hot: $(python -c 'import json;d=json.load(open("data/hot/status.json"));print(d["date"], d["last_trigger"], "core_ok=%s" % d["core_ok"])')"
+          for i in 1 2 3; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i * 5))
+          done
+          exit 1

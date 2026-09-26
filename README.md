@@ -114,6 +114,69 @@ if not d["complete"]:
 - **信用利差**：FRED 通常滞后 1 个交易日发布，`date` 是实际观测日。`change` 为相邻两期差值（百分点）。
 - 数据源为公开免费接口，可能延迟或临时不可用；取不到的项写 `null` 并在 `error` 注明原因，不做估算填补。
 
+## 每日热榜（试跑）
+
+工作流 `.github/workflows/hot-lists.yml`，脚本 `scripts/fetch_hot_lists.py`。只抓公开榜单：排名、代码、名称、接口给的热度数值，不抓价格。
+
+### 时间（悉尼）
+
+| 任务 | 悉尼时间 | AEST（+1000） | AEDT（+1100，2026-10-04 起） |
+|---|---|---|---|
+| 主运行 | 07:37 | `37 21 * * *` | `37 20 * * *` |
+| 备用 | 08:22 | `22 22 * * *` | `22 21 * * *` |
+
+- 下游“甄选”09:05 读取；提前运行，给 GitHub 定时延迟留余量。
+- cron 是 UTC 前一天。`scripts/hot_gate.sh` 按悉尼当前 UTC 偏移，只放行对应的那个定时。
+- 备用运行：当天 `status.json` 的 `core_ok` 为 `true` 就跳过；否则只补抓未成功的榜单，已成功的保留不动。
+- 手动触发：`mode=full|backup`。`commit=false` 时只抓取，并在运行摘要里显示结果，不写入仓库。
+
+### 榜单
+
+| 文件名 | 内容 | 行数 | 热度字段 | 核心 |
+|---|---|---|---|---|
+| `em_popularity_a.csv` | 东方财富人气榜（A 股） | 100 | 接口不提供，留空 | 是 |
+| `xq_follow_cn.csv` | 雪球热股榜-关注（沪深） | 50 | `follow` 关注人数 | 是 |
+| `xq_tweet_cn.csv` | 雪球热股榜-讨论（沪深） | 50 | `tweet` 讨论数 | 是 |
+| `xq_deal_cn.csv` | 雪球热股榜-交易（沪深） | 50 | `deal` 分享交易数 | 是 |
+| `xq_{follow,tweet,deal}_hk.csv` | 同上（港股，试探） | 50 | 同上 | 否 |
+
+- CSV 列：`date`（悉尼日期）、`fetched_at_utc`、`fetched_at_sydney`、`board`、`rank`、`code`、`name`、`heat_value`、`heat_field`。
+- 东财榜单接口只给排名和代码。名称来自东财行情接口（只取代码和名称字段），该接口失败时，仍保存排名和代码，`name` 留空，状态记为 `partial`。
+- akshare 的雪球函数只支持沪深（`category=CN`）。港股榜试探的是同一接口的 `category=HK`，不计入“当天成功”。
+
+### 为什么不直接调用 akshare 函数
+
+接口地址与 akshare 的 `stock_hot_rank_em`、`stock_hot_{follow,tweet,deal}_xq` 相同，但请求由本仓库自己发：
+
+- akshare 的雪球请求头伪装成 Chrome 浏览器。本仓库不伪装请求头，请求如实标明身份（`market-data-bot/1.0`），被网站拒绝就如实记录。
+- akshare 的请求不设超时、不重试。这里每次请求超时 30 秒，失败后重试 2 次，分别间隔 3 秒和 6 秒。
+- akshare 的雪球函数会翻页拉取全部 A 股（约 5000 只、二十多次请求），这里只取前 50 名，一次请求。
+
+### 输出
+
+| 路径 | 内容 |
+|---|---|
+| `data/hot/YYYY-MM-DD/<榜单>.csv` | 当天榜单（悉尼日期） |
+| `data/hot/YYYY-MM-DD/status.json` | 当天各榜最终状态 |
+| `data/hot/status.json` | 最近一天的状态（同上） |
+| `data/hot/runs.jsonl` | 每次运行追加一行，含每个榜的状态、行数、耗时、尝试次数、失败原因 |
+
+`status` 取值：`ok`（行数足额）、`partial`（有数据但不全，例如缺名称）、`failed`（无数据）。
+
+`error_kind` 取值：
+
+| 取值 | 含义 |
+|---|---|
+| `timeout` | 超时 |
+| `connection` | 连接被拒或被重置（常见于海外 IP 被拦截） |
+| `http_4xx` | 访问被拒绝 |
+| `http_5xx` | 服务端错误 |
+| `api_error` | 接口返回了错误码 |
+| `bad_json` | 返回的不是数据，例如验证页 |
+| `empty` | 数据为空或不全 |
+
+试跑报告：`python3 scripts/hot_trial_report.py --from YYYY-MM-DD --to YYYY-MM-DD`
+
 ## 提交前检查
 
 `scripts/check_forbidden.py` 扫描文件内容和文件名，发现与个人账户、交易价格、关注列表相关的敏感字样即返回非零、拒绝提交
@@ -128,5 +191,7 @@ if not d["complete"]:
 ```sh
 python3 scripts/check_forbidden.py          # 扫描暂存区
 python3 scripts/check_forbidden.py --all    # 扫描全仓库
-sh scripts/test_schedule_gate.sh            # 测试定时门控逻辑
+sh scripts/test_schedule_gate.sh            # 测试定时门控逻辑（美股）
+sh scripts/test_hot_gate.sh                 # 测试定时门控逻辑（热榜）
+python3 -m unittest discover -s tests       # 热榜抓取单元测试
 ```
