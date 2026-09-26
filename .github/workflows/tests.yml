@@ -9,18 +9,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Gate logic
+      - name: Gate logic (market data)
         run: sh scripts/test_schedule_gate.sh
-      - name: Every workflow cron is handled by the gate
+      - name: Gate logic (hot lists)
+        run: sh scripts/test_hot_gate.sh
+      - name: Every workflow cron is handled by its gate
         run: |
           python3 - <<'PY'
           import re, sys
-          wf = open(".github/workflows/daily-market-data.yml").read()
-          gate = open("scripts/schedule_gate.sh").read()
-          crons = re.findall(r'cron:\s*"([^"]+)"', wf)
-          cases = re.findall(r'^\s*"([^"]+)"\)\s*role=', gate, re.M)
-          print("workflow crons:", crons)
-          print("gate cases:    ", cases)
-          if sorted(crons) != sorted(cases):
+          bad = False
+          for wf_path, gate_path in [(".github/workflows/daily-market-data.yml", "scripts/schedule_gate.sh"),
+                                     (".github/workflows/hot-lists.yml", "scripts/hot_gate.sh")]:
+              crons = re.findall(r'cron:\s*"([^"]+)"', open(wf_path).read())
+              cases = re.findall(r'^\s*"([^"]+)"\)\s*role=', open(gate_path).read(), re.M)
+              print(wf_path, crons, "|", gate_path, cases)
+              bad |= sorted(crons) != sorted(cases)
+          if bad:
               sys.exit("workflow crons and gate cases differ")
           PY
+
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
