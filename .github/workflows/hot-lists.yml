@@ -8,12 +8,17 @@ name: Hot lists (trial)
 #   备用   22:52 UTC (+1000) / 21:52 UTC (+1100)
 # scripts/hot_gate.sh 按悉尼当前 UTC 偏移只放行对应的那个。
 # 手动触发：mode=full 直接抓取；mode=backup 走备用逻辑；commit=false 只抓取并打印结果，不写入仓库。
+# PR 改动抓取代码时自动从 GitHub 服务器试抓一次（只抓不写），结果见运行摘要。
 on:
   schedule:
     - cron: "37 22 * * *"
     - cron: "37 21 * * *"
     - cron: "52 22 * * *"
     - cron: "52 21 * * *"
+  pull_request:
+    paths:
+      - scripts/fetch_hot_lists.py
+      - .github/workflows/hot-lists.yml
   workflow_dispatch:
     inputs:
       mode:
@@ -41,7 +46,7 @@ jobs:
       # 取分支最新提交，备用运行才能看到主运行刚推送的 status.json
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Schedule gate
         id: gate
