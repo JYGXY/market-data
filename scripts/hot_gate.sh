@@ -9,8 +9,8 @@
 # 需在仓库根目录运行（备用检查要读 data/hot/）。测试用覆盖变量：SYD_OFFSET、SYD_DATE。
 #
 # 定时表（悉尼时间，每天 → UTC 前一天）：
-#   主运行 08:37 → 22:37 (AEST, +1000) / 21:37 (AEDT, +1100)
-#   备用   08:52 → 22:52 (AEST, +1000) / 21:52 (AEDT, +1100)
+#   主运行 07:37 → 21:37 (AEST, +1000) / 20:37 (AEDT, +1100)
+#   备用   08:22 → 22:22 (AEST, +1000) / 21:22 (AEDT, +1100)
 # 悉尼 2026-10-04 起进入夏令时。每个 cron 只在对应的 UTC 偏移下生效，另一个跳过。
 set -eu
 event=$1; schedule=${2:-}; mode=${3:-full}
@@ -22,10 +22,10 @@ out() { echo "run=$1"; echo "reason=$2"; echo "trigger=$3"; echo "args=$4"; exit
 
 if [ "$event" = "schedule" ]; then
   case "$schedule" in
-    "37 22 * * *") role=primary; want=+1000 ;;
-    "37 21 * * *") role=primary; want=+1100 ;;
-    "52 22 * * *") role=backup;  want=+1000 ;;
-    "52 21 * * *") role=backup;  want=+1100 ;;
+    "37 21 * * *") role=primary; want=+1000 ;;
+    "37 20 * * *") role=primary; want=+1100 ;;
+    "22 22 * * *") role=backup;  want=+1000 ;;
+    "22 21 * * *") role=backup;  want=+1100 ;;
     *) out false "unknown schedule '$schedule'" none "" ;;
   esac
   [ "$offset" = "$want" ] || out false "$role cron for $want, Sydney is $offset" "$role" ""
