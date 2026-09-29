@@ -2,8 +2,8 @@
   "trading_date": "2026-09-28",
   "complete": true,
   "missing": [],
-  "generated_at_utc": "2026-09-28T20:58:35Z",
-  "generated_at_new_york": "2026-09-28 16:58 EDT",
+  "generated_at_utc": "2026-09-29T00:21:59Z",
+  "generated_at_new_york": "2026-09-28 20:21 EDT",
   "disclaimer": "仅含公开市场数据。取不到的值为 null，并在 error 字段注明原因。",
   "us_indices": {
     "sp500": {
@@ -116,7 +116,7 @@
         "value": 145.47,
         "change": -3.21,
         "change_pct": -2.159,
-        "market_cap_usd": 1916449062912,
+        "market_cap_usd": 1917553606656,
         "date": "2026-09-28",
         "source": "https://finance.yahoo.com/quote/SPCX"
       },
@@ -193,7 +193,7 @@
         "value": 1184.78,
         "change": 1.3201,
         "change_pct": 0.112,
-        "market_cap_usd": 1056062046208,
+        "market_cap_usd": 1056517390336,
         "date": "2026-09-28",
         "source": "https://finance.yahoo.com/quote/LLY"
       },
@@ -226,7 +226,7 @@
         "value": 108.73,
         "change": 0.75,
         "change_pct": 0.695,
-        "market_cap_usd": 862636277760,
+        "market_cap_usd": 865281966080,
         "date": "2026-09-28",
         "source": "https://finance.yahoo.com/quote/WMT"
       },
@@ -405,10 +405,10 @@
     "brent": {
       "name": "布伦特原油（近月期货）",
       "symbol": "BZ=F",
-      "value": 98.62,
-      "change": 1.18,
-      "change_pct": 1.211,
-      "prev_close": 97.44,
+      "value": 98.84,
+      "change": 1.01,
+      "change_pct": 1.032,
+      "prev_close": 97.83,
       "unit": "美元/桶",
       "date": "2026-09-28",
       "source": "https://finance.yahoo.com/quote/BZ%3DF"
@@ -416,10 +416,10 @@
     "wti": {
       "name": "WTI 原油（近月期货）",
       "symbol": "CL=F",
-      "value": 93.34,
-      "change": 0.93,
-      "change_pct": 1.006,
-      "prev_close": 92.41,
+      "value": 93.47,
+      "change": 0.87,
+      "change_pct": 0.94,
+      "prev_close": 92.6,
       "unit": "美元/桶",
       "date": "2026-09-28",
       "source": "https://finance.yahoo.com/quote/CL%3DF"
@@ -427,10 +427,10 @@
     "gold": {
       "name": "黄金（COMEX 近月期货）",
       "symbol": "GC=F",
-      "value": 4145.1,
-      "change": -176.1,
-      "change_pct": -4.075,
-      "prev_close": 4321.2,
+      "value": 4152.4,
+      "change": -16.0,
+      "change_pct": -0.384,
+      "prev_close": 4168.4,
       "unit": "美元/盎司",
       "date": "2026-09-28",
       "source": "https://finance.yahoo.com/quote/GC%3DF"
@@ -440,34 +440,34 @@
     "aud_usd": {
       "name": "AUD/USD",
       "symbol": "AUDUSD=X",
-      "value": 0.702,
-      "change": 0.001,
-      "change_pct": 0.149,
+      "value": 0.7013,
+      "change": 0.0004,
+      "change_pct": 0.05,
       "prev_close": 0.7009,
       "unit": "美元/澳元",
-      "date": "2026-09-28",
+      "date": "2026-09-29",
       "source": "https://finance.yahoo.com/quote/AUDUSD%3DX"
     },
     "usd_cny": {
       "name": "USD/CNY",
       "symbol": "CNY=X",
-      "value": 6.7103,
-      "change": -0.0025,
-      "change_pct": -0.037,
+      "value": 6.7098,
+      "change": -0.003,
+      "change_pct": -0.045,
       "prev_close": 6.7128,
       "unit": "人民币/美元",
-      "date": "2026-09-28",
+      "date": "2026-09-29",
       "source": "https://finance.yahoo.com/quote/CNY%3DX"
     },
     "usd_hkd": {
       "name": "USD/HKD",
       "symbol": "HKD=X",
-      "value": 7.8452,
-      "change": 0.0011,
-      "change_pct": 0.014,
+      "value": 7.8439,
+      "change": -0.0002,
+      "change_pct": -0.003,
       "prev_close": 7.8441,
       "unit": "港元/美元",
-      "date": "2026-09-28",
+      "date": "2026-09-29",
       "source": "https://finance.yahoo.com/quote/HKD%3DX"
     }
   },
@@ -475,14 +475,14 @@
     "asx200": {
       "name": "ASX 200",
       "symbol": "^AXJO",
-      "value": 8679.7,
-      "change": 14.7,
-      "change_pct": 0.17,
-      "prev_close": 8665.0,
+      "value": 8665.0,
+      "change": -37.0,
+      "change_pct": -0.425,
+      "prev_close": 8702.0,
       "unit": "点",
-      "date": "2026-09-28",
+      "date": "2026-09-25",
       "source": "https://finance.yahoo.com/quote/%5EAXJO",
-      "note": "最新日线收盘缺失，取数据源报价中的收盘价"
+      "note": "当日尚未收盘，取上一完整交易日收盘"
     },
     "hang_seng": {
       "name": "恒生指数",
