@@ -7,7 +7,10 @@ name: Hot lists (trial)
 #   主运行 21:37 UTC (+1000) / 20:37 UTC (+1100)
 #   备用   22:22 UTC (+1000) / 21:22 UTC (+1100)
 # scripts/hot_gate.sh 按悉尼当前 UTC 偏移只放行对应的那个。
-# 手动触发：mode=full 直接抓取；mode=backup 走备用逻辑；commit=false 只抓取并打印结果，不写入仓库。
+# 主运行、备用、手动 full/backup 规则相同：当天 core_ok=true 就跳过；有但未全部成功则只补抓失败的榜。
+# GitHub 定时常迟到数小时甚至不触发，实际由外部定时触发 workflow_dispatch（mode=full）作为主力，
+# GitHub 定时作为备份。手动 mode=force 不检查、全部重抓；commit=false 只抓取并打印，不写入仓库。
+# status.json / runs.jsonl / CSV 都带 run_id，下游引用时写上 run_id。
 # PR 改动抓取代码时自动从 GitHub 服务器试抓一次（只抓不写），结果见运行摘要。
 on:
   schedule:
@@ -22,9 +25,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "full = 直接抓取；backup = 主运行已成功则跳过"
+        description: "full / backup = 当天已成功则跳过、未全部成功只补抓；force = 不检查、全部重抓"
         type: choice
-        options: [full, backup]
+        options: [full, backup, force]
         default: full
       commit:
         description: "是否把结果提交到仓库（false = 只抓取并打印）"
@@ -92,7 +95,7 @@ jobs:
             echo "No changes."
             exit 0
           fi
-          git commit -m "hot: $(python -c 'import json;d=json.load(open("data/hot/status.json"));print(d["date"], d["last_trigger"], "core_ok=%s" % d["core_ok"])')"
+          git commit -m "hot: $(python -c 'import json;d=json.load(open("data/hot/status.json"));print(d["date"], d["last_trigger"], "core_ok=%s" % d["core_ok"], "run", d["run_id"])')"
           for i in 1 2 3; do
             git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
             sleep $((i * 5))

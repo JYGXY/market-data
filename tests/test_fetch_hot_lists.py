@@ -169,5 +169,40 @@ class TestFetch(Base):
         self.assertIn("reset", b["retry_error"])
 
 
+class TestRunInfoAndRetries(Base):
+    def test_run_id_in_status_csv_and_runs(self):
+        with mock.patch.dict(fh.os.environ, {"GITHUB_RUN_ID": "987", "GITHUB_RUN_ATTEMPT": "1"}):
+            st, _ = self.run_main()
+        self.assertEqual((st["run_id"], st["run_attempt"]), (987, 1))
+        self.assertEqual(st["boards"]["xq_follow_cn"]["run_id"], 987)
+        rows = list(csv.DictReader((fh.HOT_DIR / st["date"] / "xq_follow_cn.csv").open(encoding="utf-8")))
+        self.assertEqual(rows[0]["run_id"], "987")
+        run = json.loads((fh.HOT_DIR / "runs.jsonl").read_text(encoding="utf-8").splitlines()[-1])
+        self.assertEqual(run["run_id"], 987)
+
+    def test_local_run_id_is_null(self):
+        with mock.patch.dict(fh.os.environ, {}, clear=True):
+            st, _ = self.run_main()
+        self.assertIsNone(st["run_id"])
+
+    def test_retry_errors_kept_on_success(self):
+        fake, calls = router()
+        n = {"i": 0}
+
+        def flaky(method, url, **kw):
+            if url == fh.EM_NAME_URL and n["i"] < 1:
+                n["i"] += 1
+                return Resp(502, None, "bad gateway")
+            return fake(method, url, **kw)
+        with mock.patch.object(fh.requests, "request", side_effect=flaky):
+            fh.main([])
+        st = json.loads((fh.HOT_DIR / "status.json").read_text(encoding="utf-8"))
+        b = st["boards"]["em_popularity_a"]
+        self.assertEqual(b["status"], "ok")
+        self.assertEqual(len(b["retry_errors"]), 1)
+        self.assertIn("502", b["retry_errors"][0])
+        self.assertNotIn("retry_errors", st["boards"]["xq_follow_cn"])
+
+
 if __name__ == "__main__":
     unittest.main()

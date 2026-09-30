@@ -5,13 +5,19 @@
 # 用法: hot_gate.sh <event> <schedule> <mode>
 #   event    : github.event_name
 #   schedule : github.event.schedule（触发的 cron 字符串；非定时为空）
-#   mode     : 手动触发时的 mode 输入（full / backup），定时触发忽略
+#   mode     : 手动触发时的 mode 输入（full / backup / force），定时触发忽略
 # 需在仓库根目录运行（备用检查要读 data/hot/）。测试用覆盖变量：SYD_OFFSET、SYD_DATE。
 #
 # 定时表（悉尼时间，每天 → UTC 前一天）：
 #   主运行 07:37 → 21:37 (AEST, +1000) / 20:37 (AEDT, +1100)
 #   备用   08:22 → 22:22 (AEST, +1000) / 21:22 (AEDT, +1100)
 # 悉尼 2026-10-04 起进入夏令时。每个 cron 只在对应的 UTC 偏移下生效，另一个跳过。
+#
+# 主运行、备用、手动 full / backup 规则相同（防覆盖）：
+#   当天 status.json 的 core_ok 为 true → 跳过；
+#   当天已有 status.json 但未全部成功 → 只补抓未成功的榜单（--only-missing），已成功的不动；
+#   当天还没有 → 全部抓取。
+# 手动 force：不检查，全部重抓。
 set -eu
 event=$1; schedule=${2:-}; mode=${3:-full}
 
@@ -30,16 +36,20 @@ if [ "$event" = "schedule" ]; then
   esac
   [ "$offset" = "$want" ] || out false "$role cron for $want, Sydney is $offset" "$role" ""
 else
-  role=$mode
-  [ "$role" = "full" ] && role=manual
+  case "$mode" in
+    full) role=manual ;;
+    backup|force) role=$mode ;;
+    *) out false "unknown mode '$mode'" none "" ;;
+  esac
 fi
 
-if [ "$role" = "backup" ]; then
-  # 主运行成功（当天 status.json 的 core_ok 为 true）就跳过；否则只重抓未成功的榜单
-  st="data/hot/$today/status.json"
-  if [ -f "$st" ] && python3 -c "import json,sys; sys.exit(0 if json.load(open('$st')).get('core_ok') else 1)"; then
-    out false "backup: $st core_ok=true, primary succeeded" backup ""
+[ "$role" = "force" ] && out true "force: checks skipped, refetch all boards" force ""
+
+st="data/hot/$today/status.json"
+if [ -f "$st" ]; then
+  if python3 -c "import json,sys; sys.exit(0 if json.load(open('$st')).get('core_ok') else 1)"; then
+    out false "$role: $st core_ok=true, already succeeded today" "$role" ""
   fi
-  out true "backup: no successful run for $today yet" backup "--only-missing"
+  out true "$role: $st exists but core_ok=false, refetching missing boards" "$role" "--only-missing"
 fi
-out true "$role run" "$role" ""
+out true "$role: no run for $today yet" "$role" ""

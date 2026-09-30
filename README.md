@@ -5,33 +5,42 @@
 
 ## 运行方式
 
-- GitHub Actions 工作流 `.github/workflows/daily-market-data.yml`，纽约时间周一至周五运行，周末不运行：
-  - **16:17 主任务**（美股收盘后 17 分钟）
-  - **16:47 备用任务**：当天数据已生成就直接退出，只在主任务漏跑时补跑一次（下游 17:10 读文件，留出余量）
-- 分钟数刻意避开整点和半点。GitHub 文档说明，整点前后定时任务负载最高，可能延迟甚至被丢弃。
-- GitHub 定时只认 UTC，所以每个任务放两个定时，分别对应夏令时和冬令时：
+**主力是外部触发，GitHub 定时是备份。** 2026-09 实测：GitHub 定时经常迟到 2–4 小时，9/29 起一度约 20 小时完全不触发（社区里自 2026-08-26 起有同类报告）；而 `workflow_dispatch` 几秒内就会启动。
+
+- **外部触发**：仓库外的定时任务在纽约 16:25（交易日）检查 main 上是否已有当天完整文件，没有就触发 `workflow_dispatch`（`mode=full`），约 15 分钟后复查，仍没有再触发一次。每天最多触发 2 次。
+- **GitHub 定时（备份）**：`.github/workflows/daily-market-data.yml`，纽约时间周一至周五 16:17 主任务、16:47 备用。GitHub 定时只认 UTC，所以每个任务放两个定时：
 
   | 任务 | EDT（UTC-4） | EST（UTC-5） |
   |---|---|---|
   | 主任务 | `17 20 * * 1-5` | `17 21 * * 1-5` |
   | 备用 | `47 20 * * 1-5` | `47 21 * * 1-5` |
 
-  `scripts/schedule_gate.sh` 按纽约当前 UTC 偏移只放行对应的那个定时，并核对纽约星期几。判断看偏移而不看钟点，所以 GitHub 延迟触发也不会重复或错位。
-- 备用任务判断“当天已生成”的依据：`data/<纽约今天>.json` 已存在，或 `latest.json` 是纽约今天 16:00 之后生成的（美股假日时文件名是上一交易日；收盘前的手动运行不算）。
-- 美股休市的工作日照常运行，但美股数据仍是上一交易日，`trading_date` 不变，会覆盖同名文件。
-- 主任务和备用任务都依赖 GitHub 定时；若 GitHub 两次都没触发，当天仍会缺数据，下游须按“下游读取须知”核对 `trading_date`。
-- 也可以在 Actions 页面手动触发（`workflow_dispatch`）：`mode=full` 直接抓取，`mode=backup` 走备用逻辑。也可以本地运行：
+  `scripts/schedule_gate.sh` 按纽约当前 UTC 偏移只放行对应的那个定时，并核对纽约星期几。
 
-  ```sh
-  pip install -r requirements.txt
-  python3 scripts/fetch_market_data.py
-  ```
+**无论由谁触发，都遵守两条规则**（`scripts/schedule_gate.sh`，`mode=force` 除外）：
+
+1. **不覆盖**：`data/<纽约今天>.json` 已存在且 `complete=true`，或 `latest.json` 是纽约今天 16:00 后生成且 `complete=true`（美股假日时文件名是上一交易日）→ 跳过。抓取脚本本身也不会覆盖已完整的同名文件。
+2. **18:00 保护**：纽约 18:00 以后不抓。18:00 起期货进入下一交易时段（涨跌改为相对新结算价）、汇率和亚太指数进入次日，抓到的数值不再属于当天。迟到的 GitHub 定时会被这条挡住。
+
+手动触发（Actions 页面或 API）的 `mode`：
+
+| mode | 行为 |
+|---|---|
+| `full` / `backup` | 遵守以上两条规则 |
+| `force` | 不检查，允许覆盖已完整的文件，18:00 后也会抓。只在人工确认后使用 |
+
+本地运行（默认同样不覆盖已完整的文件，`--force` 强制覆盖）：
+
+```sh
+pip install -r requirements.txt
+python3 scripts/fetch_market_data.py
+```
 
 ## 输出文件
 
 | 文件 | 说明 |
 |---|---|
-| `data/YYYY-MM-DD.json` | 当天快照。文件名即 `trading_date`（美股交易日）；休市日或手动运行时覆盖上一交易日文件，不会产生重复日期。 |
+| `data/YYYY-MM-DD.json` | 当天快照。文件名即 `trading_date`（美股交易日）。已完整的文件不会被自动覆盖。 |
 | `data/latest.json` | 最近一次快照，内容与当天文件相同。 |
 
 ## 下游读取须知
@@ -40,6 +49,8 @@
 
 - `trading_date` 不是你预期的当天美股交易日 → **视为未更新**（任务没跑、跑失败或数据源未刷新），不要当作当天行情使用。
 - `complete` 为 `false` → 有部分项缺失，缺哪些见 `missing`，对应项的 `error` 写明原因。
+- `stale` 不为空 → 这些项的数值来自更早的交易日（数据源缺某天收盘），`note` 写明缺的是哪天。
+- 引用数据时写上 `run_id`（例如“行情 2026-09-28，run 36482936264”），就能分清是哪一次运行生成的版本。
 
 ```python
 import json, datetime, zoneinfo
@@ -62,6 +73,9 @@ if not d["complete"]:
 | `trading_date` | 美股交易日（`YYYY-MM-DD`），取美股指数最新收盘的日期，与文件名相同 |
 | `complete` | `true` = 所有项都取到数值（含前 30 家公司）；有任何一项为 `null` 即为 `false` |
 | `missing` | 取不到的项列表（如 `rates.ig_credit_spread`），`complete` 为 `true` 时为空 |
+| `stale` | 数值不是最近一个已结束交易日的项（数据源缺收盘、补不上时）。不影响 `complete` |
+| `run_id` / `run_attempt` | 生成该文件的 GitHub Actions 运行编号和重试次数；本地运行为 `null` |
+| `run_trigger` | 触发方式，如 `workflow_dispatch:full`、`schedule:primary`；本地运行为 `local` |
 | `generated_at_utc` / `generated_at_new_york` | 抓取时间 |
 | `disclaimer` | 说明 |
 
@@ -80,6 +94,7 @@ if not d["complete"]:
 | `date` | 该数值对应的日期（交易所本地时区） |
 | `source` | 来源网址（可在浏览器打开核对） |
 | `note` | 补充说明（可选） |
+| `stale` | 仅在为 `true` 时出现：数值来自更早的交易日 |
 | `error` | 取不到时的原因；此时 `value` 等数值字段为 `null` |
 
 ### 各板块与来源
@@ -120,15 +135,17 @@ if not d["complete"]:
 
 ### 时间（悉尼）
 
-| 任务 | 悉尼时间 | AEST（+1000） | AEDT（+1100，2026-10-04 起） |
+**主力是外部触发**：仓库外的定时任务在悉尼 07:45 检查当天 `status.json`，`core_ok` 不为 `true` 就触发 `workflow_dispatch`（`mode=full`），约 15 分钟后复查、仍未成功再触发一次，每天最多 2 次。下面的 GitHub 定时是备份。
+
+| GitHub 定时 | 悉尼时间 | AEST（+1000） | AEDT（+1100，2026-10-04 起） |
 |---|---|---|---|
 | 主运行 | 07:37 | `37 21 * * *` | `37 20 * * *` |
 | 备用 | 08:22 | `22 22 * * *` | `22 21 * * *` |
 
 - 下游“甄选”09:05 读取；提前运行，给 GitHub 定时延迟留余量。
 - cron 是 UTC 前一天。`scripts/hot_gate.sh` 按悉尼当前 UTC 偏移，只放行对应的那个定时。
-- 备用运行：当天 `status.json` 的 `core_ok` 为 `true` 就跳过；否则只补抓未成功的榜单，已成功的保留不动。
-- 手动触发：`mode=full|backup`。`commit=false` 时只抓取，并在运行摘要里显示结果，不写入仓库。
+- 主运行、备用、手动 `full`/`backup` 规则相同（防覆盖）：当天 `core_ok` 为 `true` 就跳过；已有但未全部成功，只补抓未成功的榜单，已成功的保留不动；当天还没有就全部抓。
+- 手动 `mode=force`：不检查，全部重抓。`commit=false` 时只抓取，并在运行摘要里显示结果，不写入仓库。
 
 ### 榜单
 
@@ -140,7 +157,7 @@ if not d["complete"]:
 | `xq_deal_cn.csv` | 雪球热股榜-交易（沪深） | 50 | `deal` 分享交易数 | 是 |
 | `xq_{follow,tweet,deal}_hk.csv` | 同上（港股，试探） | 50 | 同上 | 否 |
 
-- CSV 列：`date`（悉尼日期）、`fetched_at_utc`、`fetched_at_sydney`、`board`、`rank`、`code`、`name`、`heat_value`、`heat_field`。
+- CSV 列：`date`（悉尼日期）、`fetched_at_utc`、`fetched_at_sydney`、`board`、`rank`、`code`、`name`、`heat_value`、`heat_field`、`run_id`（生成该文件的运行编号，下游引用时写上）。
 - 东财榜单接口只给排名和代码。名称来自东财行情接口（只取代码和名称字段），该接口失败时，仍保存排名和代码，`name` 留空，状态记为 `partial`。
 - akshare 的雪球函数只支持沪深（`category=CN`）。港股榜试探的是同一接口的 `category=HK`，不计入“当天成功”。
 
@@ -160,6 +177,8 @@ if not d["complete"]:
 | `data/hot/YYYY-MM-DD/status.json` | 当天各榜最终状态 |
 | `data/hot/status.json` | 最近一天的状态（同上） |
 | `data/hot/runs.jsonl` | 每次运行追加一行，含每个榜的状态、行数、耗时、尝试次数、失败原因 |
+
+`status.json` 顶层有 `run_id`、`run_attempt`（最近一次运行），每个榜也有自己的 `run_id`（备用运行保留下来的榜，是之前那次运行的编号）。重试后才成功的榜，`retry_errors` 保留之前几次失败的原因。
 
 `status` 取值：`ok`（行数足额）、`partial`（有数据但不全，例如缺名称）、`failed`（无数据）。
 
