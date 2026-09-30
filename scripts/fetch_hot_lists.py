@@ -23,6 +23,7 @@
 import argparse
 import csv
 import json
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -48,7 +49,7 @@ XQ_URL = "https://xueqiu.com/service/v5/stock/screener/screen"
 XQ_PAGE = "https://xueqiu.com/hq"
 
 CSV_FIELDS = ["date", "fetched_at_utc", "fetched_at_sydney", "board", "rank",
-              "code", "name", "heat_value", "heat_field"]
+              "code", "name", "heat_value", "heat_field", "run_id"]
 
 # 榜单定义。core=True 的榜单决定“当天是否成功”（备用运行据此判断）；
 # 港股榜 akshare 不支持，这里试探雪球同一接口的 category=HK，标记为 experimental。
@@ -89,7 +90,7 @@ def _classify(exc):
 
 
 def request_json(method, url, **kwargs):
-    """带超时和重试的请求。返回 (json, 尝试次数)；全部失败抛 FetchError。"""
+    """带超时和重试的请求。返回 (json, 尝试次数, 之前失败的原因列表)；全部失败抛 FetchError。"""
     errors, kinds = [], []
     for i in range(RETRIES + 1):
         try:
@@ -100,7 +101,7 @@ def request_json(method, url, **kwargs):
                 kind = "http_4xx" if 400 <= r.status_code < 500 else "http_5xx"
                 raise FetchError(kind, f"HTTP {r.status_code}: {r.text[:120]!r}")
             try:
-                return r.json(), i + 1
+                return r.json(), i + 1, errors
             except ValueError:
                 raise FetchError("bad_json", f"非 JSON 响应: {r.text[:120]!r}")
         except (requests.RequestException, FetchError) as e:
@@ -114,7 +115,7 @@ def request_json(method, url, **kwargs):
 
 def fetch_eastmoney(cfg):
     """返回 (rows, attempts, 名称错误或 None)。名称接口失败时仍返回排名和代码。"""
-    data, attempts = request_json("POST", EM_RANK_URL, json={
+    data, attempts, retry_errors = request_json("POST", EM_RANK_URL, json={
         "appId": "appId01", "globalId": "786e4c21-70dc-435a-93bb-38",
         "marketType": "", "pageNo": 1, "pageSize": cfg["size"]})
     items = data.get("data") if isinstance(data, dict) else None
@@ -127,10 +128,11 @@ def fetch_eastmoney(cfg):
     secids = ",".join(("0." if r["code"].startswith("SZ") else "1.") + r["code"][2:] for r in rows)
     name_error = None
     try:
-        nd, a2 = request_json("GET", EM_NAME_URL, params={
+        nd, a2, e2 = request_json("GET", EM_NAME_URL, params={
             "ut": "f057cbcbce2a86e2866ab8877db1d059", "fltt": "2", "invt": "2",
             "fields": "f12,f14", "secids": secids})
         attempts += a2
+        retry_errors += [f"名称接口 {e}" for e in e2]
         diff = ((nd or {}).get("data") or {}).get("diff") or []
         if isinstance(diff, dict):
             diff = list(diff.values())
@@ -143,11 +145,11 @@ def fetch_eastmoney(cfg):
     except FetchError as e:
         attempts += e.attempts
         name_error = FetchError(e.kind, f"名称接口失败（排名和代码已保存）: {e}")
-    return rows, attempts, name_error
+    return rows, attempts, name_error, retry_errors
 
 
 def fetch_xueqiu(cfg):
-    data, attempts = request_json("GET", XQ_URL, params={
+    data, attempts, retry_errors = request_json("GET", XQ_URL, params={
         "category": cfg["category"], "size": cfg["size"], "order": "desc",
         "order_by": cfg["order_by"], "only_count": "0", "page": "1"})
     if not isinstance(data, dict) or "data" not in data:
@@ -160,7 +162,7 @@ def fetch_xueqiu(cfg):
     rows = [{"rank": i + 1, "code": it.get("symbol"), "name": it.get("name"),
              "heat_value": it.get(cfg["order_by"]), "heat_field": cfg["order_by"]}
             for i, it in enumerate(items[:cfg["size"]])]
-    return rows, attempts, None
+    return rows, attempts, None, retry_errors
 
 
 def run_board(name, cfg, day_dir, stamp):
@@ -168,23 +170,27 @@ def run_board(name, cfg, day_dir, stamp):
     entry = {"desc": cfg["desc"], "core": cfg["core"],
              "experimental": cfg.get("experimental", False),
              "source": EM_PAGE if cfg["source"] == "eastmoney" else XQ_PAGE,
-             "run_at_utc": stamp["utc"]}
+             "run_at_utc": stamp["utc"], "run_id": stamp["run_id"]}
     try:
         fn = fetch_eastmoney if cfg["source"] == "eastmoney" else fetch_xueqiu
-        rows, attempts, soft_error = fn(cfg)
+        rows, attempts, soft_error, retry_errors = fn(cfg)
         path = day_dir / f"{name}.csv"
         with path.open("w", newline="", encoding="utf-8") as f:
             w = csv.DictWriter(f, fieldnames=CSV_FIELDS)
             w.writeheader()
             for r in rows:
                 w.writerow({"date": stamp["date"], "fetched_at_utc": stamp["utc"],
-                            "fetched_at_sydney": stamp["sydney"], "board": name, **r})
+                            "fetched_at_sydney": stamp["sydney"], "board": name,
+                            "run_id": stamp["run_id"], **r})
         status = "ok" if not soft_error and len(rows) == cfg["size"] else "partial"
         err = soft_error or (None if len(rows) == cfg["size"]
                              else FetchError("empty", f"只取到 {len(rows)}/{cfg['size']} 行"))
         entry.update(status=status, rows=len(rows), attempts=attempts,
                      file=str(path.relative_to(ROOT)),
                      error=str(err) if err else None, error_kind=err.kind if err else None)
+        if retry_errors:
+            # 最终成功（或部分成功）前失败过的尝试，保留原因供试跑统计
+            entry["retry_errors"] = [e[:240] for e in retry_errors]
     except FetchError as e:
         entry.update(status="failed", rows=0, attempts=e.attempts, file=None,
                      error=str(e), error_kind=e.kind)
@@ -193,6 +199,14 @@ def run_board(name, cfg, day_dir, stamp):
                      error=f"{type(e).__name__}: {e}"[:300], error_kind="other")
     entry["seconds"] = round(time.monotonic() - t0, 2)
     return entry
+
+
+def run_info():
+    """版本标识：下游引用时写上 run_id，就能分清是哪一次运行生成的。本地运行时为 null。"""
+    rid = os.environ.get("GITHUB_RUN_ID")
+    att = os.environ.get("GITHUB_RUN_ATTEMPT", "")
+    return {"run_id": int(rid) if rid and rid.isdigit() else None,
+            "run_attempt": int(att) if att.isdigit() else None}
 
 
 def core_ok(boards):
@@ -208,7 +222,7 @@ def main(argv=None):
     now = datetime.now(timezone.utc)
     stamp = {"utc": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
              "sydney": now.astimezone(SYD).strftime("%Y-%m-%d %H:%M:%S %Z"),
-             "date": now.astimezone(SYD).date().isoformat()}
+             "date": now.astimezone(SYD).date().isoformat(), **run_info()}
     day_dir = HOT_DIR / stamp["date"]
     day_dir.mkdir(parents=True, exist_ok=True)
     day_status_path = day_dir / "status.json"
@@ -236,6 +250,8 @@ def main(argv=None):
         "last_run_at_utc": stamp["utc"],
         "last_run_at_sydney": stamp["sydney"],
         "last_trigger": args.trigger,
+        "run_id": stamp["run_id"],
+        "run_attempt": stamp["run_attempt"],
         "core_ok": core_ok(boards),
         "note": "公开榜单试跑。core=true 的榜单全部 ok 才算当天成功；港股榜为试探。",
         "boards": boards,
@@ -246,6 +262,7 @@ def main(argv=None):
     with (HOT_DIR / "runs.jsonl").open("a", encoding="utf-8") as f:
         f.write(json.dumps({"date": stamp["date"], "run_at_utc": stamp["utc"],
                             "trigger": args.trigger, "only_missing": args.only_missing,
+                            "run_id": stamp["run_id"], "run_attempt": stamp["run_attempt"],
                             "boards": fetched}, ensure_ascii=False) + "\n")
 
     for name, e in boards.items():

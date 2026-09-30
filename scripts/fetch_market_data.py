@@ -5,10 +5,17 @@
 不接受任何外部清单输入，不抓任何自选个股。
 
 输出: data/YYYY-MM-DD.json（纽约日期）和 data/latest.json
+
+用法: python3 scripts/fetch_market_data.py [--force]
+  默认不覆盖已存在且 complete=true 的当天文件；--force 强制覆盖。
+版本标识从环境变量读取（GitHub Actions 自动提供）：GITHUB_RUN_ID、GITHUB_RUN_ATTEMPT，
+以及工作流传入的 RUN_TRIGGER（例如 schedule:primary、workflow_dispatch:full）。
 """
+import argparse
 import csv
 import io
 import json
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -24,6 +31,7 @@ DATA_DIR = ROOT / "data"
 UA = {"User-Agent": "Mozilla/5.0 (compatible; public-market-data-bot/1.0)"}
 
 YAHOO_CHART = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range=10d&interval=1d"
+YAHOO_CHART_1H = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range=5d&interval=1h"
 YAHOO_PAGE = "https://finance.yahoo.com/quote/{sym}"
 YAHOO_SCREENER = ("https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved"
                   "?scrIds=largest_market_cap&count=100")
@@ -104,6 +112,21 @@ def yahoo_daily(key, name, sym, unit, closes_only=False):
         if closes_only and bars and in_session and bars[-1][0] >= reg["start"]:
             bars = bars[:-1]
             note = "当日尚未收盘，取上一完整交易日收盘"
+        # 最近一个已结束的交易时段（盘中那根不算）。若取到的收盘比它旧，说明中间有一天
+        # 数据源只给了空收盘——不处理的话会悄悄退回更早的日期（2026-09-28 ASX 退回 9/25）。
+        done_ts = [t for t in ts if not (in_session and t >= reg["start"])]
+        stale = False
+        if bars and done_ts and max(done_ts) > bars[-1][0]:
+            gap_t = max(done_ts)
+            gap_day = datetime.fromtimestamp(gap_t, tz).date()
+            pc = yahoo_session_close(sym, gap_day) if closes_only else None
+            if pc is not None:
+                bars.append((gap_t, pc))
+                note = f"{gap_day.isoformat()} 日线收盘缺失，取当日最后一根小时线收盘"
+            else:
+                stale = True
+                note = ("数据源缺少 " + datetime.fromtimestamp(gap_t, tz).date().isoformat()
+                        + " 的收盘，数值为更早日期，已标记 stale")
         if (meta.get("instrumentType") == "FUTURE" and rmp is not None and rmt
                 and meta.get("fulldayChange") is not None):
             # 期货：用报价自带的当日涨跌。近月换月时，日线会把新旧两个合约接在一起，
@@ -134,9 +157,27 @@ def yahoo_daily(key, name, sym, unit, closes_only=False):
             item["change_bp"] = round((last - prev) * 100, 1)
         if note:
             item["note"] = note
+        if stale:
+            item["stale"] = True
         return item
     except Exception as e:  # noqa: BLE001
         return null_item(name, unit, page, f"抓取失败: {type(e).__name__}: {e}"[:300], symbol=sym)
+
+
+def yahoo_session_close(sym, day):
+    """某个已结束交易日的收盘：取当天（交易所时区）最后一根小时线的收盘。
+
+    不用 chartPreviousClose：实测它的含义随 range 变化（2026-09-30 ^AXJO 的 1d/2d/5d
+    分别给出 8665.0 / 8679.7 / 8765.3），不可靠。取不到返回 None。
+    """
+    try:
+        res = get(YAHOO_CHART_1H.format(sym=quote(sym))).json()["chart"]["result"][0]
+        tz = ZoneInfo(res["meta"]["exchangeTimezoneName"])
+        pts = [c for t, c in zip(res.get("timestamp") or [], res["indicators"]["quote"][0]["close"])
+               if c is not None and datetime.fromtimestamp(t, tz).date() == day]
+        return round(pts[-1], 4) if pts else None
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def fred_latest(sid, name, unit):
@@ -232,19 +273,50 @@ def missing_items(data):
     return missing
 
 
-def main():
+def stale_items(data):
+    """数值不是最近一个已结束交易时段的项（数据源缺收盘）。不影响 complete。"""
+    return [f"{sec}.{k}" for sec in ("us_indices", "rates", "commodities", "fx", "asia_pacific_indices")
+            for k, v in data[sec].items() if v.get("stale")]
+
+
+def run_info():
+    """版本标识：下游引用时写上 run_id，就能分清是哪一次运行生成的。本地运行时为 null。"""
+    rid = os.environ.get("GITHUB_RUN_ID")
+    return {"run_id": int(rid) if rid and rid.isdigit() else None,
+            "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"])
+            if os.environ.get("GITHUB_RUN_ATTEMPT", "").isdigit() else None,
+            "run_trigger": os.environ.get("RUN_TRIGGER") or ("github-actions" if rid else "local")}
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--force", action="store_true", help="覆盖已存在且 complete=true 的当天文件")
+    args = ap.parse_args(argv)
+
     data = build()
     DATA_DIR.mkdir(exist_ok=True)
     # 交易日取美股指数的最新收盘日期；三个都取不到时退回纽约当天日期（此时 complete 必为 false）。
-    # 文件名同交易日，所以周末/假日手动运行只会覆盖上一交易日的文件，不会产生重复日期。
     day = next((v["date"] for v in data["us_indices"].values() if v["date"]),
                datetime.now(NY).date().isoformat())
+    # 不覆盖已有的完整文件（美股假日时 day 是上一交易日，同样受保护），除非 --force
+    target = DATA_DIR / f"{day}.json"
+    if target.exists() and not args.force:
+        try:
+            old = json.loads(target.read_text(encoding="utf-8"))
+        except ValueError:
+            old = {}
+        if old.get("complete"):
+            print(f"data/{day}.json already complete (run_id={old.get('run_id')}); not overwriting. "
+                  "Use --force to override.", file=sys.stderr)
+            return
     missing = missing_items(data)
-    data = {"trading_date": day, "complete": not missing, "missing": missing, **data}
+    data = {"trading_date": day, "complete": not missing, "missing": missing,
+            "stale": stale_items(data), **run_info(), **data}
     body = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
-    (DATA_DIR / f"{day}.json").write_text(body, encoding="utf-8")
+    target.write_text(body, encoding="utf-8")
     (DATA_DIR / "latest.json").write_text(body, encoding="utf-8")
-    print(f"wrote data/{day}.json and data/latest.json (complete={not missing})", file=sys.stderr)
+    print(f"wrote data/{day}.json and data/latest.json (complete={not missing}, "
+          f"stale={data['stale']}, run_id={data['run_id']})", file=sys.stderr)
 
 if __name__ == "__main__":
     main()

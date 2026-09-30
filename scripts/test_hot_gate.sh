@@ -29,26 +29,30 @@ tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT; cd "$tmp"
 
 echo "# 主运行：只在对应偏移放行（AEST +1000 / AEDT +1100）"
 setup "" ""
-check true  ""  "primary run"            +1000 2026-09-28 schedule "37 21 * * *"
+check true  ""  "primary: no run"        +1000 2026-09-28 schedule "37 21 * * *"
 check false ""  "primary cron for +1100" +1000 2026-09-28 schedule "37 20 * * *"
-check true  ""  "primary run"            +1100 2026-10-05 schedule "37 20 * * *"
+check true  ""  "primary: no run"        +1100 2026-10-05 schedule "37 20 * * *"
 check false ""  "primary cron for +1000" +1100 2026-10-05 schedule "37 21 * * *"
 
-echo "# 备用：当天没有成功运行 -> 只补抓未成功的榜单"
-setup "" ""
-check true  "--only-missing" "no successful run" +1000 2026-09-28 schedule "22 22 * * *"
-check true  "--only-missing" "no successful run" +1100 2026-10-05 schedule "22 21 * * *"
-check false ""  "backup cron for +1100" +1000 2026-09-28 schedule "22 21 * * *"
-check false ""  "backup cron for +1000" +1100 2026-10-05 schedule "22 22 * * *"
-setup 2026-09-28 false
-check true  "--only-missing" "no successful run" +1000 2026-09-28 schedule "22 22 * * *"
-
-echo "# 备用：主运行成功 -> 跳过"
+echo "# 主运行也防覆盖：当天已成功 -> 跳过；已有但未全部成功 -> 只补抓"
 setup 2026-09-28 true
-check false ""  "primary succeeded"      +1000 2026-09-28 schedule "22 22 * * *"
-echo "# 备用：只有前一天成功 -> 仍补抓"
+check false ""  "already succeeded today" +1000 2026-09-28 schedule "37 21 * * *"
+setup 2026-09-28 false
+check true  "--only-missing" "core_ok=false" +1000 2026-09-28 schedule "37 21 * * *"
+
+echo "# 备用：当天没有运行 -> 全部抓；有但未成功 -> 只补抓；已成功 -> 跳过"
+setup "" ""
+check true  ""  "backup: no run"         +1000 2026-09-28 schedule "22 22 * * *"
+check true  ""  "backup: no run"         +1100 2026-10-05 schedule "22 21 * * *"
+check false ""  "backup cron for +1100"  +1000 2026-09-28 schedule "22 21 * * *"
+check false ""  "backup cron for +1000"  +1100 2026-10-05 schedule "22 22 * * *"
+setup 2026-09-28 false
+check true  "--only-missing" "core_ok=false" +1000 2026-09-28 schedule "22 22 * * *"
+setup 2026-09-28 true
+check false ""  "already succeeded today" +1000 2026-09-28 schedule "22 22 * * *"
+echo "# 只有前一天成功 -> 当天照抓"
 setup 2026-09-27 true
-check true  "--only-missing" "no successful run" +1000 2026-09-28 schedule "22 22 * * *"
+check true  ""  "backup: no run"         +1000 2026-09-28 schedule "22 22 * * *"
 
 echo "# 未知 cron（美股任务的定时、旧的 08:37 / 08:52 定时）"
 setup "" ""
@@ -56,10 +60,16 @@ check false ""  "unknown schedule"       +1000 2026-09-28 schedule "17 20 * * 1-
 check false ""  "unknown schedule"       +1000 2026-09-28 schedule "37 22 * * *"
 check false ""  "unknown schedule"       +1100 2026-10-05 schedule "52 21 * * *"
 
-echo "# 手动触发"
-check true  ""  "manual run"             +1000 2026-09-28 workflow_dispatch "" full
-setup 2026-09-28 true
-check false ""  "primary succeeded"      +1000 2026-09-28 workflow_dispatch "" backup
+echo "# 手动触发（外部触发用 full）"
+setup "" ""
+check true  ""  "manual: no run"         +1000 2026-09-30 workflow_dispatch "" full
+setup 2026-09-30 false
+check true  "--only-missing" "core_ok=false" +1000 2026-09-30 workflow_dispatch "" full
+setup 2026-09-30 true
+check false ""  "already succeeded today" +1000 2026-09-30 workflow_dispatch "" full
+check false ""  "already succeeded today" +1000 2026-09-30 workflow_dispatch "" backup
+check true  ""  "force: checks skipped"  +1000 2026-09-30 workflow_dispatch "" force
+check false ""  "unknown mode"           +1000 2026-09-30 workflow_dispatch "" bogus
 
 echo "$((n - fail))/$n passed"
 [ "$fail" -eq 0 ]

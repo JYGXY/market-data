@@ -6,8 +6,12 @@ name: Daily market data
 #   主任务 20:17 UTC (EDT) / 21:17 UTC (EST)
 #   备用   20:47 UTC (EDT) / 21:47 UTC (EST)
 # scripts/schedule_gate.sh 按纽约当前 UTC 偏移只放行对应的那个，并核对纽约星期几；
-# 备用任务在当天数据已生成时直接退出，只在主任务漏跑时补跑。
-# 手动触发：mode=full 直接抓取；mode=backup 走备用逻辑（用于验证）。
+# 主任务和备用都遵守两条规则（scripts/schedule_gate.sh）：
+#   - 当天已有完整数据（complete=true）就跳过，不覆盖；
+#   - 纽约 18:00 以后不抓（期货、汇率、亚太指数已进入下一交易时段）。
+# GitHub 定时常迟到数小时，迟到的运行会被这两条挡住；实际由外部定时触发 workflow_dispatch 作为主力。
+# 手动触发：mode=full / backup 同样遵守以上规则；mode=force 不做检查并允许覆盖。
+# 每次写入的文件带 run_id / run_attempt / run_trigger，下游引用时写上 run_id。
 on:
   schedule:
     - cron: "17 20 * * 1-5"
@@ -17,9 +21,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "full = 直接抓取；backup = 当天数据已存在则跳过"
+        description: "full / backup = 当天已有完整数据或已过纽约 18:00 则跳过；force = 不检查、允许覆盖"
         type: choice
-        options: [full, backup]
+        options: [full, backup, force]
         default: full
 
 permissions:
@@ -59,7 +63,9 @@ jobs:
 
       - name: Fetch
         if: steps.gate.outputs.run == 'true'
-        run: python scripts/fetch_market_data.py
+        env:
+          RUN_TRIGGER: ${{ github.event_name }}:${{ steps.gate.outputs.role }}
+        run: python scripts/fetch_market_data.py ${{ steps.gate.outputs.fetch_args }}
 
       - name: Forbidden-word check and commit
         if: steps.gate.outputs.run == 'true'
@@ -72,6 +78,6 @@ jobs:
             echo "No changes."
             exit 0
           fi
-          git commit -m "data: $(python -c 'import json;print(json.load(open("data/latest.json"))["trading_date"])')"
+          git commit -m "data: $(python -c 'import json;d=json.load(open("data/latest.json"));print(d["trading_date"], "run", d["run_id"], d["run_trigger"])')"
           git pull --rebase origin "${{ github.ref_name }}"
           git push origin "HEAD:${{ github.ref_name }}"
