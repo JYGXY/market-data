@@ -2,6 +2,17 @@
   "trading_date": "2026-09-29",
   "complete": true,
   "missing": [],
+  "stale": [
+    "commodities.brent",
+    "commodities.wti",
+    "commodities.gold",
+    "fx.aud_usd",
+    "fx.usd_hkd"
+  ],
+  "stale_note": "2026-09-30 人工修订：本文件由纽约 19:43 迟到的 GitHub 定时写入（当时尚无 18:00 保护）。美股指数、前 30、利率、亚太指数正确；stale 所列期货和汇率属于下一交易时段。",
+  "run_id": 36646698778,
+  "run_attempt": 1,
+  "run_trigger": "schedule:primary（补记）",
   "generated_at_utc": "2026-09-29T23:43:30Z",
   "generated_at_new_york": "2026-09-29 19:43 EDT",
   "disclaimer": "仅含公开市场数据。取不到的值为 null，并在 error 字段注明原因。",
@@ -411,7 +422,9 @@
       "prev_close": 96.16,
       "unit": "美元/桶",
       "date": "2026-09-29",
-      "source": "https://finance.yahoo.com/quote/BZ%3DF"
+      "source": "https://finance.yahoo.com/quote/BZ%3DF",
+      "stale": true,
+      "note": "纽约 2026-09-29 19:43 由迟到的 GitHub 定时（run 36646698778）抓取，已过 18:00 期货换时段：价格和涨跌属于下一交易时段（涨跌相对 9/29 结算价），不是 9/29 当天的涨跌。"
     },
     "wti": {
       "name": "WTI 原油（近月期货）",
@@ -422,7 +435,9 @@
       "prev_close": 89.38,
       "unit": "美元/桶",
       "date": "2026-09-29",
-      "source": "https://finance.yahoo.com/quote/CL%3DF"
+      "source": "https://finance.yahoo.com/quote/CL%3DF",
+      "stale": true,
+      "note": "纽约 2026-09-29 19:43 由迟到的 GitHub 定时（run 36646698778）抓取，已过 18:00 期货换时段：价格和涨跌属于下一交易时段（涨跌相对 9/29 结算价），不是 9/29 当天的涨跌。"
     },
     "gold": {
       "name": "黄金（COMEX 近月期货）",
@@ -433,7 +448,9 @@
       "prev_close": 4179.7,
       "unit": "美元/盎司",
       "date": "2026-09-29",
-      "source": "https://finance.yahoo.com/quote/GC%3DF"
+      "source": "https://finance.yahoo.com/quote/GC%3DF",
+      "stale": true,
+      "note": "纽约 2026-09-29 19:43 由迟到的 GitHub 定时（run 36646698778）抓取，已过 18:00 期货换时段：价格和涨跌属于下一交易时段（涨跌相对 9/29 结算价），不是 9/29 当天的涨跌。"
     }
   },
   "fx": {
@@ -446,7 +463,9 @@
       "prev_close": 0.7016,
       "unit": "美元/澳元",
       "date": "2026-09-30",
-      "source": "https://finance.yahoo.com/quote/AUDUSD%3DX"
+      "source": "https://finance.yahoo.com/quote/AUDUSD%3DX",
+      "stale": true,
+      "note": "纽约 2026-09-29 19:43 由迟到的 GitHub 定时（run 36646698778）抓取，数值已是 2026-09-30 的报价，属于下一交易日，不是 9/29 收盘。"
     },
     "usd_cny": {
       "name": "USD/CNY",
@@ -468,7 +487,9 @@
       "prev_close": 7.8447,
       "unit": "港元/美元",
       "date": "2026-09-30",
-      "source": "https://finance.yahoo.com/quote/HKD%3DX"
+      "source": "https://finance.yahoo.com/quote/HKD%3DX",
+      "stale": true,
+      "note": "纽约 2026-09-29 19:43 由迟到的 GitHub 定时（run 36646698778）抓取，数值已是 2026-09-30 的报价，属于下一交易日，不是 9/29 收盘。"
     }
   },
   "asia_pacific_indices": {
