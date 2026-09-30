@@ -1,9 +1,11 @@
 {
   "date": "2026-09-30",
-  "last_run_at_utc": "2026-09-29T23:48:47Z",
-  "last_run_at_sydney": "2026-09-30 09:48:47 AEST",
-  "last_trigger": "manual",
-  "core_ok": false,
+  "last_run_at_utc": "2026-09-30T00:44:53Z",
+  "last_run_at_sydney": "2026-09-30 10:44:53 AEST",
+  "last_trigger": "primary",
+  "run_id": 36651803672,
+  "run_attempt": 1,
+  "core_ok": true,
   "note": "公开榜单试跑。core=true 的榜单全部 ok 才算当天成功；港股榜为试探。",
   "boards": {
     "em_popularity_a": {
@@ -11,14 +13,18 @@
       "core": true,
       "experimental": false,
       "source": "https://guba.eastmoney.com/rank/",
-      "run_at_utc": "2026-09-29T23:48:47Z",
-      "status": "partial",
+      "run_at_utc": "2026-09-30T00:44:53Z",
+      "run_id": 36651803672,
+      "status": "ok",
       "rows": 100,
-      "attempts": 4,
+      "attempts": 3,
       "file": "data/hot/2026-09-30/em_popularity_a.csv",
-      "error": "名称接口失败（排名和代码已保存）: 第1次 FetchError: HTTP 502: '<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin' | 第2次 FetchError: HTTP 502: '<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin' | 第3次 FetchError: HTTP 502: '<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin'",
-      "error_kind": "http_5xx",
-      "seconds": 13.67
+      "error": null,
+      "error_kind": null,
+      "retry_errors": [
+        "名称接口 第1次 ReadTimeout: HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Read timed out. (read timeout=30)"
+      ],
+      "seconds": 36.37
     },
     "xq_follow_cn": {
       "desc": "雪球热股榜-关注（沪深）",
