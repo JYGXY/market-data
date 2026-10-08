@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """每日公开市场行情抓取。
 
-只抓公开的指数、利率、商品、汇率，以及按市值排名的美股前 30 公司。
-不接受任何外部清单输入，不抓任何自选个股。
+只抓公开的指数、利率、商品、汇率、按市值排名的美股前 30 公司，
+以及 S&P/ASX 300 指数的全部成分股（名单见 data/asx300_constituents.json，每季度更新）。
+不接受任何外部清单输入，不抓任何自选个股，也不单独标注或排序任何个股。
 
 输出: data/YYYY-MM-DD.json（纽约日期）和 data/latest.json
 
@@ -18,6 +19,8 @@ import json
 import os
 import sys
 import time
+from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
@@ -38,6 +41,10 @@ YAHOO_SCREENER = ("https://query1.finance.yahoo.com/v1/finance/screener/predefin
 YAHOO_SCREENER_PAGE = "https://finance.yahoo.com/research-hub/screener/largest_market_cap/"
 FRED_CSV = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={sid}"
 FRED_PAGE = "https://fred.stlouisfed.org/series/{sid}"
+
+ASX300_FILE = DATA_DIR / "asx300_constituents.json"
+ASX300_WORKERS = 4          # 并发请求数，保持克制
+ASX300_MIN_PRICED = 0.95    # 有价格的成分股低于这个比例时，整段记为缺失（complete=false）
 
 # 美国主要交易所代码（排除 OTC/粉单）
 US_EXCHANGES = {"NMS", "NGM", "NCM", "NYQ", "ASE", "PCX", "BTS"}
@@ -239,6 +246,108 @@ def us_top30():
             "note": "按 Yahoo 实时市值排序，仅限美国主要交易所上市股票（含 ADR），同一公司多类股只计一次"}
 
 
+def load_asx300_constituents(path=None):
+    """读取成分股名单文件；返回 (doc, None) 或 (None, 原因)。"""
+    path = path or ASX300_FILE
+    try:
+        doc = json.loads(Path(path).read_text(encoding="utf-8"))
+        codes = [c["code"] for c in doc["constituents"]]
+        if not codes:
+            return None, "成分股名单为空"
+        return doc, None
+    except FileNotFoundError:
+        return None, f"缺少成分股名单文件 {Path(path).name}"
+    except (ValueError, KeyError, TypeError) as e:
+        return None, f"成分股名单文件格式错误: {type(e).__name__}: {e}"[:300]
+
+
+def asx_daily_bars(code):
+    """一只 ASX 股票最近的已完成日线：返回 [(本地日期, 收盘, 成交量)]，按日期升序。
+
+    盘中那根不算；同一天多根（盘中开盘那根 + 实时那根）取最后一个非空收盘、最大成交量。
+    成交量为 None（数据源未给）时视为有成交。
+    """
+    res = get(YAHOO_CHART.format(sym=quote(code + ".AX"))).json()["chart"]["result"][0]
+    meta = res["meta"]
+    tz = ZoneInfo(meta["exchangeTimezoneName"])
+    q = res["indicators"]["quote"][0]
+    reg = (meta.get("currentTradingPeriod") or {}).get("regular") or {}
+    now = time.time()
+    in_session = bool(reg) and reg["start"] <= now < reg["end"] + 900
+    days = {}
+    for t, c, v in zip(res.get("timestamp") or [], q.get("close") or [], q.get("volume") or []):
+        if in_session and t >= reg["start"]:
+            continue
+        d = datetime.fromtimestamp(t, tz).date().isoformat()
+        pc, pv = days.get(d, (None, None))
+        days[d] = (c if c is not None else pc,
+                   v if pv is None else (pv if v is None else max(pv, v)))
+    return [(d, c, v) for d, (c, v) in sorted(days.items())]
+
+
+def asx_item(code, name, bars, session):
+    """把日线整理成一项。session 是本次的参考交易日（大多数成分股的最新成交日）。"""
+    page = YAHOO_PAGE.format(sym=quote(code + ".AX"))
+    traded = [(d, c) for d, c, v in bars if c is not None and (v is None or v > 0)]
+    item = {"symbol": code, "name": name, "value": None, "prev_close": None,
+            "change": None, "change_pct": None, "date": session, "source": page}
+    today = [c for d, c in traded if d == session]
+    before = [(d, c) for d, c in traded if d < session]
+    if today and before:
+        last, prev = today[-1], before[-1][1]
+        item.update(value=round(last, 4), prev_close=round(prev, 4),
+                    change=round(last - prev, 4), change_pct=round((last / prev - 1) * 100, 3))
+        return item
+    if today:  # 有成交，只是缺前一成交日（如新上市）：给收盘价，不算 stale
+        item["value"] = round(today[-1], 4)
+        item["note"] = f"数据源缺少 {session} 之前的成交日，无法计算涨跌"
+        return item
+    # 停牌或当日无成交：不填 0，value 为 null，标 stale 并写原因；附上最后成交日供参考
+    item["stale"] = True
+    bar = next(((c, v) for d, c, v in bars if d == session), None)
+    last = before[-1] if before else None
+    why = (f"{session} 无成交（成交量为 0）" if bar and bar[1] == 0
+           else f"{session} 无交易数据（可能停牌）")
+    item["note"] = why + (f"；最后成交日 {last[0]}，收盘 {round(last[1], 4)}" if last else "")
+    if last:
+        item["last_trade_date"], item["last_close"] = last[0], round(last[1], 4)
+    return item
+
+
+def asx300():
+    doc, err = load_asx300_constituents()
+    base = {"index": "S&P/ASX 300", "items": None,
+            "note": "指数全部成分股，按代码字母顺序排列；价格为最近一个已收盘的 ASX 交易日（date）"}
+    if err:
+        return {**base, "error": err}
+    base.update(constituents_as_of=doc.get("as_of"), constituents_source=doc.get("source"))
+    names = {c["code"]: c.get("name") or c["code"] for c in doc["constituents"]}
+
+    def one(code):
+        try:
+            return code, asx_daily_bars(code), None
+        except Exception as e:  # noqa: BLE001
+            return code, None, f"抓取失败: {type(e).__name__}: {e}"[:300]
+
+    with ThreadPoolExecutor(ASX300_WORKERS) as ex:
+        results = list(ex.map(one, sorted(names)))
+    # 参考交易日：各成分股最新成交日的众数（个别停牌股不影响）
+    latest = [next((d for d, c, v in reversed(b) if c is not None and (v is None or v > 0)), None)
+              for _, b, _ in results if b]
+    latest = [d for d in latest if d]
+    session = Counter(latest).most_common(1)[0][0] if latest else None
+    items = []
+    for code, bars, ferr in results:
+        if ferr or session is None:
+            items.append({"symbol": code, "name": names[code], "value": None, "prev_close": None,
+                          "change": None, "change_pct": None, "date": session,
+                          "source": YAHOO_PAGE.format(sym=quote(code + ".AX")), "stale": True,
+                          "note": ferr or "数据源未返回有效日线", "error": ferr or "数据源未返回有效日线"})
+        else:
+            items.append(asx_item(code, names[code], bars, session))
+    return {**base, "session_date": session, "items": items}
+
+
 def build():
     now = datetime.now(timezone.utc)
     return {
@@ -255,6 +364,7 @@ def build():
         "commodities": {k: yahoo_daily(k, n, s, u) for k, n, s, u in COMMODITIES},
         "fx": {k: yahoo_daily(k, n, s, u) for k, n, s, u in FX},
         "asia_pacific_indices": {k: yahoo_daily(k, n, s, u, True) for k, n, s, u in ASIA_INDICES},
+        "asx300": asx300(),
     }
 
 
@@ -270,13 +380,34 @@ def missing_items(data):
         if len(top) < 30:
             missing.append(f"us_top30_by_market_cap (只取到 {len(top)} 家)")
         missing += [f"us_top30_by_market_cap.{i['symbol']}" for i in top if i["value"] is None]
+    # ASX 300：个股停牌/无成交/取不到记在 stale；整段取不到或有价格的不足 95% 才算缺失
+    asx = data.get("asx300")
+    if asx is not None:
+        items = asx.get("items")
+        if not items:
+            missing.append("asx300")
+        else:
+            priced = sum(1 for i in items if i["value"] is not None)
+            if priced < ASX300_MIN_PRICED * len(items):
+                missing.append(f"asx300 (只取到 {priced}/{len(items)} 只的价格)")
     return missing
 
 
+def stale_entries(data):
+    """数值不是最近一个已结束交易时段的项，附原因。不影响 complete。
+
+    返回 [(路径, 原因)]：指数/商品/汇率是数据源缺收盘；ASX 300 个股是停牌、当日无成交或取不到。
+    """
+    out = [(f"{sec}.{k}", v.get("note") or "")
+           for sec in ("us_indices", "rates", "commodities", "fx", "asia_pacific_indices")
+           for k, v in data[sec].items() if v.get("stale")]
+    out += [(f"asx300.{i['symbol']}", i.get("note") or "")
+            for i in (data.get("asx300") or {}).get("items") or [] if i.get("stale")]
+    return out
+
+
 def stale_items(data):
-    """数值不是最近一个已结束交易时段的项（数据源缺收盘）。不影响 complete。"""
-    return [f"{sec}.{k}" for sec in ("us_indices", "rates", "commodities", "fx", "asia_pacific_indices")
-            for k, v in data[sec].items() if v.get("stale")]
+    return [p for p, _ in stale_entries(data)]
 
 
 def run_info():
@@ -310,13 +441,14 @@ def main(argv=None):
                   "Use --force to override.", file=sys.stderr)
             return
     missing = missing_items(data)
+    stale = stale_entries(data)
     data = {"trading_date": day, "complete": not missing, "missing": missing,
-            "stale": stale_items(data), **run_info(), **data}
+            "stale": [p for p, _ in stale], "stale_reasons": dict(stale), **run_info(), **data}
     body = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
     target.write_text(body, encoding="utf-8")
     (DATA_DIR / "latest.json").write_text(body, encoding="utf-8")
     print(f"wrote data/{day}.json and data/latest.json (complete={not missing}, "
-          f"stale={data['stale']}, run_id={data['run_id']})", file=sys.stderr)
+          f"stale={len(data['stale'])}, run_id={data['run_id']})", file=sys.stderr)
 
 if __name__ == "__main__":
     main()

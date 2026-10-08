@@ -108,6 +108,7 @@ class TestMain(unittest.TestCase):
     def test_stale_list(self):
         d = self.run_main(stale=True)
         self.assertEqual(d["stale"], ["asia_pacific_indices.asx200"])
+        self.assertIn("asia_pacific_indices.asx200", d["stale_reasons"])
         self.assertTrue(d["complete"])      # stale 不影响 complete
 
     def test_no_overwrite_of_complete_file(self):
@@ -118,6 +119,107 @@ class TestMain(unittest.TestCase):
         self.assertEqual(day["run_id"], 1)
         d = self.run_main(argv=["--force"], env={"GITHUB_RUN_ID": "3"})   # force 覆盖
         self.assertEqual(d["run_id"], 3)
+
+
+def asx_chart(ts, closes, volumes, reg=None):
+    meta = {"exchangeTimezoneName": "Australia/Sydney", "instrumentType": "EQUITY"}
+    if reg:
+        meta["currentTradingPeriod"] = {"regular": {"start": reg[0], "end": reg[1]}}
+    return {"chart": {"result": [{"meta": meta, "timestamp": ts,
+                                  "indicators": {"quote": [{"close": closes, "volume": volumes}]}}]}}
+
+
+class TestAsx300Item(unittest.TestCase):
+    BARS = [("2026-10-05", 10.0, 100), ("2026-10-06", 10.5, 200)]
+
+    def test_normal(self):
+        i = fm.asx_item("AAA", "Alpha", self.BARS, "2026-10-06")
+        self.assertEqual((i["value"], i["prev_close"], i["change"], i["change_pct"], i["date"]),
+                         (10.5, 10.0, 0.5, 5.0, "2026-10-06"))
+        self.assertEqual(list(i)[:8], ["symbol", "name", "value", "prev_close", "change",
+                                       "change_pct", "date", "source"])
+        self.assertNotIn("stale", i)
+
+    def test_zero_volume_is_stale_not_zero(self):
+        bars = self.BARS + [("2026-10-07", 10.5, 0)]
+        i = fm.asx_item("AAA", "Alpha", bars, "2026-10-07")
+        self.assertIsNone(i["value"])
+        self.assertTrue(i["stale"])
+        self.assertIn("2026-10-07 无成交", i["note"])
+        self.assertEqual((i["last_trade_date"], i["last_close"]), ("2026-10-06", 10.5))
+
+    def test_missing_session_bar_is_suspension(self):
+        i = fm.asx_item("AAA", "Alpha", self.BARS, "2026-10-07")
+        self.assertIsNone(i["value"])
+        self.assertIn("可能停牌", i["note"])
+
+    def test_new_listing_has_price_but_no_change(self):
+        i = fm.asx_item("NEW", "New Co", [("2026-10-07", 3.0, 50)], "2026-10-07")
+        self.assertEqual((i["value"], i["change"]), (3.0, None))
+        self.assertNotIn("stale", i)
+
+
+class TestAsx300Section(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.file = Path(self.tmp.name) / "asx300_constituents.json"
+        self.file.write_text(json.dumps({"as_of": "2026-10-08", "source": "x", "constituents": [
+            {"code": "ZZZ", "name": "Zed"}, {"code": "BBB", "name": "Bee"},
+            {"code": "SUS", "name": "Suspended"}, {"code": "ERR", "name": "Broken"}]}))
+        self.p = mock.patch.object(fm, "ASX300_FILE", self.file)
+        self.p.start()
+
+    def tearDown(self):
+        self.p.stop()
+        self.tmp.cleanup()
+
+    def run_section(self, now=T[29] + 3600 * 12):
+        ts = [T[25], T[28], T[29]]
+
+        def fake_get(url, **kw):
+            if "ERR.AX" in url:
+                raise RuntimeError("404 Not Found")
+            if "SUS.AX" in url:
+                return Resp(asx_chart(ts[:2], [5.0, 5.0], [10, 20]))
+            return Resp(asx_chart(ts, [1.0, 2.0, 3.0], [10, 20, 30]))
+        with mock.patch.object(fm, "get", side_effect=fake_get), \
+                mock.patch.object(fm.time, "time", return_value=now):
+            return fm.asx300()
+
+    def test_only_constituents_sorted_by_code(self):
+        sec = self.run_section()
+        self.assertEqual([i["symbol"] for i in sec["items"]], ["BBB", "ERR", "SUS", "ZZZ"])
+        self.assertEqual(sec["session_date"], "2026-09-29")
+        self.assertNotIn("rank", sec["items"][0])
+
+    def test_suspension_and_errors_go_to_stale(self):
+        data = {k: {} for k in ("us_indices", "rates", "commodities", "fx", "asia_pacific_indices")}
+        data["us_top30_by_market_cap"] = {"items": [{"symbol": f"S{i}", "value": 1} for i in range(30)]}
+        data["asx300"] = self.run_section()
+        stale = dict(fm.stale_entries(data))
+        self.assertEqual(sorted(stale), ["asx300.ERR", "asx300.SUS"])
+        self.assertIn("可能停牌", stale["asx300.SUS"])
+        self.assertIn("404", stale["asx300.ERR"])
+        # 4 只里 2 只没价格，低于 95% -> 整段记缺失
+        self.assertEqual(fm.missing_items(data), ["asx300 (只取到 2/4 只的价格)"])
+
+    def test_in_session_bar_dropped(self):
+        # 9/29 盘中：那根不算，参考日退回 9/28
+        reg = (T[29], T[29] + 6 * 3600)
+        with mock.patch.object(fm, "get", return_value=Resp(asx_chart(
+                [T[25], T[28], T[29], T[29] + 3000], [1.0, 2.0, None, 2.5], [10, 20, 5, 5], reg))), \
+                mock.patch.object(fm.time, "time", return_value=T[29] + 3600):
+            bars = fm.asx_daily_bars("BBB")
+        self.assertEqual([b[0] for b in bars], ["2026-09-25", "2026-09-28"])
+
+    def test_missing_file(self):
+        self.file.unlink()
+        sec = fm.asx300()
+        self.assertIsNone(sec["items"])
+        data = {k: {} for k in ("us_indices", "rates", "commodities", "fx", "asia_pacific_indices")}
+        data["us_top30_by_market_cap"] = {"items": [{"symbol": f"S{i}", "value": 1} for i in range(30)]}
+        data["asx300"] = sec
+        self.assertEqual(fm.missing_items(data), ["asx300"])
 
 
 if __name__ == "__main__":
