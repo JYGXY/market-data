@@ -18,14 +18,16 @@ T = {d: 1790208000 + (d - 24) * DAY for d in range(22, 31)}
 
 
 class Resp:
-    def __init__(self, payload):
+    def __init__(self, payload, status_code=200):
         self._p = payload
+        self.status_code = status_code
 
     def json(self):
         return self._p
 
     def raise_for_status(self):
-        pass
+        if self.status_code >= 400:
+            raise fm.requests.HTTPError(f"{self.status_code} Client Error")
 
 
 def chart(ts, closes, meta_extra=None):
@@ -104,7 +106,7 @@ class TestMain(unittest.TestCase):
                                "RUN_TRIGGER": "workflow_dispatch:full"})
         self.assertEqual((d["run_id"], d["run_attempt"], d["run_trigger"]),
                          (123, 2, "workflow_dispatch:full"))
-        self.assertEqual(list(d)[:4], ["trading_date", "complete", "missing", "stale"])
+        self.assertEqual(list(d)[:5], ["trading_date", "complete", "missing", "asx300_complete", "stale"])
         d = self.run_main(argv=["--force"])
         self.assertEqual((d["run_id"], d["run_trigger"]), (None, "local"))
 
@@ -171,6 +173,7 @@ class TestAsx300Section(unittest.TestCase):
             {"code": "SUS", "name": "Suspended"}, {"code": "ERR", "name": "Broken"}]}))
         self.p = mock.patch.object(fm, "ASX300_FILE", self.file)
         self.p.start()
+        fm.RATE.reset()
 
     def tearDown(self):
         self.p.stop()
@@ -204,8 +207,10 @@ class TestAsx300Section(unittest.TestCase):
         self.assertIn("可能停牌", stale["asx300.SUS"])
         self.assertIn("404", stale["asx300.ERR"])
         self.assertTrue(stale["asx300.ERR"].startswith("取不到：重试 3 次后仍失败"))
-        # 4 只里 2 只没价格，低于 95% -> 整段记缺失
-        self.assertEqual(fm.missing_items(data), ["asx300 (只取到 2/4 只的价格)"])
+        # 4 只里 2 只没价格，低于 95% -> asx300_complete=false；顶层 missing 不受影响
+        self.assertEqual(fm.missing_items(data), [])
+        self.assertFalse(fm.asx300_complete(data))
+        self.assertEqual((data["asx300"]["priced"], data["asx300"]["total"]), (2, 4))
 
     def test_retry_then_unavailable(self):
         # 前两次失败、第三次成功 -> 正常取到；一直失败 -> stale「取不到」，value 为 null，不填 0、不带旧价
@@ -264,7 +269,99 @@ class TestAsx300Section(unittest.TestCase):
         data = {k: {} for k in ("us_indices", "rates", "commodities", "fx", "asia_pacific_indices")}
         data["us_top30_by_market_cap"] = {"items": [{"symbol": f"S{i}", "value": 1} for i in range(30)]}
         data["asx300"] = sec
-        self.assertEqual(fm.missing_items(data), ["asx300"])
+        self.assertEqual(fm.missing_items(data), [])
+        self.assertFalse(fm.asx300_complete(data))
+
+
+class TestRateLimit(unittest.TestCase):
+    def setUp(self):
+        fm.RATE.reset()
+        self.sleeps = []
+        self.p = [mock.patch.object(fm.time, "sleep", self.sleeps.append),
+                  mock.patch.object(fm, "ASX300_INTERVAL", 0)]
+        for p in self.p:
+            p.start()
+
+    def tearDown(self):
+        for p in self.p:
+            p.stop()
+        fm.RATE.reset()
+
+    def test_429_backs_off_30_then_60(self):
+        seq = [Resp({}, 429), Resp({}, 429), Resp({"ok": 1})]
+        with mock.patch.object(fm.requests, "get", side_effect=seq):
+            self.assertEqual(fm.get("u").json(), {"ok": 1})
+        self.assertEqual(self.sleeps, [30, 60])
+        self.assertEqual(fm.RATE.n429, 2)
+
+    def test_429_after_backoff_gives_up(self):
+        with mock.patch.object(fm.requests, "get", return_value=Resp({}, 429)):
+            with self.assertRaises(fm.requests.HTTPError):
+                fm.get("u")
+        self.assertEqual(self.sleeps, [30, 60])
+
+    def test_interval_between_requests(self):
+        with mock.patch.object(fm.time, "monotonic", return_value=100.0):
+            for _ in range(3):
+                fm.RATE.wait_turn(0.3)
+        self.assertEqual([round(x, 6) for x in self.sleeps], [0.3, 0.6])
+
+    def test_abort_after_more_than_20_429s(self):
+        with tempfile.TemporaryDirectory() as d:
+            f = Path(d) / "c.json"
+            f.write_text(json.dumps({"constituents": [{"code": f"C{i:02d}", "name": "x"} for i in range(12)]}))
+            calls = []
+
+            def always_429(url, **kw):
+                calls.append(url)
+                return Resp({}, 429)
+            with mock.patch.object(fm, "ASX300_FILE", f), mock.patch.object(fm, "ASX300_WORKERS", 1), \
+                    mock.patch.object(fm.requests, "get", side_effect=always_429):
+                sec = fm.asx300()
+        # 每只最多 3 次（1 + 30s + 60s），第 21 次 429 触发中止；之后不再发请求
+        self.assertEqual(len(calls), 21)
+        notes = [i["note"] for i in sec["items"]]
+        self.assertEqual(notes.count("取不到：限流中止"), 12 - 6)
+        self.assertTrue(all(n.startswith("取不到") for n in notes))
+        self.assertTrue(all(i["value"] is None and i["stale"] for i in sec["items"]))
+        self.assertIn("rate_limit_note", sec)
+
+    def test_already_aborted_makes_no_request(self):
+        fm.RATE.n429 = fm.RATE_LIMIT_ABORT + 1
+        with mock.patch.object(fm.requests, "get") as g:
+            with self.assertRaises(fm.RateLimitAbort):
+                fm.asx_daily_bars("AAA")
+        g.assert_not_called()
+
+
+class TestDecoupling(unittest.TestCase):
+    def test_core_first_then_asx300(self):
+        order = []
+        item = {"value": 1.0, "date": "2026-10-08"}
+        with mock.patch.object(fm, "yahoo_daily", lambda k, *a, **kw: order.append(k) or item), \
+                mock.patch.object(fm, "fred_latest", lambda *a: order.append("fred") or item), \
+                mock.patch.object(fm, "us_top30", lambda: order.append("top30") or {"items": []}), \
+                mock.patch.object(fm, "asx300", lambda: order.append("asx300") or {"items": None}):
+            fm.build()
+        self.assertEqual(order[-1], "asx300")
+        self.assertEqual(order.count("asx300"), 1)
+
+    def test_asx300_failure_does_not_affect_complete(self):
+        with tempfile.TemporaryDirectory() as d:
+            item = {"value": 1.0, "date": "2026-10-08"}
+            data = {"generated_at_utc": "x", "us_indices": {"sp500": item},
+                    "us_top30_by_market_cap": {"items": [{"symbol": f"S{i}", "value": 1} for i in range(30)]},
+                    "rates": {}, "commodities": {}, "fx": {}, "asia_pacific_indices": {},
+                    "asx300": {"items": [{"symbol": "AAA", "value": None, "stale": True,
+                                          "note": "取不到：限流中止"}]}}
+            with mock.patch.object(fm, "DATA_DIR", Path(d)), mock.patch.object(fm, "build", lambda: data), \
+                    mock.patch.dict(fm.os.environ, {}, clear=True):
+                fm.main([])
+            out = json.loads((Path(d) / "latest.json").read_text(encoding="utf-8"))
+        self.assertTrue(out["complete"])
+        self.assertEqual(out["missing"], [])
+        self.assertFalse(out["asx300_complete"])
+        self.assertEqual(out["stale_reasons"], {"asx300.AAA": "取不到：限流中止"})
 
 
 if __name__ == "__main__":

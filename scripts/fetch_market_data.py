@@ -18,6 +18,7 @@ import io
 import json
 import os
 import sys
+import threading
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -44,8 +45,11 @@ FRED_PAGE = "https://fred.stlouisfed.org/series/{sid}"
 
 ASX300_FILE = DATA_DIR / "asx300_constituents.json"
 ASX300_WORKERS = 4          # 并发请求数，保持克制
-ASX300_MIN_PRICED = 0.95    # 有价格的成分股低于这个比例时，整段记为缺失（complete=false）
-ASX300_TRIES = 3            # 单只股票请求失败时共尝试几次（间隔 2s、4s）
+ASX300_INTERVAL = 0.3       # 相邻两次请求之间至少间隔的秒数（所有并发合计）
+ASX300_MIN_PRICED = 0.95    # 有价格的成分股达到这个比例时 asx300_complete=true（不影响顶层 complete）
+ASX300_TRIES = 3            # 单只股票请求失败（非 429）时共尝试几次（间隔 2s、4s）
+RATE_LIMIT_BACKOFF = (30, 60)  # 遇到 HTTP 429 时依次等待的秒数，用完仍是 429 则放弃该请求
+RATE_LIMIT_ABORT = 20       # 一次运行内 429 累计超过这个次数，停止抓取剩余的 asx300
 
 # 美国主要交易所代码（排除 OTC/粉单）
 US_EXCHANGES = {"NMS", "NGM", "NCM", "NYQ", "ASE", "PCX", "BTS"}
@@ -73,17 +77,84 @@ FX = [
 ]
 
 
-def get(url, tries=3, timeout=30):
-    last = None
-    for i in range(tries):
+class RateLimitAbort(Exception):
+    """本次运行 429 次数已超过上限，停止发出 asx300 请求。"""
+
+
+class RateState:
+    """一次运行内的限流状态：累计 429 次数、请求间隔。多线程共用。"""
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.reset()
+
+    def reset(self):
+        with self.lock:
+            self.n429 = 0
+            self.next_t = 0.0
+
+    def count_429(self):
+        with self.lock:
+            self.n429 += 1
+
+    @property
+    def aborted(self):
+        return self.n429 > RATE_LIMIT_ABORT
+
+    def wait_turn(self, interval):
+        with self.lock:
+            now = time.monotonic()
+            t = max(now, self.next_t)
+            self.next_t = t + interval
+        if t > now:
+            time.sleep(t - now)
+
+
+RATE = RateState()
+
+
+def get(url, tries=3, timeout=30, interval=0.0, abortable=False):
+    """GET，失败重试。
+
+    - HTTP 429：计入本次运行的 429 次数，按 RATE_LIMIT_BACKOFF 退避后重试，用完仍是 429 则抛出；
+    - 其他错误：共尝试 tries 次，间隔 2s、4s……；
+    - interval：与上一次请求（所有线程合计）至少间隔的秒数；
+    - abortable：429 累计超过上限后不再发请求，抛 RateLimitAbort（仅 asx300 使用）。
+    """
+    backoff = list(RATE_LIMIT_BACKOFF)
+    fails = 0
+    while True:
+        if abortable and RATE.aborted:
+            raise RateLimitAbort()
+        if interval:
+            RATE.wait_turn(interval)
+            if abortable and RATE.aborted:  # 排队期间可能已中止
+                raise RateLimitAbort()
         try:
             r = requests.get(url, headers=UA, timeout=timeout)
+        except Exception:  # noqa: BLE001
+            fails += 1
+            if fails >= tries:
+                raise
+            time.sleep(2 * fails)
+            continue
+        if r.status_code == 429:
+            RATE.count_429()
+            if abortable and RATE.aborted:
+                raise RateLimitAbort()
+            if not backoff:
+                r.raise_for_status()
+            time.sleep(backoff.pop(0))
+            continue
+        try:
             r.raise_for_status()
-            return r
-        except Exception as e:  # noqa: BLE001
-            last = e
-            time.sleep(2 * (i + 1))
-    raise last
+        except Exception:  # noqa: BLE001
+            fails += 1
+            if fails >= tries:
+                raise
+            time.sleep(2 * fails)
+            continue
+        return r
 
 
 def null_item(name, unit, source, reason, **extra):
@@ -268,7 +339,8 @@ def asx_daily_bars(code):
     盘中那根不算；同一天多根（盘中开盘那根 + 实时那根）取最后一个非空收盘、最大成交量。
     成交量为 None（数据源未给）时视为有成交。
     """
-    chart = get(YAHOO_CHART.format(sym=quote(code + ".AX")), tries=ASX300_TRIES).json()["chart"]
+    chart = get(YAHOO_CHART.format(sym=quote(code + ".AX")), tries=ASX300_TRIES,
+                interval=ASX300_INTERVAL, abortable=True).json()["chart"]
     if not chart.get("result"):  # 如退市/代码变更：数据源返回 200 但没有结果
         raise RuntimeError((chart.get("error") or {}).get("description") or "数据源未返回结果")
     res = chart["result"][0]
@@ -331,6 +403,8 @@ def asx300():
         # 取不到（重试后仍失败、或数据源没有日线）与停牌/无成交分开写原因；value 为 null，不填 0、不沿用旧价
         try:
             bars = asx_daily_bars(code)
+        except RateLimitAbort:
+            return code, None, "取不到：限流中止"
         except Exception as e:  # noqa: BLE001
             return code, None, f"取不到：重试 {ASX300_TRIES} 次后仍失败（{type(e).__name__}: {e}）"[:300]
         if not bars:
@@ -354,12 +428,19 @@ def asx300():
                           "error": ferr or "取不到：所有成分股都没有有效日线"})
         else:
             items.append(asx_item(code, names[code], bars, session))
-    return {**base, "session_date": session, "items": items}
+    priced = sum(1 for i in items if i["value"] is not None)
+    out = {**base, "session_date": session, "priced": priced, "total": len(items), "items": items}
+    if RATE.aborted:
+        out["rate_limit_note"] = (f"本次运行 HTTP 429 累计 {RATE.n429} 次，超过 {RATE_LIMIT_ABORT} 次，"
+                                  "剩余成分股停止抓取，记为“取不到：限流中止”")
+    return out
 
 
 def build():
+    # 先取完所有原有核心项，再取 asx300：asx300 请求多，即使触发限流也不影响核心项
+    RATE.reset()
     now = datetime.now(timezone.utc)
-    return {
+    data = {
         "generated_at_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "generated_at_new_york": now.astimezone(NY).strftime("%Y-%m-%d %H:%M %Z"),
         "disclaimer": "仅含公开市场数据。取不到的值为 null，并在 error 字段注明原因。",
@@ -373,8 +454,9 @@ def build():
         "commodities": {k: yahoo_daily(k, n, s, u) for k, n, s, u in COMMODITIES},
         "fx": {k: yahoo_daily(k, n, s, u) for k, n, s, u in FX},
         "asia_pacific_indices": {k: yahoo_daily(k, n, s, u, True) for k, n, s, u in ASIA_INDICES},
-        "asx300": asx300(),
     }
+    data["asx300"] = asx300()
+    return data
 
 
 def missing_items(data):
@@ -389,17 +471,17 @@ def missing_items(data):
         if len(top) < 30:
             missing.append(f"us_top30_by_market_cap (只取到 {len(top)} 家)")
         missing += [f"us_top30_by_market_cap.{i['symbol']}" for i in top if i["value"] is None]
-    # ASX 300：个股停牌/无成交/取不到记在 stale；整段取不到或有价格的不足 95% 才算缺失
-    asx = data.get("asx300")
-    if asx is not None:
-        items = asx.get("items")
-        if not items:
-            missing.append("asx300")
-        else:
-            priced = sum(1 for i in items if i["value"] is not None)
-            if priced < ASX300_MIN_PRICED * len(items):
-                missing.append(f"asx300 (只取到 {priced}/{len(items)} 只的价格)")
+    # asx300 不计入：它的成败只体现在 asx300_complete，不影响顶层 complete
     return missing
+
+
+def asx300_complete(data):
+    """asx300 有价格的成分股 ≥ 95% 为 true；名单缺失或整段取不到为 false。"""
+    items = (data.get("asx300") or {}).get("items")
+    if not items:
+        return False
+    priced = sum(1 for i in items if i["value"] is not None)
+    return priced >= ASX300_MIN_PRICED * len(items)
 
 
 def stale_entries(data):
@@ -452,11 +534,13 @@ def main(argv=None):
     missing = missing_items(data)
     stale = stale_entries(data)
     data = {"trading_date": day, "complete": not missing, "missing": missing,
+            "asx300_complete": asx300_complete(data),
             "stale": [p for p, _ in stale], "stale_reasons": dict(stale), **run_info(), **data}
     body = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
     target.write_text(body, encoding="utf-8")
     (DATA_DIR / "latest.json").write_text(body, encoding="utf-8")
     print(f"wrote data/{day}.json and data/latest.json (complete={not missing}, "
+          f"asx300_complete={data['asx300_complete']}, "
           f"stale={len(data['stale'])}, run_id={data['run_id']})", file=sys.stderr)
 
 if __name__ == "__main__":
