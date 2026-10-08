@@ -1,0 +1,1206 @@
+{
+  "index": "S&P/ASX 300",
+  "as_of": "2026-10-08",
+  "fetched_at_utc": "2026-10-08T01:04:09Z",
+  "source": "https://www.tradingview.com/symbols/ASX-XKO/components/",
+  "note": "指数全部成分股，按代码字母顺序排列；每季度（3/6/9/12 月调整生效后）更新一次",
+  "count": 299,
+  "constituents": [
+    {
+      "code": "360",
+      "name": "Life360, Inc. Shs Chess Depository Interests Repr 3 Sh"
+    },
+    {
+      "code": "4DX",
+      "name": "4DMedical Ltd."
+    },
+    {
+      "code": "A2M",
+      "name": "a2 Milk Company Limited"
+    },
+    {
+      "code": "A4N",
+      "name": "Alpha HPA Limited"
+    },
+    {
+      "code": "AAI",
+      "name": "Alcoa Corporation shs Chess Depository Interests Repr 1 Sh"
+    },
+    {
+      "code": "ABB",
+      "name": "Aussie Broadband Ltd."
+    },
+    {
+      "code": "ABG",
+      "name": "Abacus Group"
+    },
+    {
+      "code": "ACL",
+      "name": "Australian Clinical Labs Ltd"
+    },
+    {
+      "code": "AEF",
+      "name": "Australian Ethical Investment Ltd"
+    },
+    {
+      "code": "AEL",
+      "name": "Amplitude Energy Limited"
+    },
+    {
+      "code": "AGL",
+      "name": "AGL Energy Limited"
+    },
+    {
+      "code": "AIA",
+      "name": "Auckland International Airport Limited"
+    },
+    {
+      "code": "ALD",
+      "name": "Ampol Limited"
+    },
+    {
+      "code": "ALK",
+      "name": "Alkane Resources Ltd"
+    },
+    {
+      "code": "ALL",
+      "name": "Aristocrat Leisure Limited"
+    },
+    {
+      "code": "ALQ",
+      "name": "ALS Ltd."
+    },
+    {
+      "code": "ALX",
+      "name": "Atlas Arteria"
+    },
+    {
+      "code": "AMC",
+      "name": "Amcor PLC Shs Chess Depository Interests"
+    },
+    {
+      "code": "AMP",
+      "name": "AMP Limited"
+    },
+    {
+      "code": "ANN",
+      "name": "Ansell Limited"
+    },
+    {
+      "code": "ANZ",
+      "name": "ANZ Group Holdings Limited"
+    },
+    {
+      "code": "AOV",
+      "name": "Amotiv Limited"
+    },
+    {
+      "code": "APA",
+      "name": "APA Group"
+    },
+    {
+      "code": "APE",
+      "name": "Eagers Automotive Limited"
+    },
+    {
+      "code": "APZ",
+      "name": "Aspen Group Limited"
+    },
+    {
+      "code": "ARB",
+      "name": "ARB Corporation Limited"
+    },
+    {
+      "code": "ARF",
+      "name": "Arena REIT"
+    },
+    {
+      "code": "ARU",
+      "name": "Arafura Rare Earths Limited"
+    },
+    {
+      "code": "ASB",
+      "name": "Austal Limited"
+    },
+    {
+      "code": "ASX",
+      "name": "ASX Limited"
+    },
+    {
+      "code": "AUB",
+      "name": "AUB Group Limited"
+    },
+    {
+      "code": "AYA",
+      "name": "Artrya Limited"
+    },
+    {
+      "code": "AZJ",
+      "name": "Aurizon Holdings Ltd."
+    },
+    {
+      "code": "BC8",
+      "name": "Black Cat Syndicate Ltd."
+    },
+    {
+      "code": "BEN",
+      "name": "Bendigo & Adelaide Bank Ltd."
+    },
+    {
+      "code": "BGA",
+      "name": "Bega Cheese Limited"
+    },
+    {
+      "code": "BGL",
+      "name": "Bellevue Gold Limited"
+    },
+    {
+      "code": "BHP",
+      "name": "BHP Group Ltd"
+    },
+    {
+      "code": "BMN",
+      "name": "Bannerman Energy Ltd"
+    },
+    {
+      "code": "BNZ",
+      "name": "Benz Mining Corp. Shs Chess Depository Interests Repr 1 sh"
+    },
+    {
+      "code": "BOE",
+      "name": "Boss Energy Limited"
+    },
+    {
+      "code": "BOQ",
+      "name": "Bank of Queensland Limited"
+    },
+    {
+      "code": "BPT",
+      "name": "Beach Energy Limited"
+    },
+    {
+      "code": "BRE",
+      "name": "Brazilian Rare Earths Limited"
+    },
+    {
+      "code": "BRG",
+      "name": "Breville Group Limited"
+    },
+    {
+      "code": "BSL",
+      "name": "Bluescope Steel Limited"
+    },
+    {
+      "code": "BVS",
+      "name": "Bravura Solutions Limited"
+    },
+    {
+      "code": "BWP",
+      "name": "BWP Group"
+    },
+    {
+      "code": "BXB",
+      "name": "Brambles Limited"
+    },
+    {
+      "code": "CAR",
+      "name": "CAR Group Limited"
+    },
+    {
+      "code": "CAT",
+      "name": "Catapult Sports Ltd."
+    },
+    {
+      "code": "CBA",
+      "name": "Commonwealth Bank of Australia"
+    },
+    {
+      "code": "CBO",
+      "name": "Cobram Estate Olives Ltd."
+    },
+    {
+      "code": "CCL",
+      "name": "Cuscal Limited"
+    },
+    {
+      "code": "CCP",
+      "name": "Credit Corp Group Limited"
+    },
+    {
+      "code": "CDA",
+      "name": "Codan Limited"
+    },
+    {
+      "code": "CGF",
+      "name": "Challenger Limited"
+    },
+    {
+      "code": "CHC",
+      "name": "Charter Hall Group"
+    },
+    {
+      "code": "CHN",
+      "name": "Chalice Mining Limited"
+    },
+    {
+      "code": "CIA",
+      "name": "Champion Iron Ltd."
+    },
+    {
+      "code": "CIP",
+      "name": "Centuria Industrial REIT"
+    },
+    {
+      "code": "CKF",
+      "name": "Collins Foods Limited"
+    },
+    {
+      "code": "CLW",
+      "name": "Charter Hall Long WALE REIT"
+    },
+    {
+      "code": "CMM",
+      "name": "Capricorn Metals Ltd"
+    },
+    {
+      "code": "CMW",
+      "name": "Cromwell Property Group"
+    },
+    {
+      "code": "CNI",
+      "name": "Centuria Capital Group"
+    },
+    {
+      "code": "CNU",
+      "name": "Chorus Limited"
+    },
+    {
+      "code": "COH",
+      "name": "Cochlear Limited"
+    },
+    {
+      "code": "COL",
+      "name": "Coles Group Ltd."
+    },
+    {
+      "code": "CPU",
+      "name": "Computershare Limited"
+    },
+    {
+      "code": "CQE",
+      "name": "Charter Hall Social Infrastructure REIT"
+    },
+    {
+      "code": "CQR",
+      "name": "Charter Hall Retail REIT"
+    },
+    {
+      "code": "CSC",
+      "name": "Capstone Copper Corp. Shs Chess Depository Interests Repr 1 Sh"
+    },
+    {
+      "code": "CSL",
+      "name": "CSL Limited"
+    },
+    {
+      "code": "CU6",
+      "name": "Clarity Pharmaceuticals Ltd."
+    },
+    {
+      "code": "CUV",
+      "name": "Clinuvel Pharmaceuticals Limited"
+    },
+    {
+      "code": "CWY",
+      "name": "Cleanaway Waste Management Ltd."
+    },
+    {
+      "code": "CXO",
+      "name": "Core Lithium Ltd"
+    },
+    {
+      "code": "CYL",
+      "name": "Catalyst Metals Limited"
+    },
+    {
+      "code": "DBI",
+      "name": "Dalrymple Bay Infrastructure Ltd."
+    },
+    {
+      "code": "DDR",
+      "name": "Dicker Data Limited"
+    },
+    {
+      "code": "DGT",
+      "name": "Digico Infrastructure REIT"
+    },
+    {
+      "code": "DMP",
+      "name": "Domino's Pizza Enterprises Limited"
+    },
+    {
+      "code": "DNL",
+      "name": "Dyno Nobel Limited"
+    },
+    {
+      "code": "DOW",
+      "name": "Downer EDI Limited"
+    },
+    {
+      "code": "DPM",
+      "name": "DPM Metals Inc. Chess Depository Interests Repr 1 Sh"
+    },
+    {
+      "code": "DRO",
+      "name": "DroneShield Limited"
+    },
+    {
+      "code": "DRR",
+      "name": "Deterra Royalties Ltd"
+    },
+    {
+      "code": "DTL",
+      "name": "Data#3 Limited."
+    },
+    {
+      "code": "DVP",
+      "name": "Develop Global Limited"
+    },
+    {
+      "code": "DXI",
+      "name": "Dexus Industria REIT"
+    },
+    {
+      "code": "DXS",
+      "name": "Dexus"
+    },
+    {
+      "code": "DYL",
+      "name": "Deep Yellow Limited"
+    },
+    {
+      "code": "EBO",
+      "name": "EBOS Group Limited"
+    },
+    {
+      "code": "EDV",
+      "name": "Endeavour Group Ltd"
+    },
+    {
+      "code": "EIQ",
+      "name": "EchoIQ Limited"
+    },
+    {
+      "code": "ELD",
+      "name": "Elders Limited"
+    },
+    {
+      "code": "ELS",
+      "name": "Elsight Ltd."
+    },
+    {
+      "code": "ELV",
+      "name": "Elevra Lithium Limited"
+    },
+    {
+      "code": "EMR",
+      "name": "Emerald Resources NL"
+    },
+    {
+      "code": "EOS",
+      "name": "Electro Optic Systems Holdings Limited"
+    },
+    {
+      "code": "EQR",
+      "name": "EQ Resources Limited"
+    },
+    {
+      "code": "EQT",
+      "name": "EQT Holdings Ltd."
+    },
+    {
+      "code": "EVN",
+      "name": "Evolution Mining Limited"
+    },
+    {
+      "code": "EVT",
+      "name": "EVT Limited"
+    },
+    {
+      "code": "FBU",
+      "name": "Fletcher Building Limited"
+    },
+    {
+      "code": "FFM",
+      "name": "FireFly Metals Ltd"
+    },
+    {
+      "code": "FLT",
+      "name": "Flight Centre Travel Group Limited"
+    },
+    {
+      "code": "FMG",
+      "name": "Fortescue Ltd"
+    },
+    {
+      "code": "FPH",
+      "name": "Fisher & Paykel Healthcare Corporation Limited"
+    },
+    {
+      "code": "FPR",
+      "name": "FleetPartners Group Limited"
+    },
+    {
+      "code": "GDG",
+      "name": "Generation Development Group Limited"
+    },
+    {
+      "code": "GGP",
+      "name": "Greatland Resources Limited"
+    },
+    {
+      "code": "GLF",
+      "name": "Gemlife Communities Group"
+    },
+    {
+      "code": "GMD",
+      "name": "Genesis Minerals Limited"
+    },
+    {
+      "code": "GMG",
+      "name": "Goodman Group"
+    },
+    {
+      "code": "GNC",
+      "name": "Graincorp Limited Class A"
+    },
+    {
+      "code": "GNG",
+      "name": "GR Engineering Services Ltd"
+    },
+    {
+      "code": "GNP",
+      "name": "GenusPlus Group Ltd."
+    },
+    {
+      "code": "GOZ",
+      "name": "Growthpoint Properties Australia"
+    },
+    {
+      "code": "GPT",
+      "name": "GPT Group"
+    },
+    {
+      "code": "GQG",
+      "name": "GQG Partners, Inc. Shs Chess Depository Interests Repr 1 Sh"
+    },
+    {
+      "code": "GWA",
+      "name": "GWA Group Limited"
+    },
+    {
+      "code": "GYG",
+      "name": "Guzman y Gomez Ltd."
+    },
+    {
+      "code": "HDN",
+      "name": "HomeCo Daily Needs REIT"
+    },
+    {
+      "code": "HLI",
+      "name": "Helia Group Limited"
+    },
+    {
+      "code": "HMC",
+      "name": "HMC Capital Limited"
+    },
+    {
+      "code": "HSN",
+      "name": "Hansen Technologies Limited"
+    },
+    {
+      "code": "HUB",
+      "name": "HUB24 Limited"
+    },
+    {
+      "code": "HVN",
+      "name": "Harvey Norman Holdings Ltd"
+    },
+    {
+      "code": "IAG",
+      "name": "Insurance Australia Group Ltd"
+    },
+    {
+      "code": "IDX",
+      "name": "Integral Diagnostics Ltd"
+    },
+    {
+      "code": "IEL",
+      "name": "IDP Education Ltd."
+    },
+    {
+      "code": "IFT",
+      "name": "Infratil Limited"
+    },
+    {
+      "code": "IGO",
+      "name": "IGO Limited"
+    },
+    {
+      "code": "ILU",
+      "name": "Iluka Resources Limited"
+    },
+    {
+      "code": "IMD",
+      "name": "Imdex Ltd"
+    },
+    {
+      "code": "IMR",
+      "name": "Imricor Medical Systems, Inc. Shs Chess Depository Interests Repr 1 Sh"
+    },
+    {
+      "code": "INA",
+      "name": "Ingenia Communities Group"
+    },
+    {
+      "code": "ING",
+      "name": "Inghams Group Ltd."
+    },
+    {
+      "code": "IPH",
+      "name": "IPH Ltd."
+    },
+    {
+      "code": "IPX",
+      "name": "Iperionx Ltd."
+    },
+    {
+      "code": "IRE",
+      "name": "IRESS Limited"
+    },
+    {
+      "code": "JBH",
+      "name": "JB Hi-Fi Limited"
+    },
+    {
+      "code": "JDO",
+      "name": "Judo Capital Holdings Limited"
+    },
+    {
+      "code": "JHX",
+      "name": "James Hardie Industries PLC Chess Units of Foreign Securities"
+    },
+    {
+      "code": "KAR",
+      "name": "Karoon Energy Ltd"
+    },
+    {
+      "code": "KCN",
+      "name": "Kingsgate Consolidated Limited"
+    },
+    {
+      "code": "KLS",
+      "name": "Kelsian Group Limited"
+    },
+    {
+      "code": "L1G",
+      "name": "L1 Group Limited"
+    },
+    {
+      "code": "LIC",
+      "name": "Lifestyle Communities Ltd"
+    },
+    {
+      "code": "LIN",
+      "name": "Lindian Resources Limited"
+    },
+    {
+      "code": "LLC",
+      "name": "Lendlease Group"
+    },
+    {
+      "code": "LNW",
+      "name": "Light & Wonder, Inc. Shs Chess Depository Interests Repr 1 Sh"
+    },
+    {
+      "code": "LOV",
+      "name": "Lovisa Holdings Ltd."
+    },
+    {
+      "code": "LTR",
+      "name": "Liontown Limited"
+    },
+    {
+      "code": "LYC",
+      "name": "Lynas Rare Earths Limited"
+    },
+    {
+      "code": "MAF",
+      "name": "MA Financial Group Limited"
+    },
+    {
+      "code": "MAH",
+      "name": "Macmahon Holdings Limited"
+    },
+    {
+      "code": "MAQ",
+      "name": "Macquarie Technology Group Limited"
+    },
+    {
+      "code": "MFG",
+      "name": "Magellan Financial Group Ltd"
+    },
+    {
+      "code": "MGH",
+      "name": "MAAS Group Holdings Ltd."
+    },
+    {
+      "code": "MGR",
+      "name": "Mirvac Group"
+    },
+    {
+      "code": "MI6",
+      "name": "Minerals 260 Limited"
+    },
+    {
+      "code": "MIN",
+      "name": "Mineral Resources Limited"
+    },
+    {
+      "code": "MLX",
+      "name": "Metals X Limited"
+    },
+    {
+      "code": "MMS",
+      "name": "Mcmillan Shakespeare Limited"
+    },
+    {
+      "code": "MND",
+      "name": "Monadelphous Group Limited"
+    },
+    {
+      "code": "MP1",
+      "name": "Megaport Ltd."
+    },
+    {
+      "code": "MPL",
+      "name": "Medibank Private Ltd."
+    },
+    {
+      "code": "MQG",
+      "name": "Macquarie Group, Ltd."
+    },
+    {
+      "code": "MSB",
+      "name": "Mesoblast Limited"
+    },
+    {
+      "code": "MTS",
+      "name": "Metcash Limited"
+    },
+    {
+      "code": "MYS",
+      "name": "Mystate Limited"
+    },
+    {
+      "code": "NAB",
+      "name": "National Australia Bank Limited"
+    },
+    {
+      "code": "NAN",
+      "name": "Nanosonics Limited"
+    },
+    {
+      "code": "NCK",
+      "name": "Nick Scali Limited"
+    },
+    {
+      "code": "NEC",
+      "name": "Nine Entertainment Co. Holdings Limited"
+    },
+    {
+      "code": "NEM",
+      "name": "Newmont Corporation Registered Chess Depositary Interests Repr 1 Sh"
+    },
+    {
+      "code": "NEU",
+      "name": "Neuren Pharmaceuticals Limited"
+    },
+    {
+      "code": "NGI",
+      "name": "Navigator Global Investments Ltd"
+    },
+    {
+      "code": "NHC",
+      "name": "New Hope Corporation Limited"
+    },
+    {
+      "code": "NHF",
+      "name": "NIB Holdings Ltd"
+    },
+    {
+      "code": "NIC",
+      "name": "Nickel Industries Limited"
+    },
+    {
+      "code": "NST",
+      "name": "Northern Star Resources Ltd"
+    },
+    {
+      "code": "NUF",
+      "name": "Nufarm Limited"
+    },
+    {
+      "code": "NWH",
+      "name": "NRW Holdings Limited"
+    },
+    {
+      "code": "NWL",
+      "name": "Netwealth Group Ltd."
+    },
+    {
+      "code": "NWS",
+      "name": "News Corporation Shs B Chess Depository Interests repr 1 Sh"
+    },
+    {
+      "code": "NXG",
+      "name": "NexGen Energy Ltd. Shs Chess Depository Interests repr 1 shs"
+    },
+    {
+      "code": "NXT",
+      "name": "Nextdc Limited"
+    },
+    {
+      "code": "OBM",
+      "name": "Ora Banda Mining Ltd."
+    },
+    {
+      "code": "OML",
+      "name": "oOh media Ltd"
+    },
+    {
+      "code": "ORA",
+      "name": "Orora Limited"
+    },
+    {
+      "code": "ORG",
+      "name": "Origin Energy Limited"
+    },
+    {
+      "code": "ORI",
+      "name": "Orica Limited"
+    },
+    {
+      "code": "PDI",
+      "name": "PDI Gold Limited"
+    },
+    {
+      "code": "PDN",
+      "name": "Paladin Energy Ltd"
+    },
+    {
+      "code": "PLS",
+      "name": "PLS Group Limited"
+    },
+    {
+      "code": "PME",
+      "name": "Pro Medicus, Ltd."
+    },
+    {
+      "code": "PMT",
+      "name": "PMET Resources Inc. Shs Chess Depository Interests Repr 0.1 Sh"
+    },
+    {
+      "code": "PMV",
+      "name": "Premier Investments Limited"
+    },
+    {
+      "code": "PNI",
+      "name": "Pinnacle Investment Management Group Limited"
+    },
+    {
+      "code": "PNR",
+      "name": "Pantoro Gold Limited"
+    },
+    {
+      "code": "PNV",
+      "name": "Polynovo Limited"
+    },
+    {
+      "code": "PPT",
+      "name": "Perpetual Limited"
+    },
+    {
+      "code": "PRN",
+      "name": "Perenti Limited"
+    },
+    {
+      "code": "PRU",
+      "name": "Perseus Mining Limited"
+    },
+    {
+      "code": "PWH",
+      "name": "PWR Holdings Ltd."
+    },
+    {
+      "code": "PXA",
+      "name": "PEXA Group Limited"
+    },
+    {
+      "code": "PYC",
+      "name": "PYC Therapeutics Limited"
+    },
+    {
+      "code": "QAN",
+      "name": "Qantas Airways Limited"
+    },
+    {
+      "code": "QBE",
+      "name": "QBE Insurance Group Limited"
+    },
+    {
+      "code": "QRI",
+      "name": "Qualitas Real Estate Income Fund Units"
+    },
+    {
+      "code": "RDX",
+      "name": "Redox Limited"
+    },
+    {
+      "code": "REA",
+      "name": "REA Group Ltd"
+    },
+    {
+      "code": "REG",
+      "name": "Regis Healthcare Ltd."
+    },
+    {
+      "code": "REH",
+      "name": "Reece Limited"
+    },
+    {
+      "code": "RFF",
+      "name": "Rural Funds Group"
+    },
+    {
+      "code": "RGN",
+      "name": "Region Group"
+    },
+    {
+      "code": "RHC",
+      "name": "Ramsay Health Care Limited"
+    },
+    {
+      "code": "RIC",
+      "name": "Ridley Corporation Limited"
+    },
+    {
+      "code": "RIO",
+      "name": "Rio Tinto Limited"
+    },
+    {
+      "code": "RMD",
+      "name": "ResMed Inc. CHESS Depositary Interests on a ratio of 10 CDIs per ord.sh"
+    },
+    {
+      "code": "RMS",
+      "name": "Ramelius Resources Limited"
+    },
+    {
+      "code": "RPL",
+      "name": "Regal Partners Limited"
+    },
+    {
+      "code": "RRL",
+      "name": "Regis Resources Limited"
+    },
+    {
+      "code": "RSG",
+      "name": "Resolute Mining Limited"
+    },
+    {
+      "code": "RWC",
+      "name": "Reliance Worldwide Corp. Ltd."
+    },
+    {
+      "code": "S32",
+      "name": "South32 Ltd."
+    },
+    {
+      "code": "SBM",
+      "name": "St. Barbara Ltd."
+    },
+    {
+      "code": "SCG",
+      "name": "Scentre Group"
+    },
+    {
+      "code": "SDF",
+      "name": "Steadfast Group Limited"
+    },
+    {
+      "code": "SDR",
+      "name": "SiteMinder Limited"
+    },
+    {
+      "code": "SEK",
+      "name": "Seek Limited"
+    },
+    {
+      "code": "SFR",
+      "name": "Sandfire Resources Ltd"
+    },
+    {
+      "code": "SGH",
+      "name": "SGH Limited"
+    },
+    {
+      "code": "SGLLV",
+      "name": "Ricegrowers Ltd. Class B"
+    },
+    {
+      "code": "SGM",
+      "name": "Sims Ltd."
+    },
+    {
+      "code": "SGP",
+      "name": "Stockland"
+    },
+    {
+      "code": "SHL",
+      "name": "Sonic Healthcare Limited"
+    },
+    {
+      "code": "SHV",
+      "name": "Select Harvests Limited"
+    },
+    {
+      "code": "SIG",
+      "name": "Sigma Healthcare Ltd"
+    },
+    {
+      "code": "SIQ",
+      "name": "Smartgroup Corporation Ltd"
+    },
+    {
+      "code": "SKG",
+      "name": "Storage King Group"
+    },
+    {
+      "code": "SKS",
+      "name": "SKS Technologies Group Limited"
+    },
+    {
+      "code": "SLC",
+      "name": "Superloop Ltd."
+    },
+    {
+      "code": "SLX",
+      "name": "Silex Systems Limited"
+    },
+    {
+      "code": "SMI",
+      "name": "Santana Minerals Ltd."
+    },
+    {
+      "code": "SMR",
+      "name": "Stanmore Resources Ltd"
+    },
+    {
+      "code": "SNL",
+      "name": "Supply Network Limited"
+    },
+    {
+      "code": "SOL",
+      "name": "Washington H. Soul Pattinson and Company Limited"
+    },
+    {
+      "code": "SPK",
+      "name": "Spark New Zealand Limited"
+    },
+    {
+      "code": "SRG",
+      "name": "SRG Global Limited"
+    },
+    {
+      "code": "SRL",
+      "name": "Sunrise Energy Metals Limited"
+    },
+    {
+      "code": "SSM",
+      "name": "Service Stream Limited"
+    },
+    {
+      "code": "STO",
+      "name": "Santos Limited"
+    },
+    {
+      "code": "SUL",
+      "name": "Super Retail Group Limited"
+    },
+    {
+      "code": "SUN",
+      "name": "Suncorp Group Limited"
+    },
+    {
+      "code": "SX2",
+      "name": "Southern Cross Gold Consolidated Ltd. Chees Depository Interest Repr 1 shs"
+    },
+    {
+      "code": "SXE",
+      "name": "Southern Cross Electrical Engineering Limited"
+    },
+    {
+      "code": "TAH",
+      "name": "Tabcorp Holdings Limited"
+    },
+    {
+      "code": "TCG",
+      "name": "Turaco Gold Ltd"
+    },
+    {
+      "code": "TCL",
+      "name": "Transurban Group Ltd."
+    },
+    {
+      "code": "TEA",
+      "name": "Tasmea Limited"
+    },
+    {
+      "code": "TLC",
+      "name": "Lottery Corporation Limited"
+    },
+    {
+      "code": "TLS",
+      "name": "Telstra Group Limited"
+    },
+    {
+      "code": "TLX",
+      "name": "Telix Pharmaceuticals Limited"
+    },
+    {
+      "code": "TNE",
+      "name": "Technology One Limited"
+    },
+    {
+      "code": "TPG",
+      "name": "TPG Telecom Limited"
+    },
+    {
+      "code": "TPW",
+      "name": "Temple & Webster Group Ltd"
+    },
+    {
+      "code": "TUA",
+      "name": "Tuas Ltd."
+    },
+    {
+      "code": "TWE",
+      "name": "Treasury Wine Estates Limited"
+    },
+    {
+      "code": "TYR",
+      "name": "Tyro Payments Ltd."
+    },
+    {
+      "code": "UNI",
+      "name": "Universal Store Holdings Ltd."
+    },
+    {
+      "code": "VAU",
+      "name": "Vault Minerals Limited"
+    },
+    {
+      "code": "VCX",
+      "name": "Vicinity Centres"
+    },
+    {
+      "code": "VEA",
+      "name": "Viva Energy Group Ltd."
+    },
+    {
+      "code": "VGN",
+      "name": "Virgin Australia Holdings Limited"
+    },
+    {
+      "code": "VNT",
+      "name": "Ventia Services Group Limited"
+    },
+    {
+      "code": "VSL",
+      "name": "Vulcan Steel Ltd."
+    },
+    {
+      "code": "VUL",
+      "name": "Vulcan Energy Resources Ltd."
+    },
+    {
+      "code": "WA1",
+      "name": "WA1 Resources Ltd"
+    },
+    {
+      "code": "WAF",
+      "name": "West African Resources Ltd"
+    },
+    {
+      "code": "WBC",
+      "name": "Westpac Banking Corporation"
+    },
+    {
+      "code": "WBT",
+      "name": "Weebit Nano Ltd."
+    },
+    {
+      "code": "WDS",
+      "name": "Woodside Energy Group Ltd"
+    },
+    {
+      "code": "WEB",
+      "name": "WebBeds Group Limited"
+    },
+    {
+      "code": "WES",
+      "name": "Wesfarmers Limited"
+    },
+    {
+      "code": "WGX",
+      "name": "Westgold Resources Ltd"
+    },
+    {
+      "code": "WHC",
+      "name": "Whitehaven Coal Limited"
+    },
+    {
+      "code": "WOR",
+      "name": "Worley Limited"
+    },
+    {
+      "code": "WOW",
+      "name": "Woolworths Group Ltd"
+    },
+    {
+      "code": "WPR",
+      "name": "Waypoint REIT Ltd."
+    },
+    {
+      "code": "WTC",
+      "name": "Wisetech Global Ltd."
+    },
+    {
+      "code": "XRO",
+      "name": "Xero Limited"
+    },
+    {
+      "code": "XYZ",
+      "name": "Block, Inc. Shs Chess Depository Interests Repr 1 Sh"
+    },
+    {
+      "code": "YAL",
+      "name": "Yancoal Australia Ltd."
+    },
+    {
+      "code": "ZIP",
+      "name": "Zip Co Ltd."
+    }
+  ]
+}

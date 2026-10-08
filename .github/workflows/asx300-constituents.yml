@@ -1,0 +1,69 @@
+name: ASX 300 constituents (quarterly)
+
+# 每季度更新一次 S&P/ASX 300 成分股名单（data/asx300_constituents.json），每日行情抓取读取该文件。
+# S&P/ASX 指数季度调整在 3/6/9/12 月第三个周五后的周一开盘前生效（最晚 24 日），
+# 所以定在 25 日 01:37 UTC（悉尼当天中午前后）运行；GitHub 定时可能迟到数小时，对季度任务无影响。
+# 名单数量不在 280–320 之间或格式异常时脚本拒绝写入，保留旧名单，运行显示失败。
+# 手动触发：commit=false 只抓取并打印。PR 改动更新脚本时自动从 GitHub 服务器试抓一次（只抓不写）。
+on:
+  schedule:
+    - cron: "37 1 25 3,6,9,12 *"
+  pull_request:
+    paths:
+      - scripts/update_asx300_constituents.py
+      - .github/workflows/asx300-constituents.yml
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "是否把结果提交到仓库（false = 只抓取并打印）"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: asx300-constituents
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Fetch constituents
+        id: fetch
+        env:
+          DRY: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && !inputs.commit) }}
+        run: |
+          if [ "$DRY" = "true" ]; then
+            python scripts/update_asx300_constituents.py --dry-run > constituents.json
+            python -c "import json;d=json.load(open('constituents.json'));print(d['count'], 'constituents, as_of', d['as_of'])" | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            python scripts/update_asx300_constituents.py
+          fi
+
+      - name: Forbidden-word check and commit
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.commit)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asx300_constituents.json
+          python scripts/check_forbidden.py
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "asx300: constituents $(python -c 'import json;d=json.load(open("data/asx300_constituents.json"));print(d["as_of"], d["count"])') run ${{ github.run_id }}"
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"

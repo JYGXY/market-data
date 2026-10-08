@@ -1,7 +1,8 @@
 # market-data
 
 每日公开市场行情快照。**本仓库只存放公开市场数据**，不含任何个人账户、交易或关注列表信息，
-也不抓取任何自选个股的价格。
+也不抓取任何自选个股的价格。个股只有两类：美股市值前 30（按市值自动筛出）和 S&P/ASX 300 的全部成分股（按指数名单），
+都是整组收录，不单独标注、挑选或排序任何一只。
 
 ## 运行方式
 
@@ -42,6 +43,7 @@ python3 scripts/fetch_market_data.py
 |---|---|
 | `data/YYYY-MM-DD.json` | 当天快照。文件名即 `trading_date`（美股交易日）。已完整的文件不会被自动覆盖。 |
 | `data/latest.json` | 最近一次快照，内容与当天文件相同。 |
+| `data/asx300_constituents.json` | S&P/ASX 300 成分股名单（代码、名称），每季度更新一次，见下文。 |
 
 ## 下游读取须知
 
@@ -49,7 +51,8 @@ python3 scripts/fetch_market_data.py
 
 - `trading_date` 不是你预期的当天美股交易日 → **视为未更新**（任务没跑、跑失败或数据源未刷新），不要当作当天行情使用。
 - `complete` 为 `false` → 有部分项缺失，缺哪些见 `missing`，对应项的 `error` 写明原因。
-- `stale` 不为空 → 这些项的数值来自更早的交易日（数据源缺某天收盘），`note` 写明缺的是哪天。
+- `stale` 不为空 → 这些项没有当天的数值：指数/商品/汇率是数据源缺某天收盘（数值来自更早的交易日）；
+  ASX 300 个股是停牌、当日无成交或取不到（`value` 为 `null`，不填 0）。原因见 `stale_reasons`，对应项的 `note` 也有写明。
 - 引用数据时写上 `run_id`（例如“行情 2026-09-28，run 36482936264”），就能分清是哪一次运行生成的版本。
 
 ```python
@@ -71,9 +74,10 @@ if not d["complete"]:
 | 字段 | 含义 |
 |---|---|
 | `trading_date` | 美股交易日（`YYYY-MM-DD`），取美股指数最新收盘的日期，与文件名相同 |
-| `complete` | `true` = 所有项都取到数值（含前 30 家公司）；有任何一项为 `null` 即为 `false` |
+| `complete` | `true` = 所有项都取到数值（含前 30 家公司）；有任何一项为 `null` 即为 `false`。ASX 300 例外：个股停牌/无成交/取不到只记入 `stale`，只有名单缺失或有价格的成分股不足 95% 时才算缺失 |
 | `missing` | 取不到的项列表（如 `rates.ig_credit_spread`），`complete` 为 `true` 时为空 |
-| `stale` | 数值不是最近一个已结束交易日的项（数据源缺收盘、补不上时）。不影响 `complete` |
+| `stale` | 没有最近一个已结束交易日数值的项（数据源缺收盘、补不上时；ASX 300 个股停牌、当日无成交或取不到）。不影响 `complete` |
+| `stale_reasons` | `stale` 里每一项的原因，如 `{"asx300.XXX": "2026-10-07 无成交（成交量为 0）；最后成交日 2026-10-06，收盘 1.23"}` |
 | `run_id` / `run_attempt` | 生成该文件的 GitHub Actions 运行编号和重试次数；本地运行为 `null` |
 | `run_trigger` | 触发方式，如 `workflow_dispatch:full`、`schedule:primary`；本地运行为 `local` |
 | `generated_at_utc` / `generated_at_new_york` | 抓取时间 |
@@ -116,6 +120,7 @@ if not d["complete"]:
 | `asia_pacific_indices.asx200` | 标普/澳交所 200 | `^AXJO` | Yahoo Finance |
 | `asia_pacific_indices.hang_seng` | 恒生指数 | `^HSI` | Yahoo Finance |
 | `asia_pacific_indices.csi300` | 沪深 300 | `000300.SS` | Yahoo Finance |
+| `asx300.items[]` | S&P/ASX 300 全部成分股：`symbol`（ASX 代码）、`name`、收盘 `value`、`prev_close`、`change`、`change_pct`、`date`、`source`；按代码字母顺序 | `<代码>.AX` | 名单：TradingView XKO 成分股页；价格：Yahoo Finance |
 
 口径说明：
 
@@ -126,6 +131,12 @@ if not d["complete"]:
 - 数据源偶尔会漏掉最新一根日线的收盘值；此时改用报价中的收盘价，并在 `note` 注明，不会悄悄退回上一交易日。
 - **市值前 30**：按 Yahoo 实时市值降序，只计美国主要交易所（NYSE / Nasdaq 等，含 ADR，不含 OTC 粉单）；
   同一公司多类股（如 GOOGL / GOOG、BRK-A / BRK-B）只保留市值靠前的一类。名单每天按市值重新排，只记数字，不记涨跌原因。
+- **ASX 300**：成分股名单来自 TradingView 公开的 [S&P/ASX 300（XKO）成分股页](https://www.tradingview.com/symbols/ASX-XKO/components/)（页面通过公开的筛选接口加载全名单，请求头如实标明身份），
+  存在 `data/asx300_constituents.json`，由 `.github/workflows/asx300-constituents.yml` 每季度更新一次
+  （S&P/ASX 季度调整在 3/6/9/12 月第三个周五后生效，定在 25 日运行；数量不在 280–320 只或格式异常时拒绝写入、保留旧名单）。
+  每日只抓名单里的股票，不增不减。价格是最近一个已收盘的 ASX 交易日（`asx300.session_date`，取各成分股最新成交日的众数）：
+  该日成交量为 0 或没有该日数据的股票视为停牌/无成交，`value` 为 `null`，进入 `stale` 并写原因，附 `last_trade_date` / `last_close` 供参考。
+  季度之间若有成分股被收购退市，数据源取不到时同样记入 `stale`，到下次季度更新时移出名单。
 - **信用利差**：FRED 通常滞后 1 个交易日发布，`date` 是实际观测日。`change` 为相邻两期差值（百分点）。
 - 数据源为公开免费接口，可能延迟或临时不可用；取不到的项写 `null` 并在 `error` 注明原因，不做估算填补。
 
