@@ -24,6 +24,9 @@ class Resp:
     def json(self):
         return self._p
 
+    def raise_for_status(self):
+        pass
+
 
 def chart(ts, closes, meta_extra=None):
     meta = {"exchangeTimezoneName": "Australia/Sydney", "instrumentType": "INDEX"}
@@ -200,8 +203,50 @@ class TestAsx300Section(unittest.TestCase):
         self.assertEqual(sorted(stale), ["asx300.ERR", "asx300.SUS"])
         self.assertIn("可能停牌", stale["asx300.SUS"])
         self.assertIn("404", stale["asx300.ERR"])
+        self.assertTrue(stale["asx300.ERR"].startswith("取不到：重试 3 次后仍失败"))
         # 4 只里 2 只没价格，低于 95% -> 整段记缺失
         self.assertEqual(fm.missing_items(data), ["asx300 (只取到 2/4 只的价格)"])
+
+    def test_retry_then_unavailable(self):
+        # 前两次失败、第三次成功 -> 正常取到；一直失败 -> stale「取不到」，value 为 null，不填 0、不带旧价
+        calls = {"n": 0}
+
+        def flaky(url, **kw):
+            calls["n"] += 1
+            if calls["n"] < 3:
+                raise fm.requests.ConnectionError("reset")
+            return Resp(asx_chart([T[25], T[28], T[29]], [1.0, 2.0, 3.0], [10, 20, 30]))
+        with mock.patch.object(fm.requests, "get", side_effect=flaky), \
+                mock.patch.object(fm.time, "sleep", lambda s: None):
+            self.assertEqual(len(fm.asx_daily_bars("BBB")), 3)
+        self.assertEqual(calls["n"], 3)
+
+        def always_fail(url, **kw):
+            raise fm.requests.ConnectionError("reset")
+        with mock.patch.object(fm.requests, "get", side_effect=always_fail), \
+                mock.patch.object(fm.time, "sleep", lambda s: None):
+            sec = fm.asx300()
+        for i in sec["items"]:
+            self.assertIsNone(i["value"])
+            self.assertTrue(i["stale"])
+            self.assertTrue(i["note"].startswith("取不到"), i["note"])
+            self.assertNotIn("last_close", i)
+
+    def test_empty_or_delisted_is_unavailable_not_suspended(self):
+        def fake_get(url, **kw):
+            if "ZZZ.AX" in url:   # 退市：200 但 result 为 null
+                return Resp({"chart": {"result": None, "error": {
+                    "description": "No data found, symbol may be delisted"}}})
+            if "SUS.AX" in url:   # 200 但没有任何日线
+                return Resp(asx_chart([], [], []))
+            return Resp(asx_chart([T[25], T[28], T[29]], [1.0, 2.0, 3.0], [10, 20, 30]))
+        with mock.patch.object(fm, "get", side_effect=fake_get), \
+                mock.patch.object(fm.time, "time", return_value=T[29] + 3600 * 12):
+            items = {i["symbol"]: i for i in fm.asx300()["items"]}
+        self.assertIn("取不到", items["ZZZ"]["note"])
+        self.assertIn("delisted", items["ZZZ"]["note"])
+        self.assertEqual(items["SUS"]["note"], "取不到：数据源未返回日线")
+        self.assertIsNone(items["SUS"]["value"])
 
     def test_in_session_bar_dropped(self):
         # 9/29 盘中：那根不算，参考日退回 9/28
