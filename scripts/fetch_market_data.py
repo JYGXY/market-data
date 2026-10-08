@@ -45,6 +45,7 @@ FRED_PAGE = "https://fred.stlouisfed.org/series/{sid}"
 ASX300_FILE = DATA_DIR / "asx300_constituents.json"
 ASX300_WORKERS = 4          # 并发请求数，保持克制
 ASX300_MIN_PRICED = 0.95    # 有价格的成分股低于这个比例时，整段记为缺失（complete=false）
+ASX300_TRIES = 3            # 单只股票请求失败时共尝试几次（间隔 2s、4s）
 
 # 美国主要交易所代码（排除 OTC/粉单）
 US_EXCHANGES = {"NMS", "NGM", "NCM", "NYQ", "ASE", "PCX", "BTS"}
@@ -267,7 +268,10 @@ def asx_daily_bars(code):
     盘中那根不算；同一天多根（盘中开盘那根 + 实时那根）取最后一个非空收盘、最大成交量。
     成交量为 None（数据源未给）时视为有成交。
     """
-    res = get(YAHOO_CHART.format(sym=quote(code + ".AX"))).json()["chart"]["result"][0]
+    chart = get(YAHOO_CHART.format(sym=quote(code + ".AX")), tries=ASX300_TRIES).json()["chart"]
+    if not chart.get("result"):  # 如退市/代码变更：数据源返回 200 但没有结果
+        raise RuntimeError((chart.get("error") or {}).get("description") or "数据源未返回结果")
+    res = chart["result"][0]
     meta = res["meta"]
     tz = ZoneInfo(meta["exchangeTimezoneName"])
     q = res["indicators"]["quote"][0]
@@ -324,10 +328,14 @@ def asx300():
     names = {c["code"]: c.get("name") or c["code"] for c in doc["constituents"]}
 
     def one(code):
+        # 取不到（重试后仍失败、或数据源没有日线）与停牌/无成交分开写原因；value 为 null，不填 0、不沿用旧价
         try:
-            return code, asx_daily_bars(code), None
+            bars = asx_daily_bars(code)
         except Exception as e:  # noqa: BLE001
-            return code, None, f"抓取失败: {type(e).__name__}: {e}"[:300]
+            return code, None, f"取不到：重试 {ASX300_TRIES} 次后仍失败（{type(e).__name__}: {e}）"[:300]
+        if not bars:
+            return code, None, "取不到：数据源未返回日线"
+        return code, bars, None
 
     with ThreadPoolExecutor(ASX300_WORKERS) as ex:
         results = list(ex.map(one, sorted(names)))
@@ -342,7 +350,8 @@ def asx300():
             items.append({"symbol": code, "name": names[code], "value": None, "prev_close": None,
                           "change": None, "change_pct": None, "date": session,
                           "source": YAHOO_PAGE.format(sym=quote(code + ".AX")), "stale": True,
-                          "note": ferr or "数据源未返回有效日线", "error": ferr or "数据源未返回有效日线"})
+                          "note": ferr or "取不到：所有成分股都没有有效日线",
+                          "error": ferr or "取不到：所有成分股都没有有效日线"})
         else:
             items.append(asx_item(code, names[code], bars, session))
     return {**base, "session_date": session, "items": items}
