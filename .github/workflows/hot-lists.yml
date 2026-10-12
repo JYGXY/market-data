@@ -12,6 +12,8 @@ name: Hot lists (trial)
 # GitHub 定时作为备份。手动 mode=force 不检查、全部重抓；commit=false 只抓取并打印，不写入仓库。
 # status.json / runs.jsonl / CSV 都带 run_id，下游引用时写上 run_id。
 # PR 改动抓取代码时自动从 GitHub 服务器试抓一次（只抓不写），结果见运行摘要。
+# 东财名称接口失败：同次运行内延迟重试（3 分钟后，最多 2 次），仍失败用上一份成功文件里的名称兜底
+# （状态 ok_names_cached，算 core_ok），不再占用第二次外部触发。
 on:
   schedule:
     - cron: "37 21 * * *"
@@ -44,7 +46,9 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # 东财名称接口失败时会在同次运行内延迟重试（最多 2 次、各隔 3 分钟），脚本保证 14 分钟后不再等待；
+    # 加上安装和提交，留足余量设为 20 分钟。
+    timeout-minutes: 20
     steps:
       # 取分支最新提交，备用运行才能看到主运行刚推送的 status.json
       - uses: actions/checkout@v4

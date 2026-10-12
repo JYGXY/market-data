@@ -9,6 +9,8 @@ import json
 from collections import Counter, defaultdict
 from pathlib import Path
 
+OK = ("ok", "ok_names_cached")   # ok_names_cached：排名和代码当天、名称取自历史文件，也算成功
+
 HOT_DIR = Path(__file__).resolve().parent.parent / "data" / "hot"
 
 
@@ -44,7 +46,7 @@ def main():
             s = per[name]
             s["fetches"] += 1
             s["secs"].append(b["seconds"])
-            if b["status"] == "ok":
+            if b["status"] in OK:
                 s["ok"] += 1
                 s["ok_secs"].append(b["seconds"])
             else:
@@ -52,7 +54,7 @@ def main():
                 s["errors"].append(f"{r['date']} {r['trigger']}: {(b.get('error') or '')[:160]}")
             if r["trigger"] == "primary":
                 s["primary"] += 1
-                s["primary_ok"] += b["status"] == "ok"
+                s["primary_ok"] += b["status"] in OK
 
     avg = lambda xs: f"{sum(xs) / len(xs):.1f}s" if xs else "-"
     print(f"# 热榜试跑报告（{days[0] if days else '-'} ~ {days[-1] if days else '-'}，悉尼日期）\n")
@@ -65,7 +67,7 @@ def main():
     names = sorted(per, key=lambda n: (not n.startswith("em"), n.endswith("_hk"), n))
     for n in names:
         s = per[n]
-        day_ok = sum(1 for d in days if final.get(d, {}).get("boards", {}).get(n, {}).get("status") == "ok")
+        day_ok = sum(1 for d in days if final.get(d, {}).get("boards", {}).get(n, {}).get("status") in OK)
         prim = f"{s['primary_ok']}/{s['primary']}" if s["primary"] else "-"
         kinds = "，".join(f"{k}×{v}" for k, v in s["kinds"].most_common()) or "无"
         print(f"| {n} | {day_ok}/{len(days)} | {prim} | {s['ok']}/{s['fetches']} | "

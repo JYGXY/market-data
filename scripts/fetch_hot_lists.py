@@ -42,6 +42,13 @@ TIMEOUT = 30          # 每次请求超时（秒）
 RETRIES = 2           # 失败后重试次数（共 3 次尝试）
 BACKOFF = [3, 6]      # 重试前等待（秒）
 
+# 东财名称接口（push2）经常短暂 502：同一次运行内延迟重试，仍失败再用历史名称兜底。
+# 延迟重试放在所有榜单抓完之后，等待时间与雪球榜单的抓取重叠。
+NAME_RETRY_DELAY = 180      # 距上一次名称请求至少等这么久再试（秒）
+NAME_RETRY_TIMES = 2        # 延迟重试最多几次（每次只请求一次，不再内部重试）
+NAME_RETRY_DEADLINE = 14 * 60   # 距脚本开始超过这么久就不再等待重试，直接兜底（job 超时 20 分钟）
+OK_STATUSES = ("ok", "ok_names_cached")   # 算作成功的状态
+
 EM_RANK_URL = "https://emappdata.eastmoney.com/stockrank/getAllCurrentList"
 EM_NAME_URL = "https://push2.eastmoney.com/api/qt/ulist.np/get"
 EM_PAGE = "https://guba.eastmoney.com/rank/"
@@ -89,10 +96,10 @@ def _classify(exc):
     return "other"
 
 
-def request_json(method, url, **kwargs):
+def request_json(method, url, retries=RETRIES, **kwargs):
     """带超时和重试的请求。返回 (json, 尝试次数, 之前失败的原因列表)；全部失败抛 FetchError。"""
     errors, kinds = [], []
-    for i in range(RETRIES + 1):
+    for i in range(retries + 1):
         try:
             r = requests.request(method, url, timeout=TIMEOUT,
                                  headers={"User-Agent": UA, "Accept": "application/json"},
@@ -107,10 +114,10 @@ def request_json(method, url, **kwargs):
         except (requests.RequestException, FetchError) as e:
             kinds.append(_classify(e))
             errors.append(f"第{i + 1}次 {type(e).__name__}: {e}"[:240])
-            if i < RETRIES:
+            if i < retries:
                 time.sleep(BACKOFF[i])
     # 以最后一次失败的类型为准
-    raise FetchError(kinds[-1], " | ".join(errors), attempts=RETRIES + 1)
+    raise FetchError(kinds[-1], " | ".join(errors), attempts=retries + 1)
 
 
 def fetch_eastmoney(cfg):
@@ -124,28 +131,55 @@ def fetch_eastmoney(cfg):
                          f"榜单接口无 data: {str(data)[:160]}", attempts)
     rows = [{"rank": it["rk"], "code": it["sc"], "name": None,
              "heat_value": None, "heat_field": ""} for it in items]
-    # 名称：东财行情接口，只取代码(f12)和名称(f14)，不取价格
-    secids = ",".join(("0." if r["code"].startswith("SZ") else "1.") + r["code"][2:] for r in rows)
     name_error = None
     try:
-        nd, a2, e2 = request_json("GET", EM_NAME_URL, params={
-            "ut": "f057cbcbce2a86e2866ab8877db1d059", "fltt": "2", "invt": "2",
-            "fields": "f12,f14", "secids": secids})
+        a2, e2 = fill_em_names(rows)
         attempts += a2
         retry_errors += [f"名称接口 {e}" for e in e2]
-        diff = ((nd or {}).get("data") or {}).get("diff") or []
-        if isinstance(diff, dict):
-            diff = list(diff.values())
-        names = {d.get("f12"): d.get("f14") for d in diff}
-        for r in rows:
-            r["name"] = names.get(r["code"][2:])
-        missing = sum(r["name"] is None for r in rows)
+        missing = sum(not r["name"] for r in rows)
         if missing:
             name_error = FetchError("empty", f"名称接口缺 {missing} 个名称")
     except FetchError as e:
         attempts += e.attempts
         name_error = FetchError(e.kind, f"名称接口失败（排名和代码已保存）: {e}")
+    if name_error:
+        name_error.names_only = True    # 排名和代码已取到，只缺名称：可延迟重试 / 兜底
     return rows, attempts, name_error, retry_errors
+
+
+def fill_em_names(rows, retries=RETRIES):
+    """用东财行情接口补名称（只取代码 f12 和名称 f14，不取价格），只填还没有名称的行。
+
+    返回 (尝试次数, 之前失败的原因列表)；全部失败抛 FetchError。
+    """
+    todo = [r for r in rows if not r["name"]]
+    secids = ",".join(("0." if r["code"].startswith("SZ") else "1.") + r["code"][2:] for r in todo)
+    nd, attempts, errors = request_json("GET", EM_NAME_URL, retries=retries, params={
+        "ut": "f057cbcbce2a86e2866ab8877db1d059", "fltt": "2", "invt": "2",
+        "fields": "f12,f14", "secids": secids})
+    diff = ((nd or {}).get("data") or {}).get("diff") or []
+    if isinstance(diff, dict):
+        diff = list(diff.values())
+    names = {d.get("f12"): d.get("f14") for d in diff}
+    for r in todo:
+        r["name"] = names.get(r["code"][2:])
+    return attempts, errors
+
+
+def load_name_cache(today):
+    """最近一份（早于 today）名称完整成功（status=ok）的东财人气榜：返回 ({代码: 名称}, 日期) 或 ({}, None)。"""
+    for d in sorted((p for p in HOT_DIR.iterdir() if p.is_dir() and p.name < today), reverse=True):
+        try:
+            st = json.loads((d / "status.json").read_text(encoding="utf-8"))
+            if st["boards"]["em_popularity_a"]["status"] != "ok":
+                continue
+            with (d / "em_popularity_a.csv").open(encoding="utf-8") as f:
+                names = {r["code"]: r["name"] for r in csv.DictReader(f) if r.get("name")}
+        except (OSError, ValueError, KeyError):
+            continue
+        if names:
+            return names, d.name
+    return {}, None
 
 
 def fetch_xueqiu(cfg):
@@ -171,17 +205,12 @@ def run_board(name, cfg, day_dir, stamp):
              "experimental": cfg.get("experimental", False),
              "source": EM_PAGE if cfg["source"] == "eastmoney" else XQ_PAGE,
              "run_at_utc": stamp["utc"], "run_id": stamp["run_id"]}
+    rows = None
     try:
         fn = fetch_eastmoney if cfg["source"] == "eastmoney" else fetch_xueqiu
         rows, attempts, soft_error, retry_errors = fn(cfg)
-        path = day_dir / f"{name}.csv"
-        with path.open("w", newline="", encoding="utf-8") as f:
-            w = csv.DictWriter(f, fieldnames=CSV_FIELDS)
-            w.writeheader()
-            for r in rows:
-                w.writerow({"date": stamp["date"], "fetched_at_utc": stamp["utc"],
-                            "fetched_at_sydney": stamp["sydney"], "board": name,
-                            "run_id": stamp["run_id"], **r})
+        path = write_csv(name, rows, day_dir, stamp)
+        entry["names_only"] = bool(getattr(soft_error, "names_only", False))
         status = "ok" if not soft_error and len(rows) == cfg["size"] else "partial"
         err = soft_error or (None if len(rows) == cfg["size"]
                              else FetchError("empty", f"只取到 {len(rows)}/{cfg['size']} 行"))
@@ -198,6 +227,63 @@ def run_board(name, cfg, day_dir, stamp):
         entry.update(status="failed", rows=0, attempts=None, file=None,
                      error=f"{type(e).__name__}: {e}"[:300], error_kind="other")
     entry["seconds"] = round(time.monotonic() - t0, 2)
+    return entry, rows
+
+
+def write_csv(name, rows, day_dir, stamp):
+    path = day_dir / f"{name}.csv"
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=CSV_FIELDS)
+        w.writeheader()
+        for r in rows:
+            w.writerow({"date": stamp["date"], "fetched_at_utc": stamp["utc"],
+                        "fetched_at_sydney": stamp["sydney"], "board": name,
+                        "run_id": stamp["run_id"], **r})
+    return path
+
+
+def repair_em_names(name, entry, rows, day_dir, stamp, t_start, t_last):
+    """东财名称缺失时：延迟重试（最多 NAME_RETRY_TIMES 次，每次间隔 NAME_RETRY_DELAY），
+    仍缺则用上一份成功文件里同代码的名称补上（状态 ok_names_cached）。排名和代码始终是当天的。"""
+    t0 = time.monotonic()
+    tries = entry.setdefault("name_retries", [])
+    for _ in range(NAME_RETRY_TIMES):
+        start_at = t_last + NAME_RETRY_DELAY
+        if start_at - t_start > NAME_RETRY_DEADLINE:
+            tries.append({"skipped": f"距开始已超过 {NAME_RETRY_DEADLINE // 60} 分钟，不再等待重试"})
+            break
+        time.sleep(max(0.0, start_at - time.monotonic()))
+        at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        try:
+            fill_em_names(rows, retries=0)
+            left = sum(not r["name"] for r in rows)
+            tries.append({"at_utc": at, "result": "ok" if not left else f"仍缺 {left} 个名称"})
+        except FetchError as e:
+            tries.append({"at_utc": at, "result": f"{e.kind}: {e}"[:240]})
+        entry["attempts"] = (entry.get("attempts") or 0) + 1
+        t_last = time.monotonic()
+        if all(r["name"] for r in rows):
+            write_csv(name, rows, day_dir, stamp)
+            entry.update(status="ok", error=None, error_kind=None,
+                         note="名称接口首次失败，延迟重试后取到")
+            break
+    if entry["status"] != "ok":
+        cache, from_day = load_name_cache(stamp["date"])
+        if from_day:
+            for r in rows:
+                if not r["name"] and cache.get(r["code"]):
+                    r["name"], r["_cached"] = cache[r["code"]], True
+            cached = [r["code"] for r in rows if r.pop("_cached", False)]
+            still = [r["code"] for r in rows if not r["name"]]
+            write_csv(name, rows, day_dir, stamp)
+            entry.update(status="ok_names_cached", names_from=from_day,
+                         names_cached=len(cached), names_missing_codes=still,
+                         note=(f"名称接口重试后仍失败；排名和代码为当天数据，{len(cached)} 个名称取自 "
+                               f"{from_day} 的成功文件" + (f"，{len(still)} 个新代码名称留空"
+                                                           if still else "")))
+        else:
+            entry["note"] = "名称接口重试后仍失败，且没有可用的历史名称"
+    entry["seconds"] = round((entry.get("seconds") or 0) + time.monotonic() - t0, 2)
     return entry
 
 
@@ -210,7 +296,7 @@ def run_info():
 
 
 def core_ok(boards):
-    return all(boards.get(n, {}).get("status") == "ok" for n, c in BOARDS.items() if c["core"])
+    return all(boards.get(n, {}).get("status") in OK_STATUSES for n, c in BOARDS.items() if c["core"])
 
 
 def main(argv=None):
@@ -219,6 +305,7 @@ def main(argv=None):
     ap.add_argument("--only-missing", action="store_true")
     args = ap.parse_args(argv)
 
+    t_start = time.monotonic()
     now = datetime.now(timezone.utc)
     stamp = {"utc": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
              "sydney": now.astimezone(SYD).strftime("%Y-%m-%d %H:%M:%S %Z"),
@@ -231,19 +318,25 @@ def main(argv=None):
     if args.only_missing and day_status_path.exists():
         previous = json.loads(day_status_path.read_text(encoding="utf-8")).get("boards", {})
 
-    fetched, boards = {}, {}
+    fetched, boards, name_repairs = {}, {}, []
     for i, (name, cfg) in enumerate(BOARDS.items()):
-        if previous.get(name, {}).get("status") == "ok":
+        if previous.get(name, {}).get("status") in OK_STATUSES:
             boards[name] = previous[name]          # 当天已成功，保留
             continue
         if fetched:
             time.sleep(1)                          # 各榜之间稍作间隔
-        entry = fetched[name] = run_board(name, cfg, day_dir, stamp)
+        entry, rows = run_board(name, cfg, day_dir, stamp)
+        fetched[name] = entry
+        if entry.pop("names_only", False) and entry["status"] == "partial":
+            name_repairs.append((name, rows, time.monotonic()))
         prev = previous.get(name)
         if entry["status"] == "failed" and prev and prev.get("status") == "partial":
             # 重抓失败时保留之前的部分结果（CSV 未被覆盖）
             entry = {**prev, "retry_error": entry["error"], "retry_at_utc": stamp["utc"]}
         boards[name] = entry
+    for name, rows, t_last in name_repairs:     # 其余榜单抓完后再处理，等待时间与之重叠
+        boards[name] = fetched[name] = repair_em_names(name, fetched[name], rows, day_dir, stamp,
+                                                       t_start, t_last)
 
     status = {
         "date": stamp["date"],
@@ -253,7 +346,8 @@ def main(argv=None):
         "run_id": stamp["run_id"],
         "run_attempt": stamp["run_attempt"],
         "core_ok": core_ok(boards),
-        "note": "公开榜单试跑。core=true 的榜单全部 ok 才算当天成功；港股榜为试探。",
+        "note": ("公开榜单试跑。core=true 的榜单全部 ok（或 ok_names_cached：名称取自历史文件）"
+                 "才算当天成功；港股榜为试探。"),
         "boards": boards,
     }
     body = json.dumps(status, ensure_ascii=False, indent=2) + "\n"

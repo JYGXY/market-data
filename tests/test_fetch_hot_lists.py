@@ -204,5 +204,103 @@ class TestRunInfoAndRetries(Base):
         self.assertNotIn("retry_errors", st["boards"]["xq_follow_cn"])
 
 
+class TestEmNameRepair(Base):
+    """东财名称接口 502：延迟重试、历史名称兜底。"""
+
+    def setUp(self):
+        super().setUp()
+        self.sleeps = []
+        self.p2 = mock.patch.object(fh.time, "sleep", self.sleeps.append)
+        self.p2.start()
+
+    def tearDown(self):
+        self.p2.stop()
+        super().tearDown()
+
+    def run_with_names(self, name_responses):
+        """name_responses: 按次序返回给名称接口的 Resp；用完后一直 502。"""
+        fake, calls = router()
+        seq = list(name_responses)
+
+        def wrapped(method, url, **kw):
+            if url == fh.EM_NAME_URL:
+                calls.append("em_name")
+                return seq.pop(0) if seq else Resp(502, None, "bad gateway")
+            return fake(method, url, **kw)
+        with mock.patch.object(fh.requests, "request", side_effect=wrapped):
+            fh.main([])
+        st = json.loads((fh.HOT_DIR / "status.json").read_text(encoding="utf-8"))
+        rows = list(csv.DictReader((fh.HOT_DIR / st["date"] / "em_popularity_a.csv")
+                                   .open(encoding="utf-8")))
+        return st, rows, calls
+
+    def write_previous_day(self, day="2000-01-01", skip_code=None):
+        d = fh.HOT_DIR / day
+        d.mkdir(parents=True)
+        (d / "status.json").write_text(json.dumps(
+            {"boards": {"em_popularity_a": {"status": "ok"}}}), encoding="utf-8")
+        with (d / "em_popularity_a.csv").open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=fh.CSV_FIELDS)
+            w.writeheader()
+            for i, r in enumerate(reversed(em_rank()["data"])):   # 当年的排名顺序不同
+                if r["sc"] != skip_code:
+                    w.writerow({"date": day, "board": "em_popularity_a", "rank": i + 1,
+                                "code": r["sc"], "name": f"旧名{r['sc'][2:]}"})
+
+    def test_502_then_delayed_retry_succeeds(self):
+        bad = [Resp(502, None, "bad gateway")] * 3          # 首次请求连同内部重试共 3 次
+        st, rows, calls = self.run_with_names(bad + [Resp(payload=em_names())])
+        b = st["boards"]["em_popularity_a"]
+        self.assertEqual(b["status"], "ok")
+        self.assertTrue(st["core_ok"])
+        self.assertEqual(calls.count("em_name"), 4)         # 只延迟重试了 1 次
+        self.assertEqual([r["result"] for r in b["name_retries"]], ["ok"])
+        self.assertTrue(any(x > 100 for x in self.sleeps))  # 确实等待了（约 3 分钟）
+        self.assertEqual((rows[0]["rank"], rows[0]["name"]), ("1", "名称0"))
+        self.assertNotIn("names_from", b)
+
+    def test_retries_fail_then_cached_names(self):
+        self.write_previous_day(skip_code="SZ600001")       # 上一份文件里没有这个“新代码”
+        st, rows, calls = self.run_with_names([])
+        b = st["boards"]["em_popularity_a"]
+        self.assertEqual(b["status"], "ok_names_cached")
+        self.assertTrue(st["core_ok"])                      # 不再占用第二次触发
+        self.assertEqual(calls.count("em_name"), 3 + 2)     # 首次 3 次 + 延迟重试 2 次
+        self.assertEqual(len(b["name_retries"]), 2)
+        self.assertEqual(b["names_from"], "2000-01-01")
+        self.assertEqual((b["names_cached"], b["names_missing_codes"]), (99, ["SZ600001"]))
+        self.assertIn("2000-01-01", b["note"])
+        # 排名和代码是当天的（与旧文件顺序不同），只有名称来自旧文件
+        self.assertEqual((rows[0]["rank"], rows[0]["code"], rows[0]["name"]),
+                         ("1", "SH600000", "旧名600000"))
+        self.assertEqual(rows[1]["name"], "")              # 新代码名称留空
+        self.assertEqual(rows[0]["date"], st["date"])
+
+    def test_no_cache_stays_partial(self):
+        st, rows, _ = self.run_with_names([])
+        b = st["boards"]["em_popularity_a"]
+        self.assertEqual(b["status"], "partial")
+        self.assertFalse(st["core_ok"])
+        self.assertIn("没有可用的历史名称", b["note"])
+
+    def test_deadline_skips_waiting(self):
+        self.write_previous_day()
+        with mock.patch.object(fh, "NAME_RETRY_DEADLINE", 0):
+            st, _, calls = self.run_with_names([])
+        b = st["boards"]["em_popularity_a"]
+        self.assertEqual(calls.count("em_name"), 3)         # 不再延迟重试
+        self.assertIn("skipped", b["name_retries"][0])
+        self.assertEqual(b["status"], "ok_names_cached")
+        self.assertFalse(any(x > 100 for x in self.sleeps))
+
+    def test_cached_status_kept_by_only_missing(self):
+        self.write_previous_day()
+        self.run_with_names([])
+        fake, calls = router()
+        with mock.patch.object(fh.requests, "request", side_effect=fake):
+            fh.main(["--only-missing"])
+        self.assertNotIn("em_rank", calls)                  # 已算成功，不再重抓
+
+
 if __name__ == "__main__":
     unittest.main()
