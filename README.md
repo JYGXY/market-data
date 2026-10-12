@@ -175,7 +175,13 @@ if not d["complete"]:
 | `xq_{follow,tweet,deal}_hk.csv` | 同上（港股，试探） | 50 | 同上 | 否 |
 
 - CSV 列：`date`（悉尼日期）、`fetched_at_utc`、`fetched_at_sydney`、`board`、`rank`、`code`、`name`、`heat_value`、`heat_field`、`run_id`（生成该文件的运行编号，下游引用时写上）。
-- 东财榜单接口只给排名和代码。名称来自东财行情接口（只取代码和名称字段），该接口失败时，仍保存排名和代码，`name` 留空，状态记为 `partial`。
+- 东财榜单接口只给排名和代码。名称来自东财行情接口（只取代码和名称字段）。该接口失败时：
+  1. 先保存排名和代码，其余榜单照常抓；
+  2. 抓完后**同次运行内延迟重试**：距上次请求 3 分钟后再试一次，最多 2 次（每次只请求一次；距运行开始超过 14 分钟就不再等）。取到名称 → `ok`，`name_retries` 记下每次重试的结果；
+  3. 仍失败 → **名称兜底**：用最近一份 `status=ok` 的东财人气榜文件里同代码的名称补上，状态 `ok_names_cached`，
+     `names_from` 写明名称来自哪一天，`names_cached` 是补上的个数，`names_missing_codes` 列出旧文件里没有的新代码（`name` 留空）。
+     **排名和代码始终是当天的**，只有名称来自旧文件。`ok_names_cached` 算作成功（`core_ok=true`），不再占用第二次外部触发；
+  4. 没有任何可用的历史文件 → 仍为 `partial`。
 - akshare 的雪球函数只支持沪深（`category=CN`）。港股榜试探的是同一接口的 `category=HK`，不计入“当天成功”。
 
 ### 为什么不直接调用 akshare 函数
@@ -197,7 +203,7 @@ if not d["complete"]:
 
 `status.json` 顶层有 `run_id`、`run_attempt`（最近一次运行），每个榜也有自己的 `run_id`（备用运行保留下来的榜，是之前那次运行的编号）。重试后才成功的榜，`retry_errors` 保留之前几次失败的原因。
 
-`status` 取值：`ok`（行数足额）、`partial`（有数据但不全，例如缺名称）、`failed`（无数据）。
+`status` 取值：`ok`（行数足额）、`ok_names_cached`（东财人气榜：排名和代码是当天的，名称取自 `names_from` 那天的成功文件，算成功）、`partial`（有数据但不全，例如缺名称）、`failed`（无数据）。
 
 `error_kind` 取值：
 
