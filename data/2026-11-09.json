@@ -1,0 +1,3532 @@
+{
+  "trading_date": "2026-11-09",
+  "complete": true,
+  "missing": [],
+  "asx300_complete": true,
+  "stale": [
+    "asx300.MFG",
+    "asx300.SSM"
+  ],
+  "stale_reasons": {
+    "asx300.MFG": "2026-11-09 无交易数据（可能停牌）；最后成交日 2026-10-30，收盘 7.79",
+    "asx300.SSM": "2026-11-09 无成交（成交量为 0）；最后成交日 2026-11-06，收盘 2.2"
+  },
+  "run_id": 42702436282,
+  "run_attempt": 1,
+  "run_trigger": "workflow_dispatch:full",
+  "generated_at_utc": "2026-11-09T21:26:06Z",
+  "generated_at_new_york": "2026-11-09 16:26 EST",
+  "disclaimer": "仅含公开市场数据。取不到的值为 null，并在 error 字段注明原因。",
+  "us_indices": {
+    "sp500": {
+      "name": "标普 500",
+      "symbol": "^GSPC",
+      "value": 7549.9399,
+      "change": 173.0801,
+      "change_pct": 2.346,
+      "prev_close": 7376.8599,
+      "unit": "点",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/%5EGSPC"
+    },
+    "dow": {
+      "name": "道琼斯工业平均",
+      "symbol": "^DJI",
+      "value": 52389.75,
+      "change": 1104.0195,
+      "change_pct": 2.153,
+      "prev_close": 51285.7305,
+      "unit": "点",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/%5EDJI"
+    },
+    "nasdaq": {
+      "name": "纳斯达克综合",
+      "symbol": "^IXIC",
+      "value": 25253.1387,
+      "change": 673.709,
+      "change_pct": 2.741,
+      "prev_close": 24579.4297,
+      "unit": "点",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/%5EIXIC"
+    }
+  },
+  "us_top30_by_market_cap": {
+    "source": "https://finance.yahoo.com/research-hub/screener/largest_market_cap/",
+    "items": [
+      {
+        "rank": 1,
+        "symbol": "AAPL",
+        "name": "Apple Inc.",
+        "value": 350.69,
+        "change": 8.32,
+        "change_pct": 2.43,
+        "market_cap_usd": 5096291172352,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AAPL"
+      },
+      {
+        "rank": 2,
+        "symbol": "NVDA",
+        "name": "NVIDIA Corporation",
+        "value": 178.67,
+        "change": -7.97,
+        "change_pct": -4.27,
+        "market_cap_usd": 4314344194048,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NVDA"
+      },
+      {
+        "rank": 3,
+        "symbol": "MSFT",
+        "name": "Microsoft Corporation",
+        "value": 545.18,
+        "change": 14.57,
+        "change_pct": 2.746,
+        "market_cap_usd": 4048612753408,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MSFT"
+      },
+      {
+        "rank": 4,
+        "symbol": "GOOGL",
+        "name": "Alphabet Inc.",
+        "value": 288.15,
+        "change": 3.37,
+        "change_pct": 1.183,
+        "market_cap_usd": 3542515974144,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GOOGL"
+      },
+      {
+        "rank": 5,
+        "symbol": "AMZN",
+        "name": "Amazon.com, Inc.",
+        "value": 266.93,
+        "change": 7.63,
+        "change_pct": 2.943,
+        "market_cap_usd": 2886350929920,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AMZN"
+      },
+      {
+        "rank": 6,
+        "symbol": "TSM",
+        "name": "Taiwan Semiconductor Manufacturing Company Limited",
+        "value": 388.62,
+        "change": 13.18,
+        "change_pct": 3.511,
+        "market_cap_usd": 2015567544320,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TSM"
+      },
+      {
+        "rank": 7,
+        "symbol": "SPCX",
+        "name": "Space Exploration Technologies Corp.",
+        "value": 142.07,
+        "change": 7.8,
+        "change_pct": 5.809,
+        "market_cap_usd": 1929461891072,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SPCX"
+      },
+      {
+        "rank": 8,
+        "symbol": "META",
+        "name": "Meta Platforms, Inc.",
+        "value": 641.37,
+        "change": 31.22,
+        "change_pct": 5.117,
+        "market_cap_usd": 1639876001792,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/META"
+      },
+      {
+        "rank": 9,
+        "symbol": "AVGO",
+        "name": "Broadcom Inc.",
+        "value": 319.48,
+        "change": 25.79,
+        "change_pct": 8.781,
+        "market_cap_usd": 1525079343104,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AVGO"
+      },
+      {
+        "rank": 10,
+        "symbol": "TSLA",
+        "name": "Tesla, Inc.",
+        "value": 378.05,
+        "change": 19.83,
+        "change_pct": 5.536,
+        "market_cap_usd": 1494340075520,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TSLA"
+      },
+      {
+        "rank": 11,
+        "symbol": "LLY",
+        "name": "Eli Lilly and Company",
+        "value": 1411.95,
+        "change": 57.95,
+        "change_pct": 4.28,
+        "market_cap_usd": 1257687351296,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/LLY"
+      },
+      {
+        "rank": 12,
+        "symbol": "BRK-B",
+        "name": "Berkshire Hathaway Inc.",
+        "value": 575.25,
+        "change": 4.36,
+        "change_pct": 0.764,
+        "market_cap_usd": 1231443329024,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BRK-B"
+      },
+      {
+        "rank": 13,
+        "symbol": "WMT",
+        "name": "Walmart Inc.",
+        "value": 125.66,
+        "change": 0.14,
+        "change_pct": 0.112,
+        "market_cap_usd": 996954603520,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WMT"
+      },
+      {
+        "rank": 14,
+        "symbol": "SKHY",
+        "name": "SK hynix Inc.",
+        "value": 134.38,
+        "change": 7.04,
+        "change_pct": 5.529,
+        "market_cap_usd": 947611893760,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SKHY"
+      },
+      {
+        "rank": 15,
+        "symbol": "JPM",
+        "name": "JPMorgan Chase & Co.",
+        "value": 342.08,
+        "change": 7.59,
+        "change_pct": 2.269,
+        "market_cap_usd": 908430868480,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/JPM"
+      },
+      {
+        "rank": 16,
+        "symbol": "AMD",
+        "name": "Advanced Micro Devices, Inc.",
+        "value": 508.58,
+        "change": 59.54,
+        "change_pct": 13.259,
+        "market_cap_usd": 834115600384,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AMD"
+      },
+      {
+        "rank": 17,
+        "symbol": "MU",
+        "name": "Micron Technology, Inc.",
+        "value": 733.15,
+        "change": 43.15,
+        "change_pct": 6.254,
+        "market_cap_usd": 829502980096,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MU"
+      },
+      {
+        "rank": 18,
+        "symbol": "V",
+        "name": "Visa Inc.",
+        "value": 422.16,
+        "change": -0.49,
+        "change_pct": -0.116,
+        "market_cap_usd": 787666173952,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/V"
+      },
+      {
+        "rank": 19,
+        "symbol": "JNJ",
+        "name": "Johnson & Johnson",
+        "value": 282.11,
+        "change": 5.89,
+        "change_pct": 2.132,
+        "market_cap_usd": 679126302720,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/JNJ"
+      },
+      {
+        "rank": 20,
+        "symbol": "XOM",
+        "name": "ExxonMobil Holdings Corporation",
+        "value": 164.73,
+        "change": -1.14,
+        "change_pct": -0.687,
+        "market_cap_usd": 671970295808,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/XOM"
+      },
+      {
+        "rank": 21,
+        "symbol": "ASML",
+        "name": "ASML Holding N.V.",
+        "value": 1513.25,
+        "change": 88.5,
+        "change_pct": 6.212,
+        "market_cap_usd": 583233372160,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ASML"
+      },
+      {
+        "rank": 22,
+        "symbol": "MA",
+        "name": "Mastercard Incorporated",
+        "value": 655.81,
+        "change": 3.11,
+        "change_pct": 0.476,
+        "market_cap_usd": 571326005248,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MA"
+      },
+      {
+        "rank": 23,
+        "symbol": "ABBV",
+        "name": "AbbVie Inc.",
+        "value": 293.3,
+        "change": 1.99,
+        "change_pct": 0.683,
+        "market_cap_usd": 518441828352,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ABBV"
+      },
+      {
+        "rank": 24,
+        "symbol": "COST",
+        "name": "Costco Wholesale Corporation",
+        "value": 1066.18,
+        "change": 12.62,
+        "change_pct": 1.198,
+        "market_cap_usd": 472455675904,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/COST"
+      },
+      {
+        "rank": 25,
+        "symbol": "KO",
+        "name": "The Coca-Cola Company",
+        "value": 96.03,
+        "change": 0.36,
+        "change_pct": 0.376,
+        "market_cap_usd": 413111681024,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/KO"
+      },
+      {
+        "rank": 26,
+        "symbol": "CVX",
+        "name": "Chevron Corporation",
+        "value": 210.78,
+        "change": -1.83,
+        "change_pct": -0.861,
+        "market_cap_usd": 411285225472,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CVX"
+      },
+      {
+        "rank": 27,
+        "symbol": "PLTR",
+        "name": "Palantir Technologies Inc.",
+        "value": 169.2,
+        "change": 8.82,
+        "change_pct": 5.499,
+        "market_cap_usd": 407686971392,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PLTR"
+      },
+      {
+        "rank": 28,
+        "symbol": "PG",
+        "name": "The Procter & Gamble Company",
+        "value": 168.32,
+        "change": 2.92,
+        "change_pct": 1.765,
+        "market_cap_usd": 390129254400,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PG"
+      },
+      {
+        "rank": 29,
+        "symbol": "CSCO",
+        "name": "Cisco Systems, Inc.",
+        "value": 98.65,
+        "change": 4.8,
+        "change_pct": 5.115,
+        "market_cap_usd": 388936204288,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CSCO"
+      },
+      {
+        "rank": 30,
+        "symbol": "ORCL",
+        "name": "Oracle Corporation",
+        "value": 119.79,
+        "change": 3.69,
+        "change_pct": 3.178,
+        "market_cap_usd": 373470232576,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ORCL"
+      }
+    ],
+    "note": "按 Yahoo 实时市值排序，仅限美国主要交易所上市股票（含 ADR），同一公司多类股只计一次"
+  },
+  "rates": {
+    "us_10y_yield": {
+      "name": "美国 10 年期国债收益率",
+      "symbol": "^TNX",
+      "value": 4.864,
+      "change": 0.005,
+      "change_pct": 0.103,
+      "prev_close": 4.859,
+      "unit": "%",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/%5ETNX",
+      "change_bp": 0.5
+    },
+    "ig_credit_spread": {
+      "name": "ICE BofA 美国投资级公司债期权调整利差 (OAS)",
+      "series": "BAMLC0A0CM",
+      "value": 0.93,
+      "change": 0.0,
+      "change_pct": null,
+      "unit": "百分点",
+      "date": "2026-11-06",
+      "source": "https://fred.stlouisfed.org/series/BAMLC0A0CM",
+      "note": "FRED 发布通常滞后 1 个交易日；change 为相邻两期差值"
+    }
+  },
+  "commodities": {
+    "brent": {
+      "name": "布伦特原油（近月期货）",
+      "symbol": "BZ=F",
+      "value": 92.92,
+      "change": -5.4,
+      "change_pct": -5.492,
+      "prev_close": 98.32,
+      "unit": "美元/桶",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/BZ%3DF"
+    },
+    "wti": {
+      "name": "WTI 原油（近月期货）",
+      "symbol": "CL=F",
+      "value": 87.07,
+      "change": -3.76,
+      "change_pct": -4.14,
+      "prev_close": 90.83,
+      "unit": "美元/桶",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/CL%3DF"
+    },
+    "gold": {
+      "name": "黄金（COMEX 近月期货）",
+      "symbol": "GC=F",
+      "value": 4147.5,
+      "change": 72.6,
+      "change_pct": 1.782,
+      "prev_close": 4074.9,
+      "unit": "美元/盎司",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/GC%3DF"
+    }
+  },
+  "fx": {
+    "aud_usd": {
+      "name": "AUD/USD",
+      "symbol": "AUDUSD=X",
+      "value": 0.6927,
+      "change": -0.0004,
+      "change_pct": -0.057,
+      "prev_close": 0.6931,
+      "unit": "美元/澳元",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/AUDUSD%3DX"
+    },
+    "usd_cny": {
+      "name": "USD/CNY",
+      "symbol": "CNY=X",
+      "value": 6.6727,
+      "change": -0.0153,
+      "change_pct": -0.229,
+      "prev_close": 6.688,
+      "unit": "人民币/美元",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/CNY%3DX"
+    },
+    "usd_hkd": {
+      "name": "USD/HKD",
+      "symbol": "HKD=X",
+      "value": 7.8416,
+      "change": 0.0029,
+      "change_pct": 0.037,
+      "prev_close": 7.8387,
+      "unit": "港元/美元",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/HKD%3DX"
+    }
+  },
+  "asia_pacific_indices": {
+    "asx200": {
+      "name": "ASX 200",
+      "symbol": "^AXJO",
+      "value": 9029.7002,
+      "change": 8.9004,
+      "change_pct": 0.099,
+      "prev_close": 9020.7998,
+      "unit": "点",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/%5EAXJO"
+    },
+    "hang_seng": {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "value": 24448.95,
+      "change": -32.9094,
+      "change_pct": -0.134,
+      "prev_close": 24481.8594,
+      "unit": "点",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/%5EHSI",
+      "note": "最新日线收盘缺失，取数据源报价中的收盘价"
+    },
+    "csi300": {
+      "name": "沪深 300",
+      "symbol": "000300.SS",
+      "value": 4056.108,
+      "change": 1.828,
+      "change_pct": 0.045,
+      "prev_close": 4054.28,
+      "unit": "点",
+      "date": "2026-11-09",
+      "source": "https://finance.yahoo.com/quote/000300.SS",
+      "note": "日线历史不全，改用数据源报价中的最新收盘与涨跌"
+    }
+  },
+  "asx300": {
+    "index": "S&P/ASX 300",
+    "items": [
+      {
+        "symbol": "360",
+        "name": "Life360, Inc. Shs Chess Depository Interests Repr 3 Sh",
+        "value": 22.33,
+        "prev_close": 22.45,
+        "change": -0.12,
+        "change_pct": -0.535,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/360.AX"
+      },
+      {
+        "symbol": "4DX",
+        "name": "4DMedical Ltd.",
+        "value": 2.34,
+        "prev_close": 2.28,
+        "change": 0.06,
+        "change_pct": 2.632,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/4DX.AX"
+      },
+      {
+        "symbol": "A2M",
+        "name": "a2 Milk Company Limited",
+        "value": 7.03,
+        "prev_close": 7.13,
+        "change": -0.1,
+        "change_pct": -1.403,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/A2M.AX"
+      },
+      {
+        "symbol": "A4N",
+        "name": "Alpha HPA Limited",
+        "value": 0.38,
+        "prev_close": 0.37,
+        "change": 0.01,
+        "change_pct": 2.703,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/A4N.AX"
+      },
+      {
+        "symbol": "AAI",
+        "name": "Alcoa Corporation shs Chess Depository Interests Repr 1 Sh",
+        "value": 58.79,
+        "prev_close": 55.94,
+        "change": 2.85,
+        "change_pct": 5.095,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AAI.AX"
+      },
+      {
+        "symbol": "ABB",
+        "name": "Aussie Broadband Ltd.",
+        "value": 4.61,
+        "prev_close": 4.6,
+        "change": 0.01,
+        "change_pct": 0.217,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ABB.AX"
+      },
+      {
+        "symbol": "ABG",
+        "name": "Abacus Group",
+        "value": 0.86,
+        "prev_close": 0.87,
+        "change": -0.01,
+        "change_pct": -1.149,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ABG.AX"
+      },
+      {
+        "symbol": "ACL",
+        "name": "Australian Clinical Labs Ltd",
+        "value": 3.22,
+        "prev_close": 3.24,
+        "change": -0.02,
+        "change_pct": -0.617,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ACL.AX"
+      },
+      {
+        "symbol": "AEF",
+        "name": "Australian Ethical Investment Ltd",
+        "value": 4.5,
+        "prev_close": 4.56,
+        "change": -0.06,
+        "change_pct": -1.316,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AEF.AX"
+      },
+      {
+        "symbol": "AEL",
+        "name": "Amplitude Energy Limited",
+        "value": 1.77,
+        "prev_close": 1.77,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AEL.AX"
+      },
+      {
+        "symbol": "AGL",
+        "name": "AGL Energy Limited",
+        "value": 9.0,
+        "prev_close": 9.04,
+        "change": -0.04,
+        "change_pct": -0.442,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AGL.AX"
+      },
+      {
+        "symbol": "AIA",
+        "name": "Auckland International Airport Limited",
+        "value": 7.16,
+        "prev_close": 7.1,
+        "change": 0.06,
+        "change_pct": 0.845,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AIA.AX"
+      },
+      {
+        "symbol": "ALD",
+        "name": "Ampol Limited",
+        "value": 35.95,
+        "prev_close": 36.03,
+        "change": -0.08,
+        "change_pct": -0.222,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ALD.AX"
+      },
+      {
+        "symbol": "ALK",
+        "name": "Alkane Resources Ltd",
+        "value": 1.85,
+        "prev_close": 1.725,
+        "change": 0.125,
+        "change_pct": 7.246,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ALK.AX"
+      },
+      {
+        "symbol": "ALL",
+        "name": "Aristocrat Leisure Limited",
+        "value": 65.54,
+        "prev_close": 65.86,
+        "change": -0.32,
+        "change_pct": -0.486,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ALL.AX"
+      },
+      {
+        "symbol": "ALQ",
+        "name": "ALS Ltd.",
+        "value": 20.8,
+        "prev_close": 21.05,
+        "change": -0.25,
+        "change_pct": -1.188,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ALQ.AX"
+      },
+      {
+        "symbol": "ALX",
+        "name": "Atlas Arteria",
+        "value": 3.73,
+        "prev_close": 3.75,
+        "change": -0.02,
+        "change_pct": -0.533,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ALX.AX"
+      },
+      {
+        "symbol": "AMC",
+        "name": "Amcor PLC Shs Chess Depository Interests",
+        "value": 64.91,
+        "prev_close": 65.01,
+        "change": -0.1,
+        "change_pct": -0.154,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AMC.AX"
+      },
+      {
+        "symbol": "AMP",
+        "name": "AMP Limited",
+        "value": 2.19,
+        "prev_close": 2.22,
+        "change": -0.03,
+        "change_pct": -1.351,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AMP.AX"
+      },
+      {
+        "symbol": "ANN",
+        "name": "Ansell Limited",
+        "value": 45.76,
+        "prev_close": 45.66,
+        "change": 0.1,
+        "change_pct": 0.219,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ANN.AX"
+      },
+      {
+        "symbol": "ANZ",
+        "name": "ANZ Group Holdings Limited",
+        "value": 39.05,
+        "prev_close": 40.34,
+        "change": -1.29,
+        "change_pct": -3.198,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ANZ.AX"
+      },
+      {
+        "symbol": "AOV",
+        "name": "Amotiv Limited",
+        "value": 5.0,
+        "prev_close": 5.13,
+        "change": -0.13,
+        "change_pct": -2.534,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AOV.AX"
+      },
+      {
+        "symbol": "APA",
+        "name": "APA Group",
+        "value": 11.11,
+        "prev_close": 11.24,
+        "change": -0.13,
+        "change_pct": -1.157,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/APA.AX"
+      },
+      {
+        "symbol": "APE",
+        "name": "Eagers Automotive Limited",
+        "value": 15.41,
+        "prev_close": 16.22,
+        "change": -0.81,
+        "change_pct": -4.994,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/APE.AX"
+      },
+      {
+        "symbol": "APZ",
+        "name": "Aspen Group Limited",
+        "value": 4.99,
+        "prev_close": 5.05,
+        "change": -0.06,
+        "change_pct": -1.188,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/APZ.AX"
+      },
+      {
+        "symbol": "ARB",
+        "name": "ARB Corporation Limited",
+        "value": 18.21,
+        "prev_close": 18.56,
+        "change": -0.35,
+        "change_pct": -1.886,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ARB.AX"
+      },
+      {
+        "symbol": "ARF",
+        "name": "Arena REIT",
+        "value": 2.8,
+        "prev_close": 2.83,
+        "change": -0.03,
+        "change_pct": -1.06,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ARF.AX"
+      },
+      {
+        "symbol": "ARU",
+        "name": "Arafura Rare Earths Limited",
+        "value": 0.15,
+        "prev_close": 0.145,
+        "change": 0.005,
+        "change_pct": 3.448,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ARU.AX"
+      },
+      {
+        "symbol": "ASB",
+        "name": "Austal Limited",
+        "value": 4.31,
+        "prev_close": 4.22,
+        "change": 0.09,
+        "change_pct": 2.133,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ASB.AX"
+      },
+      {
+        "symbol": "ASX",
+        "name": "ASX Limited",
+        "value": 66.03,
+        "prev_close": 66.06,
+        "change": -0.03,
+        "change_pct": -0.045,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ASX.AX"
+      },
+      {
+        "symbol": "AUB",
+        "name": "AUB Group Limited",
+        "value": 30.25,
+        "prev_close": 30.34,
+        "change": -0.09,
+        "change_pct": -0.297,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AUB.AX"
+      },
+      {
+        "symbol": "AYA",
+        "name": "Artrya Limited",
+        "value": 3.48,
+        "prev_close": 3.5,
+        "change": -0.02,
+        "change_pct": -0.571,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AYA.AX"
+      },
+      {
+        "symbol": "AZJ",
+        "name": "Aurizon Holdings Ltd.",
+        "value": 3.85,
+        "prev_close": 3.85,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/AZJ.AX"
+      },
+      {
+        "symbol": "BC8",
+        "name": "Black Cat Syndicate Ltd.",
+        "value": 0.67,
+        "prev_close": 0.615,
+        "change": 0.055,
+        "change_pct": 8.943,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BC8.AX"
+      },
+      {
+        "symbol": "BEN",
+        "name": "Bendigo & Adelaide Bank Ltd.",
+        "value": 10.6,
+        "prev_close": 10.83,
+        "change": -0.23,
+        "change_pct": -2.124,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BEN.AX"
+      },
+      {
+        "symbol": "BGA",
+        "name": "Bega Cheese Limited",
+        "value": 6.42,
+        "prev_close": 6.43,
+        "change": -0.01,
+        "change_pct": -0.156,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BGA.AX"
+      },
+      {
+        "symbol": "BGL",
+        "name": "Bellevue Gold Limited",
+        "value": 1.455,
+        "prev_close": 1.41,
+        "change": 0.045,
+        "change_pct": 3.191,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BGL.AX"
+      },
+      {
+        "symbol": "BHP",
+        "name": "BHP Group Ltd",
+        "value": 59.2,
+        "prev_close": 57.62,
+        "change": 1.58,
+        "change_pct": 2.742,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BHP.AX"
+      },
+      {
+        "symbol": "BMN",
+        "name": "Bannerman Energy Ltd",
+        "value": 3.69,
+        "prev_close": 3.49,
+        "change": 0.2,
+        "change_pct": 5.731,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BMN.AX"
+      },
+      {
+        "symbol": "BNZ",
+        "name": "Benz Mining Corp. Shs Chess Depository Interests Repr 1 sh",
+        "value": 4.52,
+        "prev_close": 4.1,
+        "change": 0.42,
+        "change_pct": 10.244,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BNZ.AX"
+      },
+      {
+        "symbol": "BOE",
+        "name": "Boss Energy Limited",
+        "value": 1.55,
+        "prev_close": 1.4,
+        "change": 0.15,
+        "change_pct": 10.714,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BOE.AX"
+      },
+      {
+        "symbol": "BOQ",
+        "name": "Bank of Queensland Limited",
+        "value": 6.89,
+        "prev_close": 7.01,
+        "change": -0.12,
+        "change_pct": -1.712,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BOQ.AX"
+      },
+      {
+        "symbol": "BPT",
+        "name": "Beach Energy Limited",
+        "value": 0.9,
+        "prev_close": 0.9,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BPT.AX"
+      },
+      {
+        "symbol": "BRE",
+        "name": "Brazilian Rare Earths Limited",
+        "value": 1.91,
+        "prev_close": 1.695,
+        "change": 0.215,
+        "change_pct": 12.684,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BRE.AX"
+      },
+      {
+        "symbol": "BRG",
+        "name": "Breville Group Limited",
+        "value": 32.93,
+        "prev_close": 32.95,
+        "change": -0.02,
+        "change_pct": -0.061,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BRG.AX"
+      },
+      {
+        "symbol": "BSL",
+        "name": "Bluescope Steel Limited",
+        "value": 31.93,
+        "prev_close": 31.41,
+        "change": 0.52,
+        "change_pct": 1.656,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BSL.AX"
+      },
+      {
+        "symbol": "BVS",
+        "name": "Bravura Solutions Limited",
+        "value": 3.4,
+        "prev_close": 3.4,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BVS.AX"
+      },
+      {
+        "symbol": "BWP",
+        "name": "BWP Group",
+        "value": 3.67,
+        "prev_close": 3.69,
+        "change": -0.02,
+        "change_pct": -0.542,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BWP.AX"
+      },
+      {
+        "symbol": "BXB",
+        "name": "Brambles Limited",
+        "value": 21.79,
+        "prev_close": 22.2,
+        "change": -0.41,
+        "change_pct": -1.847,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/BXB.AX"
+      },
+      {
+        "symbol": "CAR",
+        "name": "CAR Group Limited",
+        "value": 25.92,
+        "prev_close": 26.07,
+        "change": -0.15,
+        "change_pct": -0.575,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CAR.AX"
+      },
+      {
+        "symbol": "CAT",
+        "name": "Catapult Sports Ltd.",
+        "value": 3.76,
+        "prev_close": 3.68,
+        "change": 0.08,
+        "change_pct": 2.174,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CAT.AX"
+      },
+      {
+        "symbol": "CBA",
+        "name": "Commonwealth Bank of Australia",
+        "value": 165.97,
+        "prev_close": 167.51,
+        "change": -1.54,
+        "change_pct": -0.919,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CBA.AX"
+      },
+      {
+        "symbol": "CBO",
+        "name": "Cobram Estate Olives Ltd.",
+        "value": 2.77,
+        "prev_close": 2.7,
+        "change": 0.07,
+        "change_pct": 2.593,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CBO.AX"
+      },
+      {
+        "symbol": "CCL",
+        "name": "Cuscal Limited",
+        "value": 5.94,
+        "prev_close": 5.89,
+        "change": 0.05,
+        "change_pct": 0.849,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CCL.AX"
+      },
+      {
+        "symbol": "CCP",
+        "name": "Credit Corp Group Limited",
+        "value": 15.45,
+        "prev_close": 15.64,
+        "change": -0.19,
+        "change_pct": -1.215,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CCP.AX"
+      },
+      {
+        "symbol": "CDA",
+        "name": "Codan Limited",
+        "value": 56.09,
+        "prev_close": 54.49,
+        "change": 1.6,
+        "change_pct": 2.936,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CDA.AX"
+      },
+      {
+        "symbol": "CGF",
+        "name": "Challenger Limited",
+        "value": 12.04,
+        "prev_close": 12.06,
+        "change": -0.02,
+        "change_pct": -0.166,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CGF.AX"
+      },
+      {
+        "symbol": "CHC",
+        "name": "Charter Hall Group",
+        "value": 21.8,
+        "prev_close": 22.16,
+        "change": -0.36,
+        "change_pct": -1.625,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CHC.AX"
+      },
+      {
+        "symbol": "CHN",
+        "name": "Chalice Mining Limited",
+        "value": 1.135,
+        "prev_close": 1.06,
+        "change": 0.075,
+        "change_pct": 7.075,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CHN.AX"
+      },
+      {
+        "symbol": "CIA",
+        "name": "Champion Iron Ltd.",
+        "value": 2.1,
+        "prev_close": 2.06,
+        "change": 0.04,
+        "change_pct": 1.942,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CIA.AX"
+      },
+      {
+        "symbol": "CIP",
+        "name": "Centuria Industrial REIT",
+        "value": 2.92,
+        "prev_close": 2.97,
+        "change": -0.05,
+        "change_pct": -1.684,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CIP.AX"
+      },
+      {
+        "symbol": "CKF",
+        "name": "Collins Foods Limited",
+        "value": 9.19,
+        "prev_close": 9.28,
+        "change": -0.09,
+        "change_pct": -0.97,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CKF.AX"
+      },
+      {
+        "symbol": "CLW",
+        "name": "Charter Hall Long WALE REIT",
+        "value": 3.49,
+        "prev_close": 3.56,
+        "change": -0.07,
+        "change_pct": -1.966,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CLW.AX"
+      },
+      {
+        "symbol": "CMM",
+        "name": "Capricorn Metals Ltd",
+        "value": 14.57,
+        "prev_close": 13.95,
+        "change": 0.62,
+        "change_pct": 4.444,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CMM.AX"
+      },
+      {
+        "symbol": "CMW",
+        "name": "Cromwell Property Group",
+        "value": 0.365,
+        "prev_close": 0.365,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CMW.AX"
+      },
+      {
+        "symbol": "CNI",
+        "name": "Centuria Capital Group",
+        "value": 1.195,
+        "prev_close": 1.22,
+        "change": -0.025,
+        "change_pct": -2.049,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CNI.AX"
+      },
+      {
+        "symbol": "CNU",
+        "name": "Chorus Limited",
+        "value": 6.52,
+        "prev_close": 6.67,
+        "change": -0.15,
+        "change_pct": -2.249,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CNU.AX"
+      },
+      {
+        "symbol": "COH",
+        "name": "Cochlear Limited",
+        "value": 152.0,
+        "prev_close": 155.47,
+        "change": -3.47,
+        "change_pct": -2.232,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/COH.AX"
+      },
+      {
+        "symbol": "COL",
+        "name": "Coles Group Ltd.",
+        "value": 22.57,
+        "prev_close": 22.6,
+        "change": -0.03,
+        "change_pct": -0.133,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/COL.AX"
+      },
+      {
+        "symbol": "CPU",
+        "name": "Computershare Limited",
+        "value": 43.05,
+        "prev_close": 42.99,
+        "change": 0.06,
+        "change_pct": 0.14,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CPU.AX"
+      },
+      {
+        "symbol": "CQE",
+        "name": "Charter Hall Social Infrastructure REIT",
+        "value": 2.61,
+        "prev_close": 2.65,
+        "change": -0.04,
+        "change_pct": -1.509,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CQE.AX"
+      },
+      {
+        "symbol": "CQR",
+        "name": "Charter Hall Retail REIT",
+        "value": 3.86,
+        "prev_close": 3.94,
+        "change": -0.08,
+        "change_pct": -2.03,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CQR.AX"
+      },
+      {
+        "symbol": "CSC",
+        "name": "Capstone Copper Corp. Shs Chess Depository Interests Repr 1 Sh",
+        "value": 11.52,
+        "prev_close": 11.04,
+        "change": 0.48,
+        "change_pct": 4.348,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CSC.AX"
+      },
+      {
+        "symbol": "CSL",
+        "name": "CSL Limited",
+        "value": 200.77,
+        "prev_close": 202.04,
+        "change": -1.27,
+        "change_pct": -0.629,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CSL.AX"
+      },
+      {
+        "symbol": "CU6",
+        "name": "Clarity Pharmaceuticals Ltd.",
+        "value": 1.57,
+        "prev_close": 1.495,
+        "change": 0.075,
+        "change_pct": 5.017,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CU6.AX"
+      },
+      {
+        "symbol": "CUV",
+        "name": "Clinuvel Pharmaceuticals Limited",
+        "value": 7.57,
+        "prev_close": 7.52,
+        "change": 0.05,
+        "change_pct": 0.665,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CUV.AX"
+      },
+      {
+        "symbol": "CWY",
+        "name": "Cleanaway Waste Management Ltd.",
+        "value": 3.01,
+        "prev_close": 3.01,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CWY.AX"
+      },
+      {
+        "symbol": "CXO",
+        "name": "Core Lithium Ltd",
+        "value": 0.25,
+        "prev_close": 0.23,
+        "change": 0.02,
+        "change_pct": 8.696,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CXO.AX"
+      },
+      {
+        "symbol": "CYL",
+        "name": "Catalyst Metals Limited",
+        "value": 4.44,
+        "prev_close": 4.08,
+        "change": 0.36,
+        "change_pct": 8.824,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/CYL.AX"
+      },
+      {
+        "symbol": "DBI",
+        "name": "Dalrymple Bay Infrastructure Ltd.",
+        "value": 5.5,
+        "prev_close": 5.6,
+        "change": -0.1,
+        "change_pct": -1.786,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DBI.AX"
+      },
+      {
+        "symbol": "DDR",
+        "name": "Dicker Data Limited",
+        "value": 14.17,
+        "prev_close": 14.13,
+        "change": 0.04,
+        "change_pct": 0.283,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DDR.AX"
+      },
+      {
+        "symbol": "DGT",
+        "name": "Digico Infrastructure REIT",
+        "value": 2.45,
+        "prev_close": 2.43,
+        "change": 0.02,
+        "change_pct": 0.823,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DGT.AX"
+      },
+      {
+        "symbol": "DMP",
+        "name": "Domino's Pizza Enterprises Limited",
+        "value": 22.45,
+        "prev_close": 22.54,
+        "change": -0.09,
+        "change_pct": -0.399,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DMP.AX"
+      },
+      {
+        "symbol": "DNL",
+        "name": "Dyno Nobel Limited",
+        "value": 3.4,
+        "prev_close": 3.82,
+        "change": -0.42,
+        "change_pct": -10.995,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DNL.AX"
+      },
+      {
+        "symbol": "DOW",
+        "name": "Downer EDI Limited",
+        "value": 6.94,
+        "prev_close": 7.1,
+        "change": -0.16,
+        "change_pct": -2.254,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DOW.AX"
+      },
+      {
+        "symbol": "DPM",
+        "name": "DPM Metals Inc. Chess Depository Interests Repr 1 Sh",
+        "value": 57.12,
+        "prev_close": 54.07,
+        "change": 3.05,
+        "change_pct": 5.641,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DPM.AX"
+      },
+      {
+        "symbol": "DRO",
+        "name": "DroneShield Limited",
+        "value": 1.26,
+        "prev_close": 1.275,
+        "change": -0.015,
+        "change_pct": -1.176,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DRO.AX"
+      },
+      {
+        "symbol": "DRR",
+        "name": "Deterra Royalties Ltd",
+        "value": 3.9,
+        "prev_close": 3.91,
+        "change": -0.01,
+        "change_pct": -0.256,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DRR.AX"
+      },
+      {
+        "symbol": "DTL",
+        "name": "Data#3 Limited.",
+        "value": 14.29,
+        "prev_close": 14.28,
+        "change": 0.01,
+        "change_pct": 0.07,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DTL.AX"
+      },
+      {
+        "symbol": "DVP",
+        "name": "Develop Global Limited",
+        "value": 3.76,
+        "prev_close": 3.55,
+        "change": 0.21,
+        "change_pct": 5.915,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DVP.AX"
+      },
+      {
+        "symbol": "DXI",
+        "name": "Dexus Industria REIT",
+        "value": 2.47,
+        "prev_close": 2.47,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DXI.AX"
+      },
+      {
+        "symbol": "DXS",
+        "name": "Dexus",
+        "value": 5.9,
+        "prev_close": 6.03,
+        "change": -0.13,
+        "change_pct": -2.156,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DXS.AX"
+      },
+      {
+        "symbol": "DYL",
+        "name": "Deep Yellow Limited",
+        "value": 0.835,
+        "prev_close": 0.755,
+        "change": 0.08,
+        "change_pct": 10.596,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/DYL.AX"
+      },
+      {
+        "symbol": "EBO",
+        "name": "EBOS Group Limited",
+        "value": 17.06,
+        "prev_close": 17.29,
+        "change": -0.23,
+        "change_pct": -1.33,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EBO.AX"
+      },
+      {
+        "symbol": "EDV",
+        "name": "Endeavour Group Ltd",
+        "value": 3.57,
+        "prev_close": 3.6,
+        "change": -0.03,
+        "change_pct": -0.833,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EDV.AX"
+      },
+      {
+        "symbol": "EIQ",
+        "name": "EchoIQ Limited",
+        "value": 0.48,
+        "prev_close": 0.5,
+        "change": -0.02,
+        "change_pct": -4.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EIQ.AX"
+      },
+      {
+        "symbol": "ELD",
+        "name": "Elders Limited",
+        "value": 6.42,
+        "prev_close": 6.4,
+        "change": 0.02,
+        "change_pct": 0.312,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ELD.AX"
+      },
+      {
+        "symbol": "ELS",
+        "name": "Elsight Ltd.",
+        "value": 1.45,
+        "prev_close": 1.43,
+        "change": 0.02,
+        "change_pct": 1.399,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ELS.AX"
+      },
+      {
+        "symbol": "ELV",
+        "name": "Elevra Lithium Limited",
+        "value": 3.58,
+        "prev_close": 3.34,
+        "change": 0.24,
+        "change_pct": 7.186,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ELV.AX"
+      },
+      {
+        "symbol": "EMR",
+        "name": "Emerald Resources NL",
+        "value": 6.95,
+        "prev_close": 6.62,
+        "change": 0.33,
+        "change_pct": 4.985,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EMR.AX"
+      },
+      {
+        "symbol": "EOS",
+        "name": "Electro Optic Systems Holdings Limited",
+        "value": 7.48,
+        "prev_close": 7.02,
+        "change": 0.46,
+        "change_pct": 6.553,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EOS.AX"
+      },
+      {
+        "symbol": "EQR",
+        "name": "EQ Resources Limited",
+        "value": 0.305,
+        "prev_close": 0.28,
+        "change": 0.025,
+        "change_pct": 8.929,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EQR.AX"
+      },
+      {
+        "symbol": "EQT",
+        "name": "EQT Holdings Ltd.",
+        "value": 21.54,
+        "prev_close": 21.27,
+        "change": 0.27,
+        "change_pct": 1.269,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EQT.AX"
+      },
+      {
+        "symbol": "EVN",
+        "name": "Evolution Mining Limited",
+        "value": 13.53,
+        "prev_close": 12.91,
+        "change": 0.62,
+        "change_pct": 4.802,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EVN.AX"
+      },
+      {
+        "symbol": "EVT",
+        "name": "EVT Limited",
+        "value": 15.65,
+        "prev_close": 15.75,
+        "change": -0.1,
+        "change_pct": -0.635,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/EVT.AX"
+      },
+      {
+        "symbol": "FBU",
+        "name": "Fletcher Building Limited",
+        "value": 2.93,
+        "prev_close": 2.9,
+        "change": 0.03,
+        "change_pct": 1.034,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/FBU.AX"
+      },
+      {
+        "symbol": "FFM",
+        "name": "FireFly Metals Ltd",
+        "value": 1.425,
+        "prev_close": 1.32,
+        "change": 0.105,
+        "change_pct": 7.955,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/FFM.AX"
+      },
+      {
+        "symbol": "FLT",
+        "name": "Flight Centre Travel Group Limited",
+        "value": 12.34,
+        "prev_close": 12.35,
+        "change": -0.01,
+        "change_pct": -0.081,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/FLT.AX"
+      },
+      {
+        "symbol": "FMG",
+        "name": "Fortescue Ltd",
+        "value": 15.28,
+        "prev_close": 15.18,
+        "change": 0.1,
+        "change_pct": 0.659,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/FMG.AX"
+      },
+      {
+        "symbol": "FPH",
+        "name": "Fisher & Paykel Healthcare Corporation Limited",
+        "value": 38.99,
+        "prev_close": 39.2,
+        "change": -0.21,
+        "change_pct": -0.536,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/FPH.AX"
+      },
+      {
+        "symbol": "FPR",
+        "name": "FleetPartners Group Limited",
+        "value": 5.11,
+        "prev_close": 5.12,
+        "change": -0.01,
+        "change_pct": -0.195,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/FPR.AX"
+      },
+      {
+        "symbol": "GDG",
+        "name": "Generation Development Group Limited",
+        "value": 3.16,
+        "prev_close": 3.21,
+        "change": -0.05,
+        "change_pct": -1.558,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GDG.AX"
+      },
+      {
+        "symbol": "GGP",
+        "name": "Greatland Resources Limited",
+        "value": 10.88,
+        "prev_close": 10.33,
+        "change": 0.55,
+        "change_pct": 5.324,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GGP.AX"
+      },
+      {
+        "symbol": "GLF",
+        "name": "Gemlife Communities Group",
+        "value": 3.86,
+        "prev_close": 4.0,
+        "change": -0.14,
+        "change_pct": -3.5,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GLF.AX"
+      },
+      {
+        "symbol": "GMD",
+        "name": "Genesis Minerals Limited",
+        "value": 7.49,
+        "prev_close": 7.04,
+        "change": 0.45,
+        "change_pct": 6.392,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GMD.AX"
+      },
+      {
+        "symbol": "GMG",
+        "name": "Goodman Group",
+        "value": 28.17,
+        "prev_close": 27.84,
+        "change": 0.33,
+        "change_pct": 1.185,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GMG.AX"
+      },
+      {
+        "symbol": "GNC",
+        "name": "Graincorp Limited Class A",
+        "value": 6.8,
+        "prev_close": 6.8,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GNC.AX"
+      },
+      {
+        "symbol": "GNG",
+        "name": "GR Engineering Services Ltd",
+        "value": 7.12,
+        "prev_close": 6.75,
+        "change": 0.37,
+        "change_pct": 5.481,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GNG.AX"
+      },
+      {
+        "symbol": "GNP",
+        "name": "GenusPlus Group Ltd.",
+        "value": 8.47,
+        "prev_close": 8.31,
+        "change": 0.16,
+        "change_pct": 1.925,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GNP.AX"
+      },
+      {
+        "symbol": "GOZ",
+        "name": "Growthpoint Properties Australia",
+        "value": 2.05,
+        "prev_close": 2.09,
+        "change": -0.04,
+        "change_pct": -1.914,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GOZ.AX"
+      },
+      {
+        "symbol": "GPT",
+        "name": "GPT Group",
+        "value": 5.0,
+        "prev_close": 5.18,
+        "change": -0.18,
+        "change_pct": -3.475,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GPT.AX"
+      },
+      {
+        "symbol": "GQG",
+        "name": "GQG Partners, Inc. Shs Chess Depository Interests Repr 1 Sh",
+        "value": 0.955,
+        "prev_close": 0.94,
+        "change": 0.015,
+        "change_pct": 1.596,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GQG.AX"
+      },
+      {
+        "symbol": "GWA",
+        "name": "GWA Group Limited",
+        "value": 2.09,
+        "prev_close": 2.12,
+        "change": -0.03,
+        "change_pct": -1.415,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GWA.AX"
+      },
+      {
+        "symbol": "GYG",
+        "name": "Guzman y Gomez Ltd.",
+        "value": 25.99,
+        "prev_close": 26.12,
+        "change": -0.13,
+        "change_pct": -0.498,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/GYG.AX"
+      },
+      {
+        "symbol": "HDN",
+        "name": "HomeCo Daily Needs REIT",
+        "value": 1.16,
+        "prev_close": 1.18,
+        "change": -0.02,
+        "change_pct": -1.695,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/HDN.AX"
+      },
+      {
+        "symbol": "HLI",
+        "name": "Helia Group Limited",
+        "value": 4.87,
+        "prev_close": 5.0,
+        "change": -0.13,
+        "change_pct": -2.6,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/HLI.AX"
+      },
+      {
+        "symbol": "HMC",
+        "name": "HMC Capital Limited",
+        "value": 3.34,
+        "prev_close": 3.31,
+        "change": 0.03,
+        "change_pct": 0.906,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/HMC.AX"
+      },
+      {
+        "symbol": "HSN",
+        "name": "Hansen Technologies Limited",
+        "value": 3.55,
+        "prev_close": 3.61,
+        "change": -0.06,
+        "change_pct": -1.662,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/HSN.AX"
+      },
+      {
+        "symbol": "HUB",
+        "name": "HUB24 Limited",
+        "value": 77.64,
+        "prev_close": 77.72,
+        "change": -0.08,
+        "change_pct": -0.103,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/HUB.AX"
+      },
+      {
+        "symbol": "HVN",
+        "name": "Harvey Norman Holdings Ltd",
+        "value": 4.43,
+        "prev_close": 4.45,
+        "change": -0.02,
+        "change_pct": -0.449,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/HVN.AX"
+      },
+      {
+        "symbol": "IAG",
+        "name": "Insurance Australia Group Ltd",
+        "value": 8.94,
+        "prev_close": 8.91,
+        "change": 0.03,
+        "change_pct": 0.337,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IAG.AX"
+      },
+      {
+        "symbol": "IDX",
+        "name": "Integral Diagnostics Ltd",
+        "value": 1.72,
+        "prev_close": 1.74,
+        "change": -0.02,
+        "change_pct": -1.149,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IDX.AX"
+      },
+      {
+        "symbol": "IEL",
+        "name": "IDP Education Ltd.",
+        "value": 2.2,
+        "prev_close": 2.2,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IEL.AX"
+      },
+      {
+        "symbol": "IFT",
+        "name": "Infratil Limited",
+        "value": 10.58,
+        "prev_close": 10.49,
+        "change": 0.09,
+        "change_pct": 0.858,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IFT.AX"
+      },
+      {
+        "symbol": "IGO",
+        "name": "IGO Limited",
+        "value": 5.2,
+        "prev_close": 4.96,
+        "change": 0.24,
+        "change_pct": 4.839,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IGO.AX"
+      },
+      {
+        "symbol": "ILU",
+        "name": "Iluka Resources Limited",
+        "value": 6.2,
+        "prev_close": 5.93,
+        "change": 0.27,
+        "change_pct": 4.553,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ILU.AX"
+      },
+      {
+        "symbol": "IMD",
+        "name": "Imdex Ltd",
+        "value": 3.28,
+        "prev_close": 3.2,
+        "change": 0.08,
+        "change_pct": 2.5,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IMD.AX"
+      },
+      {
+        "symbol": "IMR",
+        "name": "Imricor Medical Systems, Inc. Shs Chess Depository Interests Repr 1 Sh",
+        "value": 1.275,
+        "prev_close": 1.28,
+        "change": -0.005,
+        "change_pct": -0.391,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IMR.AX"
+      },
+      {
+        "symbol": "INA",
+        "name": "Ingenia Communities Group",
+        "value": 5.2,
+        "prev_close": 5.24,
+        "change": -0.04,
+        "change_pct": -0.763,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/INA.AX"
+      },
+      {
+        "symbol": "ING",
+        "name": "Inghams Group Ltd.",
+        "value": 2.18,
+        "prev_close": 2.19,
+        "change": -0.01,
+        "change_pct": -0.457,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ING.AX"
+      },
+      {
+        "symbol": "IPH",
+        "name": "IPH Ltd.",
+        "value": 3.99,
+        "prev_close": 4.0,
+        "change": -0.01,
+        "change_pct": -0.25,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IPH.AX"
+      },
+      {
+        "symbol": "IPX",
+        "name": "Iperionx Ltd.",
+        "value": 2.15,
+        "prev_close": 2.0,
+        "change": 0.15,
+        "change_pct": 7.5,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IPX.AX"
+      },
+      {
+        "symbol": "IRE",
+        "name": "IRESS Limited",
+        "value": 5.76,
+        "prev_close": 5.79,
+        "change": -0.03,
+        "change_pct": -0.518,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/IRE.AX"
+      },
+      {
+        "symbol": "JBH",
+        "name": "JB Hi-Fi Limited",
+        "value": 76.81,
+        "prev_close": 77.41,
+        "change": -0.6,
+        "change_pct": -0.775,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/JBH.AX"
+      },
+      {
+        "symbol": "JDO",
+        "name": "Judo Capital Holdings Limited",
+        "value": 0.91,
+        "prev_close": 0.935,
+        "change": -0.025,
+        "change_pct": -2.674,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/JDO.AX"
+      },
+      {
+        "symbol": "JHX",
+        "name": "James Hardie Industries PLC Chess Units of Foreign Securities",
+        "value": 41.89,
+        "prev_close": 39.2,
+        "change": 2.69,
+        "change_pct": 6.862,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/JHX.AX"
+      },
+      {
+        "symbol": "KAR",
+        "name": "Karoon Energy Ltd",
+        "value": 1.555,
+        "prev_close": 1.58,
+        "change": -0.025,
+        "change_pct": -1.582,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/KAR.AX"
+      },
+      {
+        "symbol": "KCN",
+        "name": "Kingsgate Consolidated Limited",
+        "value": 4.44,
+        "prev_close": 4.22,
+        "change": 0.22,
+        "change_pct": 5.213,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/KCN.AX"
+      },
+      {
+        "symbol": "KLS",
+        "name": "Kelsian Group Limited",
+        "value": 4.23,
+        "prev_close": 4.23,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/KLS.AX"
+      },
+      {
+        "symbol": "L1G",
+        "name": "L1 Group Limited",
+        "value": 1.26,
+        "prev_close": 1.245,
+        "change": 0.015,
+        "change_pct": 1.205,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/L1G.AX"
+      },
+      {
+        "symbol": "LIC",
+        "name": "Lifestyle Communities Ltd",
+        "value": 4.28,
+        "prev_close": 4.32,
+        "change": -0.04,
+        "change_pct": -0.926,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/LIC.AX"
+      },
+      {
+        "symbol": "LIN",
+        "name": "Lindian Resources Limited",
+        "value": 0.38,
+        "prev_close": 0.375,
+        "change": 0.005,
+        "change_pct": 1.333,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/LIN.AX"
+      },
+      {
+        "symbol": "LLC",
+        "name": "Lendlease Group",
+        "value": 2.44,
+        "prev_close": 2.58,
+        "change": -0.14,
+        "change_pct": -5.426,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/LLC.AX"
+      },
+      {
+        "symbol": "LNW",
+        "name": "Light & Wonder, Inc. Shs Chess Depository Interests Repr 1 Sh",
+        "value": 115.08,
+        "prev_close": 116.46,
+        "change": -1.38,
+        "change_pct": -1.185,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/LNW.AX"
+      },
+      {
+        "symbol": "LOV",
+        "name": "Lovisa Holdings Ltd.",
+        "value": 28.0,
+        "prev_close": 28.46,
+        "change": -0.46,
+        "change_pct": -1.616,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/LOV.AX"
+      },
+      {
+        "symbol": "LTR",
+        "name": "Liontown Limited",
+        "value": 0.675,
+        "prev_close": 0.645,
+        "change": 0.03,
+        "change_pct": 4.651,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/LTR.AX"
+      },
+      {
+        "symbol": "LYC",
+        "name": "Lynas Rare Earths Limited",
+        "value": 13.15,
+        "prev_close": 12.31,
+        "change": 0.84,
+        "change_pct": 6.824,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/LYC.AX"
+      },
+      {
+        "symbol": "MAF",
+        "name": "MA Financial Group Limited",
+        "value": 4.95,
+        "prev_close": 5.0,
+        "change": -0.05,
+        "change_pct": -1.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MAF.AX"
+      },
+      {
+        "symbol": "MAH",
+        "name": "Macmahon Holdings Limited",
+        "value": 0.935,
+        "prev_close": 0.93,
+        "change": 0.005,
+        "change_pct": 0.538,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MAH.AX"
+      },
+      {
+        "symbol": "MAQ",
+        "name": "Macquarie Technology Group Limited",
+        "value": 50.05,
+        "prev_close": 49.86,
+        "change": 0.19,
+        "change_pct": 0.381,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MAQ.AX"
+      },
+      {
+        "symbol": "MFG",
+        "name": "Magellan Financial Group Ltd",
+        "value": null,
+        "prev_close": null,
+        "change": null,
+        "change_pct": null,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MFG.AX",
+        "stale": true,
+        "note": "2026-11-09 无交易数据（可能停牌）；最后成交日 2026-10-30，收盘 7.79",
+        "last_trade_date": "2026-10-30",
+        "last_close": 7.79
+      },
+      {
+        "symbol": "MGH",
+        "name": "MAAS Group Holdings Ltd.",
+        "value": 3.89,
+        "prev_close": 3.77,
+        "change": 0.12,
+        "change_pct": 3.183,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MGH.AX"
+      },
+      {
+        "symbol": "MGR",
+        "name": "Mirvac Group",
+        "value": 1.905,
+        "prev_close": 1.96,
+        "change": -0.055,
+        "change_pct": -2.806,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MGR.AX"
+      },
+      {
+        "symbol": "MI6",
+        "name": "Minerals 260 Limited",
+        "value": 0.81,
+        "prev_close": 0.75,
+        "change": 0.06,
+        "change_pct": 8.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MI6.AX"
+      },
+      {
+        "symbol": "MIN",
+        "name": "Mineral Resources Limited",
+        "value": 48.83,
+        "prev_close": 46.59,
+        "change": 2.24,
+        "change_pct": 4.808,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MIN.AX"
+      },
+      {
+        "symbol": "MLX",
+        "name": "Metals X Limited",
+        "value": 1.61,
+        "prev_close": 1.52,
+        "change": 0.09,
+        "change_pct": 5.921,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MLX.AX"
+      },
+      {
+        "symbol": "MMS",
+        "name": "Mcmillan Shakespeare Limited",
+        "value": 18.73,
+        "prev_close": 18.92,
+        "change": -0.19,
+        "change_pct": -1.004,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MMS.AX"
+      },
+      {
+        "symbol": "MND",
+        "name": "Monadelphous Group Limited",
+        "value": 28.3,
+        "prev_close": 28.45,
+        "change": -0.15,
+        "change_pct": -0.527,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MND.AX"
+      },
+      {
+        "symbol": "MP1",
+        "name": "Megaport Ltd.",
+        "value": 17.34,
+        "prev_close": 17.06,
+        "change": 0.28,
+        "change_pct": 1.641,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MP1.AX"
+      },
+      {
+        "symbol": "MPL",
+        "name": "Medibank Private Ltd.",
+        "value": 5.18,
+        "prev_close": 5.21,
+        "change": -0.03,
+        "change_pct": -0.576,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MPL.AX"
+      },
+      {
+        "symbol": "MQG",
+        "name": "Macquarie Group, Ltd.",
+        "value": 247.94,
+        "prev_close": 248.86,
+        "change": -0.92,
+        "change_pct": -0.37,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MQG.AX"
+      },
+      {
+        "symbol": "MSB",
+        "name": "Mesoblast Limited",
+        "value": 2.04,
+        "prev_close": 2.03,
+        "change": 0.01,
+        "change_pct": 0.493,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MSB.AX"
+      },
+      {
+        "symbol": "MTS",
+        "name": "Metcash Limited",
+        "value": 3.34,
+        "prev_close": 3.34,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MTS.AX"
+      },
+      {
+        "symbol": "MYS",
+        "name": "Mystate Limited",
+        "value": 4.92,
+        "prev_close": 4.99,
+        "change": -0.07,
+        "change_pct": -1.403,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/MYS.AX"
+      },
+      {
+        "symbol": "NAB",
+        "name": "National Australia Bank Limited",
+        "value": 39.45,
+        "prev_close": 40.0,
+        "change": -0.55,
+        "change_pct": -1.375,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NAB.AX"
+      },
+      {
+        "symbol": "NAN",
+        "name": "Nanosonics Limited",
+        "value": 2.89,
+        "prev_close": 2.89,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NAN.AX"
+      },
+      {
+        "symbol": "NCK",
+        "name": "Nick Scali Limited",
+        "value": 13.78,
+        "prev_close": 14.2,
+        "change": -0.42,
+        "change_pct": -2.958,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NCK.AX"
+      },
+      {
+        "symbol": "NEC",
+        "name": "Nine Entertainment Co. Holdings Limited",
+        "value": 0.835,
+        "prev_close": 0.815,
+        "change": 0.02,
+        "change_pct": 2.454,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NEC.AX"
+      },
+      {
+        "symbol": "NEM",
+        "name": "Newmont Corporation Registered Chess Depositary Interests Repr 1 Sh",
+        "value": 179.11,
+        "prev_close": 171.57,
+        "change": 7.54,
+        "change_pct": 4.395,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NEM.AX"
+      },
+      {
+        "symbol": "NEU",
+        "name": "Neuren Pharmaceuticals Limited",
+        "value": 23.84,
+        "prev_close": 23.24,
+        "change": 0.6,
+        "change_pct": 2.582,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NEU.AX"
+      },
+      {
+        "symbol": "NGI",
+        "name": "Navigator Global Investments Ltd",
+        "value": 2.03,
+        "prev_close": 2.03,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NGI.AX"
+      },
+      {
+        "symbol": "NHC",
+        "name": "New Hope Corporation Limited",
+        "value": 5.37,
+        "prev_close": 5.27,
+        "change": 0.1,
+        "change_pct": 1.898,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NHC.AX"
+      },
+      {
+        "symbol": "NHF",
+        "name": "NIB Holdings Ltd",
+        "value": 6.7,
+        "prev_close": 6.76,
+        "change": -0.06,
+        "change_pct": -0.888,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NHF.AX"
+      },
+      {
+        "symbol": "NIC",
+        "name": "Nickel Industries Limited",
+        "value": 0.61,
+        "prev_close": 0.59,
+        "change": 0.02,
+        "change_pct": 3.39,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NIC.AX"
+      },
+      {
+        "symbol": "NST",
+        "name": "Northern Star Resources Ltd",
+        "value": 25.85,
+        "prev_close": 25.65,
+        "change": 0.2,
+        "change_pct": 0.78,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NST.AX"
+      },
+      {
+        "symbol": "NUF",
+        "name": "Nufarm Limited",
+        "value": 3.37,
+        "prev_close": 3.37,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NUF.AX"
+      },
+      {
+        "symbol": "NWH",
+        "name": "NRW Holdings Limited",
+        "value": 6.12,
+        "prev_close": 6.09,
+        "change": 0.03,
+        "change_pct": 0.493,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NWH.AX"
+      },
+      {
+        "symbol": "NWL",
+        "name": "Netwealth Group Ltd.",
+        "value": 19.36,
+        "prev_close": 19.45,
+        "change": -0.09,
+        "change_pct": -0.463,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NWL.AX"
+      },
+      {
+        "symbol": "NWS",
+        "name": "News Corporation Shs B Chess Depository Interests repr 1 Sh",
+        "value": 42.55,
+        "prev_close": 43.07,
+        "change": -0.52,
+        "change_pct": -1.207,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NWS.AX"
+      },
+      {
+        "symbol": "NXG",
+        "name": "NexGen Energy Ltd. Shs Chess Depository Interests repr 1 shs",
+        "value": 12.23,
+        "prev_close": 11.4,
+        "change": 0.83,
+        "change_pct": 7.281,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NXG.AX"
+      },
+      {
+        "symbol": "NXT",
+        "name": "Nextdc Limited",
+        "value": 10.52,
+        "prev_close": 10.4,
+        "change": 0.12,
+        "change_pct": 1.154,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/NXT.AX"
+      },
+      {
+        "symbol": "OBM",
+        "name": "Ora Banda Mining Ltd.",
+        "value": 1.53,
+        "prev_close": 1.44,
+        "change": 0.09,
+        "change_pct": 6.25,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/OBM.AX"
+      },
+      {
+        "symbol": "OML",
+        "name": "oOh media Ltd",
+        "value": 1.665,
+        "prev_close": 1.67,
+        "change": -0.005,
+        "change_pct": -0.299,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/OML.AX"
+      },
+      {
+        "symbol": "ORA",
+        "name": "Orora Limited",
+        "value": 1.595,
+        "prev_close": 1.585,
+        "change": 0.01,
+        "change_pct": 0.631,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ORA.AX"
+      },
+      {
+        "symbol": "ORG",
+        "name": "Origin Energy Limited",
+        "value": 12.2,
+        "prev_close": 12.12,
+        "change": 0.08,
+        "change_pct": 0.66,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ORG.AX"
+      },
+      {
+        "symbol": "ORI",
+        "name": "Orica Limited",
+        "value": 22.05,
+        "prev_close": 22.5,
+        "change": -0.45,
+        "change_pct": -2.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ORI.AX"
+      },
+      {
+        "symbol": "PDI",
+        "name": "PDI Gold Limited",
+        "value": 4.77,
+        "prev_close": 4.5,
+        "change": 0.27,
+        "change_pct": 6.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PDI.AX"
+      },
+      {
+        "symbol": "PDN",
+        "name": "Paladin Energy Ltd",
+        "value": 8.27,
+        "prev_close": 7.46,
+        "change": 0.81,
+        "change_pct": 10.858,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PDN.AX"
+      },
+      {
+        "symbol": "PLS",
+        "name": "PLS Group Limited",
+        "value": 2.89,
+        "prev_close": 2.83,
+        "change": 0.06,
+        "change_pct": 2.12,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PLS.AX"
+      },
+      {
+        "symbol": "PME",
+        "name": "Pro Medicus, Ltd.",
+        "value": 205.49,
+        "prev_close": 205.13,
+        "change": 0.36,
+        "change_pct": 0.175,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PME.AX"
+      },
+      {
+        "symbol": "PMT",
+        "name": "PMET Resources Inc. Shs Chess Depository Interests Repr 0.1 Sh",
+        "value": 0.345,
+        "prev_close": 0.33,
+        "change": 0.015,
+        "change_pct": 4.545,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PMT.AX"
+      },
+      {
+        "symbol": "PMV",
+        "name": "Premier Investments Limited",
+        "value": 14.06,
+        "prev_close": 14.18,
+        "change": -0.12,
+        "change_pct": -0.846,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PMV.AX"
+      },
+      {
+        "symbol": "PNI",
+        "name": "Pinnacle Investment Management Group Limited",
+        "value": 15.83,
+        "prev_close": 15.84,
+        "change": -0.01,
+        "change_pct": -0.063,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PNI.AX"
+      },
+      {
+        "symbol": "PNR",
+        "name": "Pantoro Gold Limited",
+        "value": 3.28,
+        "prev_close": 3.06,
+        "change": 0.22,
+        "change_pct": 7.19,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PNR.AX"
+      },
+      {
+        "symbol": "PNV",
+        "name": "Polynovo Limited",
+        "value": 0.91,
+        "prev_close": 0.89,
+        "change": 0.02,
+        "change_pct": 2.247,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PNV.AX"
+      },
+      {
+        "symbol": "PPT",
+        "name": "Perpetual Limited",
+        "value": 17.57,
+        "prev_close": 17.67,
+        "change": -0.1,
+        "change_pct": -0.566,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PPT.AX"
+      },
+      {
+        "symbol": "PRN",
+        "name": "Perenti Limited",
+        "value": 2.08,
+        "prev_close": 2.02,
+        "change": 0.06,
+        "change_pct": 2.97,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PRN.AX"
+      },
+      {
+        "symbol": "PRU",
+        "name": "Perseus Mining Limited",
+        "value": 6.52,
+        "prev_close": 6.28,
+        "change": 0.24,
+        "change_pct": 3.822,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PRU.AX"
+      },
+      {
+        "symbol": "PWH",
+        "name": "PWR Holdings Ltd.",
+        "value": 11.25,
+        "prev_close": 11.14,
+        "change": 0.11,
+        "change_pct": 0.987,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PWH.AX"
+      },
+      {
+        "symbol": "PXA",
+        "name": "PEXA Group Limited",
+        "value": 7.3,
+        "prev_close": 7.35,
+        "change": -0.05,
+        "change_pct": -0.68,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PXA.AX"
+      },
+      {
+        "symbol": "PYC",
+        "name": "PYC Therapeutics Limited",
+        "value": 1.99,
+        "prev_close": 1.88,
+        "change": 0.11,
+        "change_pct": 5.851,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/PYC.AX"
+      },
+      {
+        "symbol": "QAN",
+        "name": "Qantas Airways Limited",
+        "value": 9.31,
+        "prev_close": 9.45,
+        "change": -0.14,
+        "change_pct": -1.481,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/QAN.AX"
+      },
+      {
+        "symbol": "QBE",
+        "name": "QBE Insurance Group Limited",
+        "value": 26.32,
+        "prev_close": 26.75,
+        "change": -0.43,
+        "change_pct": -1.607,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/QBE.AX"
+      },
+      {
+        "symbol": "QRI",
+        "name": "Qualitas Real Estate Income Fund Units",
+        "value": 1.48,
+        "prev_close": 1.485,
+        "change": -0.005,
+        "change_pct": -0.337,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/QRI.AX"
+      },
+      {
+        "symbol": "RDX",
+        "name": "Redox Limited",
+        "value": 3.33,
+        "prev_close": 3.35,
+        "change": -0.02,
+        "change_pct": -0.597,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RDX.AX"
+      },
+      {
+        "symbol": "REA",
+        "name": "REA Group Ltd",
+        "value": 173.54,
+        "prev_close": 174.81,
+        "change": -1.27,
+        "change_pct": -0.727,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/REA.AX"
+      },
+      {
+        "symbol": "REG",
+        "name": "Regis Healthcare Ltd.",
+        "value": 5.08,
+        "prev_close": 5.01,
+        "change": 0.07,
+        "change_pct": 1.397,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/REG.AX"
+      },
+      {
+        "symbol": "REH",
+        "name": "Reece Limited",
+        "value": 18.34,
+        "prev_close": 18.38,
+        "change": -0.04,
+        "change_pct": -0.218,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/REH.AX"
+      },
+      {
+        "symbol": "RFF",
+        "name": "Rural Funds Group",
+        "value": 1.94,
+        "prev_close": 1.97,
+        "change": -0.03,
+        "change_pct": -1.523,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RFF.AX"
+      },
+      {
+        "symbol": "RGN",
+        "name": "Region Group",
+        "value": 2.32,
+        "prev_close": 2.37,
+        "change": -0.05,
+        "change_pct": -2.11,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RGN.AX"
+      },
+      {
+        "symbol": "RHC",
+        "name": "Ramsay Health Care Limited",
+        "value": 55.49,
+        "prev_close": 55.75,
+        "change": -0.26,
+        "change_pct": -0.466,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RHC.AX"
+      },
+      {
+        "symbol": "RIC",
+        "name": "Ridley Corporation Limited",
+        "value": 2.66,
+        "prev_close": 2.68,
+        "change": -0.02,
+        "change_pct": -0.746,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RIC.AX"
+      },
+      {
+        "symbol": "RIO",
+        "name": "Rio Tinto Limited",
+        "value": 152.26,
+        "prev_close": 149.93,
+        "change": 2.33,
+        "change_pct": 1.554,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RIO.AX"
+      },
+      {
+        "symbol": "RMD",
+        "name": "ResMed Inc. CHESS Depositary Interests on a ratio of 10 CDIs per ord.sh",
+        "value": 34.27,
+        "prev_close": 34.75,
+        "change": -0.48,
+        "change_pct": -1.381,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RMD.AX"
+      },
+      {
+        "symbol": "RMS",
+        "name": "Ramelius Resources Limited",
+        "value": 3.89,
+        "prev_close": 3.67,
+        "change": 0.22,
+        "change_pct": 5.995,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RMS.AX"
+      },
+      {
+        "symbol": "RPL",
+        "name": "Regal Partners Limited",
+        "value": 2.18,
+        "prev_close": 2.17,
+        "change": 0.01,
+        "change_pct": 0.461,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RPL.AX"
+      },
+      {
+        "symbol": "RRL",
+        "name": "Regis Resources Limited",
+        "value": 6.89,
+        "prev_close": 6.63,
+        "change": 0.26,
+        "change_pct": 3.922,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RRL.AX"
+      },
+      {
+        "symbol": "RSG",
+        "name": "Resolute Mining Limited",
+        "value": 1.285,
+        "prev_close": 1.22,
+        "change": 0.065,
+        "change_pct": 5.328,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RSG.AX"
+      },
+      {
+        "symbol": "RWC",
+        "name": "Reliance Worldwide Corp. Ltd.",
+        "value": 4.52,
+        "prev_close": 4.52,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/RWC.AX"
+      },
+      {
+        "symbol": "S32",
+        "name": "South32 Ltd.",
+        "value": 4.59,
+        "prev_close": 4.44,
+        "change": 0.15,
+        "change_pct": 3.378,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/S32.AX"
+      },
+      {
+        "symbol": "SBM",
+        "name": "St. Barbara Ltd.",
+        "value": 0.75,
+        "prev_close": 0.74,
+        "change": 0.01,
+        "change_pct": 1.351,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SBM.AX"
+      },
+      {
+        "symbol": "SCG",
+        "name": "Scentre Group",
+        "value": 3.45,
+        "prev_close": 3.61,
+        "change": -0.16,
+        "change_pct": -4.432,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SCG.AX"
+      },
+      {
+        "symbol": "SDF",
+        "name": "Steadfast Group Limited",
+        "value": 5.81,
+        "prev_close": 5.81,
+        "change": 0.0,
+        "change_pct": 0.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SDF.AX"
+      },
+      {
+        "symbol": "SDR",
+        "name": "SiteMinder Limited",
+        "value": 3.56,
+        "prev_close": 3.41,
+        "change": 0.15,
+        "change_pct": 4.399,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SDR.AX"
+      },
+      {
+        "symbol": "SEK",
+        "name": "Seek Limited",
+        "value": 14.24,
+        "prev_close": 14.53,
+        "change": -0.29,
+        "change_pct": -1.996,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SEK.AX"
+      },
+      {
+        "symbol": "SFR",
+        "name": "Sandfire Resources Ltd",
+        "value": 20.19,
+        "prev_close": 19.11,
+        "change": 1.08,
+        "change_pct": 5.651,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SFR.AX"
+      },
+      {
+        "symbol": "SGH",
+        "name": "SGH Limited",
+        "value": 42.62,
+        "prev_close": 42.46,
+        "change": 0.16,
+        "change_pct": 0.377,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SGH.AX"
+      },
+      {
+        "symbol": "SGLLV",
+        "name": "Ricegrowers Ltd. Class B",
+        "value": 14.63,
+        "prev_close": 15.22,
+        "change": -0.59,
+        "change_pct": -3.876,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SGLLV.AX"
+      },
+      {
+        "symbol": "SGM",
+        "name": "Sims Ltd.",
+        "value": 20.12,
+        "prev_close": 19.65,
+        "change": 0.47,
+        "change_pct": 2.392,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SGM.AX"
+      },
+      {
+        "symbol": "SGP",
+        "name": "Stockland",
+        "value": 4.44,
+        "prev_close": 4.6,
+        "change": -0.16,
+        "change_pct": -3.478,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SGP.AX"
+      },
+      {
+        "symbol": "SHL",
+        "name": "Sonic Healthcare Limited",
+        "value": 19.78,
+        "prev_close": 20.06,
+        "change": -0.28,
+        "change_pct": -1.396,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SHL.AX"
+      },
+      {
+        "symbol": "SHV",
+        "name": "Select Harvests Limited",
+        "value": 3.95,
+        "prev_close": 4.01,
+        "change": -0.06,
+        "change_pct": -1.496,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SHV.AX"
+      },
+      {
+        "symbol": "SIG",
+        "name": "Sigma Healthcare Ltd",
+        "value": 2.85,
+        "prev_close": 2.82,
+        "change": 0.03,
+        "change_pct": 1.064,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SIG.AX"
+      },
+      {
+        "symbol": "SIQ",
+        "name": "Smartgroup Corporation Ltd",
+        "value": 11.25,
+        "prev_close": 11.14,
+        "change": 0.11,
+        "change_pct": 0.987,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SIQ.AX"
+      },
+      {
+        "symbol": "SKG",
+        "name": "Storage King Group",
+        "value": 1.13,
+        "prev_close": 1.155,
+        "change": -0.025,
+        "change_pct": -2.165,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SKG.AX"
+      },
+      {
+        "symbol": "SKS",
+        "name": "SKS Technologies Group Limited",
+        "value": 5.46,
+        "prev_close": 5.25,
+        "change": 0.21,
+        "change_pct": 4.0,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SKS.AX"
+      },
+      {
+        "symbol": "SLC",
+        "name": "Superloop Ltd.",
+        "value": 2.75,
+        "prev_close": 2.82,
+        "change": -0.07,
+        "change_pct": -2.482,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SLC.AX"
+      },
+      {
+        "symbol": "SLX",
+        "name": "Silex Systems Limited",
+        "value": 3.33,
+        "prev_close": 2.97,
+        "change": 0.36,
+        "change_pct": 12.121,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SLX.AX"
+      },
+      {
+        "symbol": "SMI",
+        "name": "Santana Minerals Ltd.",
+        "value": 0.495,
+        "prev_close": 0.44,
+        "change": 0.055,
+        "change_pct": 12.5,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SMI.AX"
+      },
+      {
+        "symbol": "SMR",
+        "name": "Stanmore Resources Ltd",
+        "value": 2.52,
+        "prev_close": 2.47,
+        "change": 0.05,
+        "change_pct": 2.024,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SMR.AX"
+      },
+      {
+        "symbol": "SNL",
+        "name": "Supply Network Limited",
+        "value": 34.5,
+        "prev_close": 34.92,
+        "change": -0.42,
+        "change_pct": -1.203,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SNL.AX"
+      },
+      {
+        "symbol": "SOL",
+        "name": "Washington H. Soul Pattinson and Company Limited",
+        "value": 47.15,
+        "prev_close": 47.51,
+        "change": -0.36,
+        "change_pct": -0.758,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SOL.AX"
+      },
+      {
+        "symbol": "SPK",
+        "name": "Spark New Zealand Limited",
+        "value": 1.69,
+        "prev_close": 1.685,
+        "change": 0.005,
+        "change_pct": 0.297,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SPK.AX"
+      },
+      {
+        "symbol": "SRG",
+        "name": "SRG Global Limited",
+        "value": 3.3,
+        "prev_close": 3.32,
+        "change": -0.02,
+        "change_pct": -0.602,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SRG.AX"
+      },
+      {
+        "symbol": "SRL",
+        "name": "Sunrise Energy Metals Limited",
+        "value": 12.59,
+        "prev_close": 11.58,
+        "change": 1.01,
+        "change_pct": 8.722,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SRL.AX"
+      },
+      {
+        "symbol": "SSM",
+        "name": "Service Stream Limited",
+        "value": null,
+        "prev_close": null,
+        "change": null,
+        "change_pct": null,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SSM.AX",
+        "stale": true,
+        "note": "2026-11-09 无成交（成交量为 0）；最后成交日 2026-11-06，收盘 2.2",
+        "last_trade_date": "2026-11-06",
+        "last_close": 2.2
+      },
+      {
+        "symbol": "STO",
+        "name": "Santos Limited",
+        "value": 8.62,
+        "prev_close": 8.56,
+        "change": 0.06,
+        "change_pct": 0.701,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/STO.AX"
+      },
+      {
+        "symbol": "SUL",
+        "name": "Super Retail Group Limited",
+        "value": 13.42,
+        "prev_close": 13.7,
+        "change": -0.28,
+        "change_pct": -2.044,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SUL.AX"
+      },
+      {
+        "symbol": "SUN",
+        "name": "Suncorp Group Limited",
+        "value": 20.31,
+        "prev_close": 20.29,
+        "change": 0.02,
+        "change_pct": 0.099,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SUN.AX"
+      },
+      {
+        "symbol": "SX2",
+        "name": "Southern Cross Gold Consolidated Ltd. Chees Depository Interest Repr 1 shs",
+        "value": 9.01,
+        "prev_close": 8.59,
+        "change": 0.42,
+        "change_pct": 4.889,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SX2.AX"
+      },
+      {
+        "symbol": "SXE",
+        "name": "Southern Cross Electrical Engineering Limited",
+        "value": 3.61,
+        "prev_close": 3.53,
+        "change": 0.08,
+        "change_pct": 2.266,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/SXE.AX"
+      },
+      {
+        "symbol": "TAH",
+        "name": "Tabcorp Holdings Limited",
+        "value": 0.9,
+        "prev_close": 0.915,
+        "change": -0.015,
+        "change_pct": -1.639,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TAH.AX"
+      },
+      {
+        "symbol": "TCG",
+        "name": "Turaco Gold Ltd",
+        "value": 0.755,
+        "prev_close": 0.72,
+        "change": 0.035,
+        "change_pct": 4.861,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TCG.AX"
+      },
+      {
+        "symbol": "TCL",
+        "name": "Transurban Group Ltd.",
+        "value": 14.67,
+        "prev_close": 14.6,
+        "change": 0.07,
+        "change_pct": 0.479,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TCL.AX"
+      },
+      {
+        "symbol": "TEA",
+        "name": "Tasmea Limited",
+        "value": 9.08,
+        "prev_close": 8.9,
+        "change": 0.18,
+        "change_pct": 2.022,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TEA.AX"
+      },
+      {
+        "symbol": "TLC",
+        "name": "Lottery Corporation Limited",
+        "value": 5.47,
+        "prev_close": 5.49,
+        "change": -0.02,
+        "change_pct": -0.364,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TLC.AX"
+      },
+      {
+        "symbol": "TLS",
+        "name": "Telstra Group Limited",
+        "value": 5.05,
+        "prev_close": 5.1,
+        "change": -0.05,
+        "change_pct": -0.98,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TLS.AX"
+      },
+      {
+        "symbol": "TLX",
+        "name": "Telix Pharmaceuticals Limited",
+        "value": 13.93,
+        "prev_close": 13.67,
+        "change": 0.26,
+        "change_pct": 1.902,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TLX.AX"
+      },
+      {
+        "symbol": "TNE",
+        "name": "Technology One Limited",
+        "value": 32.61,
+        "prev_close": 32.65,
+        "change": -0.04,
+        "change_pct": -0.123,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TNE.AX"
+      },
+      {
+        "symbol": "TPG",
+        "name": "TPG Telecom Limited",
+        "value": 4.04,
+        "prev_close": 4.1,
+        "change": -0.06,
+        "change_pct": -1.463,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TPG.AX"
+      },
+      {
+        "symbol": "TPW",
+        "name": "Temple & Webster Group Ltd",
+        "value": 5.94,
+        "prev_close": 6.12,
+        "change": -0.18,
+        "change_pct": -2.941,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TPW.AX"
+      },
+      {
+        "symbol": "TUA",
+        "name": "Tuas Ltd.",
+        "value": 1.455,
+        "prev_close": 1.46,
+        "change": -0.005,
+        "change_pct": -0.342,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TUA.AX"
+      },
+      {
+        "symbol": "TWE",
+        "name": "Treasury Wine Estates Limited",
+        "value": 6.36,
+        "prev_close": 6.35,
+        "change": 0.01,
+        "change_pct": 0.157,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TWE.AX"
+      },
+      {
+        "symbol": "TYR",
+        "name": "Tyro Payments Ltd.",
+        "value": 0.745,
+        "prev_close": 0.725,
+        "change": 0.02,
+        "change_pct": 2.759,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/TYR.AX"
+      },
+      {
+        "symbol": "UNI",
+        "name": "Universal Store Holdings Ltd.",
+        "value": 7.87,
+        "prev_close": 8.0,
+        "change": -0.13,
+        "change_pct": -1.625,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/UNI.AX"
+      },
+      {
+        "symbol": "VAU",
+        "name": "Vault Minerals Limited",
+        "value": 6.19,
+        "prev_close": 5.84,
+        "change": 0.35,
+        "change_pct": 5.993,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/VAU.AX"
+      },
+      {
+        "symbol": "VCX",
+        "name": "Vicinity Centres",
+        "value": 2.42,
+        "prev_close": 2.47,
+        "change": -0.05,
+        "change_pct": -2.024,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/VCX.AX"
+      },
+      {
+        "symbol": "VEA",
+        "name": "Viva Energy Group Ltd.",
+        "value": 2.64,
+        "prev_close": 2.66,
+        "change": -0.02,
+        "change_pct": -0.752,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/VEA.AX"
+      },
+      {
+        "symbol": "VGN",
+        "name": "Virgin Australia Holdings Limited",
+        "value": 2.81,
+        "prev_close": 2.85,
+        "change": -0.04,
+        "change_pct": -1.404,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/VGN.AX"
+      },
+      {
+        "symbol": "VNT",
+        "name": "Ventia Services Group Limited",
+        "value": 4.8,
+        "prev_close": 5.73,
+        "change": -0.93,
+        "change_pct": -16.23,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/VNT.AX"
+      },
+      {
+        "symbol": "VSL",
+        "name": "Vulcan Steel Ltd.",
+        "value": 5.85,
+        "prev_close": 5.64,
+        "change": 0.21,
+        "change_pct": 3.723,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/VSL.AX"
+      },
+      {
+        "symbol": "VUL",
+        "name": "Vulcan Energy Resources Ltd.",
+        "value": 1.145,
+        "prev_close": 1.115,
+        "change": 0.03,
+        "change_pct": 2.691,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/VUL.AX"
+      },
+      {
+        "symbol": "WA1",
+        "name": "WA1 Resources Ltd",
+        "value": 8.59,
+        "prev_close": 7.96,
+        "change": 0.63,
+        "change_pct": 7.915,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WA1.AX"
+      },
+      {
+        "symbol": "WAF",
+        "name": "West African Resources Ltd",
+        "value": 3.62,
+        "prev_close": 3.45,
+        "change": 0.17,
+        "change_pct": 4.928,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WAF.AX"
+      },
+      {
+        "symbol": "WBC",
+        "name": "Westpac Banking Corporation",
+        "value": 36.81,
+        "prev_close": 37.03,
+        "change": -0.22,
+        "change_pct": -0.594,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WBC.AX"
+      },
+      {
+        "symbol": "WBT",
+        "name": "Weebit Nano Ltd.",
+        "value": 2.27,
+        "prev_close": 2.14,
+        "change": 0.13,
+        "change_pct": 6.075,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WBT.AX"
+      },
+      {
+        "symbol": "WDS",
+        "name": "Woodside Energy Group Ltd",
+        "value": 30.7,
+        "prev_close": 30.74,
+        "change": -0.04,
+        "change_pct": -0.13,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WDS.AX"
+      },
+      {
+        "symbol": "WEB",
+        "name": "WebBeds Group Limited",
+        "value": 3.84,
+        "prev_close": 3.83,
+        "change": 0.01,
+        "change_pct": 0.261,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WEB.AX"
+      },
+      {
+        "symbol": "WES",
+        "name": "Wesfarmers Limited",
+        "value": 80.2,
+        "prev_close": 81.33,
+        "change": -1.13,
+        "change_pct": -1.389,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WES.AX"
+      },
+      {
+        "symbol": "WGX",
+        "name": "Westgold Resources Ltd",
+        "value": 5.87,
+        "prev_close": 5.58,
+        "change": 0.29,
+        "change_pct": 5.197,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WGX.AX"
+      },
+      {
+        "symbol": "WHC",
+        "name": "Whitehaven Coal Limited",
+        "value": 7.2,
+        "prev_close": 7.04,
+        "change": 0.16,
+        "change_pct": 2.273,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WHC.AX"
+      },
+      {
+        "symbol": "WOR",
+        "name": "Worley Limited",
+        "value": 10.04,
+        "prev_close": 10.1,
+        "change": -0.06,
+        "change_pct": -0.594,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WOR.AX"
+      },
+      {
+        "symbol": "WOW",
+        "name": "Woolworths Group Ltd",
+        "value": 42.47,
+        "prev_close": 42.45,
+        "change": 0.02,
+        "change_pct": 0.047,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WOW.AX"
+      },
+      {
+        "symbol": "WPR",
+        "name": "Waypoint REIT Ltd.",
+        "value": 2.29,
+        "prev_close": 2.33,
+        "change": -0.04,
+        "change_pct": -1.717,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WPR.AX"
+      },
+      {
+        "symbol": "WTC",
+        "name": "Wisetech Global Ltd.",
+        "value": 45.29,
+        "prev_close": 44.49,
+        "change": 0.8,
+        "change_pct": 1.798,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/WTC.AX"
+      },
+      {
+        "symbol": "XRO",
+        "name": "Xero Limited",
+        "value": 70.58,
+        "prev_close": 70.74,
+        "change": -0.16,
+        "change_pct": -0.226,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/XRO.AX"
+      },
+      {
+        "symbol": "XYZ",
+        "name": "Block, Inc. Shs Chess Depository Interests Repr 1 Sh",
+        "value": 125.16,
+        "prev_close": 122.66,
+        "change": 2.5,
+        "change_pct": 2.038,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/XYZ.AX"
+      },
+      {
+        "symbol": "YAL",
+        "name": "Yancoal Australia Ltd.",
+        "value": 5.69,
+        "prev_close": 5.54,
+        "change": 0.15,
+        "change_pct": 2.708,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/YAL.AX"
+      },
+      {
+        "symbol": "ZIP",
+        "name": "Zip Co Ltd.",
+        "value": 2.04,
+        "prev_close": 2.02,
+        "change": 0.02,
+        "change_pct": 0.99,
+        "date": "2026-11-09",
+        "source": "https://finance.yahoo.com/quote/ZIP.AX"
+      }
+    ],
+    "note": "指数全部成分股，按代码字母顺序排列；价格为最近一个已收盘的 ASX 交易日（date）",
+    "constituents_as_of": "2026-10-08",
+    "constituents_source": "https://www.tradingview.com/symbols/ASX-XKO/components/",
+    "session_date": "2026-11-09",
+    "priced": 297,
+    "total": 299
+  }
+}
